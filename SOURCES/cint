@@ -1,0 +1,110 @@
+      NAMELIST /NAMP/dir,
+     &      AL_I,
+     &      AL_F,
+     &      nsa,
+     &      xa1 ,
+     &      xa2,
+     &      xa3,
+     &      xb,
+     &      xda1,
+     &      xda2,
+     &      RE_I,
+     &      RE_F,
+     &      nsr,
+     &      CM_I,
+     &      CM_F,
+     &      nso,    
+     &      EDR,
+     &      XE1,
+     &      XDE1,
+     &      X_IN,
+     &      C3,
+     &      BCT,
+     &      ACCU,
+     &      ANS1,
+     &      ANS2,
+     &      ANS3,
+     &      ANS4,
+     &      s0,
+     &      s2,
+     &      s4,
+     &      s6,
+     &      A2P,
+     &      A4P,
+     &      mmm,
+     &      hd,  
+     &      SR,
+     &      rotp,
+     &      gd, 
+     &      aqu, 
+     &      flg,
+     &      dd1,
+     &      rc1,
+     &      rc2,
+     &      oco,   
+     &      xm,
+     &      beta_i,
+     &      beta_f,
+     &      beta_s,
+     &      zeta_r,
+     &      ffree,
+     &      xbt,
+     &      xbo
+
+	
+C INIT NAMELIST      
+     
+           dir='tdata'
+           AL_I      = 0.0
+           AL_F      = 10.
+           nsa      = 1
+           xa1       = 0.8
+           xa2       = 0.9
+	   xa3       = 0.7
+           xb        = 0.1
+           xda1      = 0.02
+           xda2      = 0.02
+           RE_I      = 0.0
+           RE_F      = 0.0
+           nsr      = 1
+           CM_I      = 0.
+           CM_F      = 1000.
+           ns0      = 1       
+           EDR       = 1.0
+           XE1       = 0.7 
+           XDE1      = 0.02
+           X_IN      = 0.3
+           C3        = 0.0
+           BCT       = 1.0
+           ACCU      = 0.01
+           ANS1      = 'H4'
+           ANS2      = 'D'
+           ANS3      = 'CR'
+	   ANS4      = 'V'
+	   s0        = -0.5
+           s2        =  1.5
+           s4        = -722
+	   s6        =  437          
+           A2P       = 1
+           A4P       = 0
+           mmm       = 0
+           hd        = 0  
+           SR        = 1  
+           gd        = -7.0  
+           rotp      = 1.0  
+           aqu       = 0
+           flg       = 0
+           dd1       = 0.71
+           rc1       = 0.71
+           rc2       = 0.2
+           oco       = 0.92   
+           xm        = 1
+           beta_i    = 0
+           beta_f    = 0
+           beta_s    = 0.1
+           zeta_r    = 3
+           ffree     = 0
+           xbt       = 0.75
+           xbo       = 1.5
+
+

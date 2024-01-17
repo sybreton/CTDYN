@@ -1,0 +1,28 @@
+      INTEGER NP ! mesh points
+      INTEGER NT ! matrix dimension 
+      INTEGER na !     na = 1,3,5,... radial order in an and an
+      INTEGER nb !     nb = 2,4,6,... radial order in bn and bn
+      
+      PARAMETER(na = 79)     ! armonics
+      PARAMETER(NP = 80)     ! mesh points 
+
+      PARAMETER(nb = na+1)           ! armonics b number
+      PARAMETER(NT = nb*NP)          ! global matrix dimension
+
+      INTEGER   LWORK
+c      PARAMETER(LWORK=NT*NT)      
+      PARAMETER(LWORK=54000)      
+
+      INTEGER NUEG
+      PARAMETER(NUEG=10)
+
+      INTEGER N_THETA
+      PARAMETER(N_THETA=301) 
+c      PARAMETER(N_THETA=46) 
+
+      INTEGER n_time
+      PARAMETER(N_TIME=300)
+
+      real pi
+      parameter(pi=3.14159265359)
+
