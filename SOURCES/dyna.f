@@ -1257,7 +1257,7 @@ c------- rescale the eigenvalues
       do 121 i=1, NT
       wr(i) = REAL(WW(i))/hh**2    
       wi(i) = AIMAG(WW(i))/hh**2
-      INDEG(i) = i
+      INDE(i) = i
  121  continue
 
        else
