@@ -8,8 +8,8 @@
      &      xb,
      &      xda1,
      &      xda2,
-     &      RE_I,
-     &      RE_F,
+     &      RM_I,
+     &      RM_F,
      &      nsr,
      &      CM_I,
      &      CM_F,
@@ -64,8 +64,8 @@ C INIT NAMELIST
            xb        = 0.1
            xda1      = 0.02
            xda2      = 0.02
-           RE_I      = 0.0
-           RE_F      = 0.0
+           RM_I      = 0.0
+           RM_F      = 0.0
            nsr      = 1
            CM_I      = 0.
            CM_F      = 1000.
@@ -80,7 +80,7 @@ C INIT NAMELIST
            ANS1      = 'H4'
            ANS2      = 'D'
            ANS3      = 'CR'
-	   ANS4      = 'V'
+	   ANS4      = 'N'
 	   s0        = -0.5
            s2        =  1.5
            s4        = -722
