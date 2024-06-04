@@ -39,7 +39,7 @@ C
 c      REAL vtu,rt,imag,co,c_u,beta,ffree
 
       REAL imag
-      COMMON/part/vtu,rt,imag,CO,CS,beta,ffree,betb,etep,etet,xbt,xbo
+      COMMON/part/vtu,rt,imag,CO,c_u,beta,ffree,betb,etep,etet,xbt,xbo
       
       REAL CA(10,10,4)
       REAL REG(10),IEG(10)
@@ -78,6 +78,7 @@ c      character(len=64)    ::  dir
       character(len=5)     ::  char_m  ! converti m in char
       character(len=128)    ::  char_fm ! file input_Am
       character(len=128)    ::  char_cm ! file crtal_Am
+      character(len=128)    ::  char_cf ! file crtaf_Am
       character(len=128)    ::  fom     ! crea un format dinamico 
       character(len=5)      ::  qq      ! _Am
       EXTERNAL version
@@ -118,6 +119,7 @@ c      WRITE(*,*) MACH
 
        char_fm=trim(trim(dir)//'/input'//qq)
        char_cm=trim(trim(dir)//'/crtal'//qq)
+       char_cf=trim(trim(dir)//'/crtaf'//qq)
 
 c       write(fom,*) len_trim(char_fm)
 c       fom='(A'//trim(adjustl(fom))//')'
@@ -127,52 +129,53 @@ c        print*, char_cm
 
        ! riscrivi file di input nel direttorio di output
  
-       eep=-99
             
        open(34,status='unknown',file=char_fm)
        write(34,NAMP)
        close(34) 
        open(35,status='unknown',file=char_cm)
 
-      II=0
-
       ! MAIN ff-beta parameter
       beta=beta_i
+      eep=-99
+      II=0
 
+      JOBVR='N'
+      ANS3='CR'
 
       WRITE(35,'(a,2I4)')  '#N c_alpha,c_omega,R,beta,etor,epol,z=', np, na+1 
-      DO 331 ires = 0,nsr-1
-      CS=RE_I+ires*(RE_F-RE_I)/nsr
-c      DO 333 iome = 0,nso-1
-      DO 333 iome = 0,nso
 
+      DO 333 iome = 0,nso
+      if(CM_I.ne.0)then
       astep=(abs(CM_F/CM_I))**(1./nso) 
       CO = astep**iome*CM_I
 
-c      CO = CM_I + iome*(CM_F-CM_I)/nso 
+      else
+      CO = CM_I + iome*(CM_F-CM_I)/(nso+1) 
+      endif
 
-c      CS= RE_I*(CM_I/CO)
+c      DO 331 ires = 0,nsr
+c      if(RM_I.ne.0)then
+c      rstep=(abs(RM_F/RM_I))**(1./nsr) 
+c      C_U = rstep**ires*RM_I
+c      else
+c      C_U = RM_I + ires*(RM_F-RM_I)/(nsr+1) 
+c      endif 
 
-      JOBVR = 'N'   
+      c_u=RM_I+RM_F*co**xm
+
       II=II+1    
-      if(AL_I.ne.AL_F)THEN
-      CALL ZBR(AL_I,AL_F,accu,critical)  
-      JOBVR = ANS4                     ! V = calculate R eigenvectors
+      CALL ZBR(AL_I,AL_F,accu,critical) 
+      WRITE(35,'(I4,16e12.4)') II, critical,CO,C_U,beta,etep,etet,zeta_r,(REG(I),ABS(IEG(I)),I=1,1), eep
+      if(ANS4.eq.'V')then
+c      JOBVR=ans4
+      JOBVR='V'
       CALL DYNAMO(critical,rate)
-      WRITE(35,'(I4,16e12.4)') II, critical, 
-     & CO, CS, beta,etep,etet, zeta_r, (REG(I),ABS(IEG(I)),I=1,1), eep
-      ELSE
-      JOBVR = ANS4
-      CALL DYNAMO(AL_I,rate)
-      WRITE(35,'(I4,16e12.4)') II, AL_I, 
-     & CO, CS, beta,etep,etet, zeta_r, (REG(I),ABS(IEG(I)),I=1,1), eep
-       
-c      WRITE(*,'(I4,16e12.4)') II, AL_I, 
-c     & CO, CS, beta,etep,etet, zeta_r, (REG(I),ABS(IEG(I)),I=1,1), eep
-
+      JOBVR='N'
       ENDIF
+      
+c 331  continue
  333  continue
- 331  continue
 
 
       close(35)
