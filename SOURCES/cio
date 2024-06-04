@@ -3,18 +3,18 @@
       INTEGER na !     na = 1,3,5,... radial order in an and an
       INTEGER nb !     nb = 2,4,6,... radial order in bn and bn
       
-      PARAMETER(na = 79)     ! armonics
-      PARAMETER(NP = 80)     ! mesh points 
+      PARAMETER(na = 49)     ! armonics
+      PARAMETER(NP = 50)     ! mesh points 
 
       PARAMETER(nb = na+1)           ! armonics b number
       PARAMETER(NT = nb*NP)          ! global matrix dimension
 
       INTEGER   LWORK
 c      PARAMETER(LWORK=NT*NT)      
-      PARAMETER(LWORK=54000)      
+      PARAMETER(LWORK=540000)      
 
       INTEGER NUEG
-      PARAMETER(NUEG=10)
+      PARAMETER(NUEG=8)
 
       INTEGER N_THETA
       PARAMETER(N_THETA=301) 
