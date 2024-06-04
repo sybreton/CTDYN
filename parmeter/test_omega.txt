@@ -1,5 +1,5 @@
 &NAMP
-DIR     = '../test5'
+DIR     = '/Users/alfio/da/ct_dynamo/test5'
 AL_I    =  0,
 AL_F    =  20.   ,
 NSA    =   1    ,
