@@ -1,5 +1,5 @@
  &NAMP
- DIR     = '/mnt/c/gdi/Data/r400',      
+ DIR     = 'tests/aomeg_A0',      
  AL_I    = 0.00000000000,
  AL_F    = 10.0000000     ,
  XA1     = 0.6400000000000     ,

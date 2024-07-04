@@ -15,5 +15,5 @@ An executable should be created at the root of the repository under the name
 `spectra.x`.  The executable can then be run in the following fashion by
 selecting an input file in the `parameters` directory.
 
-`spectra.x parameters/input`
+`./spectra.x parameters/input`
  

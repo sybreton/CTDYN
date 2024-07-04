@@ -1,5 +1,5 @@
  &NAMP
- DIR     = '/storage/z/a1'                     
+ DIR     = 'tests/isA0'                     
  AL_I    =  0.000000000000000E+000,
  AL_F    =   100.0000000000000     ,
  NSA     =           1,
