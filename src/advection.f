@@ -35,8 +35,6 @@ C
       IMPLICIT REAL(A-H,O-Z)
 
       include 'cio'
- 
-c      REAL vtu,rt,imag,co,c_u,beta,ffree
 
       REAL imag
       COMMON/part/vtu,rt,imag,CO,c_u,beta,ffree,betb,etep,etet,xbt,xbo
@@ -74,7 +72,6 @@ c      REAL vtu,rt,imag,co,c_u,beta,ffree
       CHARACTER*52 mach, ddt
       CHARACTER*43 version, ver
 
-c      character(len=64)    ::  dir
       character(len=5)     ::  char_m  ! converti m in char
       character(len=128)    ::  char_fm ! file input_Am
       character(len=128)    ::  char_cm ! file crtal_Am
@@ -91,10 +88,6 @@ c      character(len=64)    ::  dir
       COMMON/parker/gam,zeta_r,ratio
 
       include 'cint'
-
-c      ver = version(mach)
-c      WRITE(*,*) VER
-c      WRITE(*,*) MACH
 
       CALL getarg(1,inp)
       OPEN(31,file=inp,status='old')
@@ -121,15 +114,6 @@ c      WRITE(*,*) MACH
        char_cm=trim(trim(dir)//'/crtal'//qq)
        char_cf=trim(trim(dir)//'/crtaf'//qq)
 
-c       write(fom,*) len_trim(char_fm)
-c       fom='(A'//trim(adjustl(fom))//')'
-c        print*, fom
-c        print*, char_fm
-c        print*, char_cm
-
-       ! riscrivi file di input nel direttorio di output
- 
-            
        open(34,status='unknown',file=char_fm)
        write(34,NAMP)
        close(34) 
@@ -154,27 +138,17 @@ c        print*, char_cm
       CO = CM_I + iome*(CM_F-CM_I)/(nso+1) 
       endif
 
-c      DO 331 ires = 0,nsr
-c      if(RM_I.ne.0)then
-c      rstep=(abs(RM_F/RM_I))**(1./nsr) 
-c      C_U = rstep**ires*RM_I
-c      else
-c      C_U = RM_I + ires*(RM_F-RM_I)/(nsr+1) 
-c      endif 
-
       c_u=RM_I+RM_F*co**xm
 
       II=II+1    
       CALL ZBR(AL_I,AL_F,accu,critical) 
       WRITE(35,'(I4,16e12.4)') II, critical,CO,C_U,beta,etep,etet,zeta_r,(REG(I),ABS(IEG(I)),I=1,1), eep
       if(ANS4.eq.'V')then
-c      JOBVR=ans4
       JOBVR='V'
       CALL DYNAMO(critical,rate)
       JOBVR='N'
       ENDIF
       
-c 331  continue
  333  continue
 
 

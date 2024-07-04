@@ -17,7 +17,7 @@ FCPPFL =  -fpp -DIF90_
 OBJDIR = OBJECTS.Linux.PIV
 INCDIR = -I.
 PREDIR = PREDIR
-EXE = ./spectra.x
+EXE = ../spectra.x
 
 vpath %.o .:$(OBJDIR)
 
