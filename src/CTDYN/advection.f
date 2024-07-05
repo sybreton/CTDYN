@@ -26,10 +26,6 @@ C
 C    A0 Comega = 20      -> Calpha = 4.51   \nu = 0
 C    A1 Comega = 20      -> Calpha = 5.01   \nu = 7.43 = - \Omega R86
 C    
-C    controlla la definizione di Calpha con intefgrale
-C    retesta i modelli di roberts con flusso meridiano
-C
-
 
       PROGRAM ADVECTION
       IMPLICIT REAL(A-H,O-Z)
@@ -150,7 +146,6 @@ C
       ENDIF
       
  333  continue
-
 
       close(35)
       

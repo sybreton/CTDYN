@@ -74,7 +74,6 @@ C------------- temporary variables
       REAL OMEGAEQ
       REAL  NUEQ, ETA, SR0
       PARAMETER(SR0=6.955e10,NUEQ=460.7e-9)
-c      PARAMETER(NUEQ=460.7e-9)
 C
 C     1./freq / seconds in a day = eq. rotation period for the Sun
 C     1./(1.d-9*460) / 86400. =  25.161031       
@@ -94,21 +93,13 @@ C
       CHARACTER*1 SENSE    
       REAL RWORK(2*NT)
       COMPLEX*16 WORK(LWORK)  
-ccc      COMPLEX WORK(LWORK)  
-      
       CHARACTER*43 ver
       INTEGER qa, qb
-
       COMPLEX*16 AXX(NT,NT)
       REAL   AXR(NT,NT)
-
       COMPLEX*16 drb, dra, sigmeno, sigpiu
-
       COMMON/parker/gam,zeta_r,ratio
-
       COMMON/vec/CVR
-
-ccc      COMPLEX AXX(NT,NT)
 
       REAL c1(NP)                  ! coefficient dyn.  
       REAL c2(NP)
@@ -118,21 +109,12 @@ ccc      COMPLEX AXX(NT,NT)
       JOBVL = 'N'    ! V = calculate R and L eig.
 !----------------  boundaries ------------------------------
 
-c      t1 = secnds(0.0)
-c      write(*,*) sr
-c      stop
- 
-
       x1 = x_in           !inner boundary
       x2 = 1.0            !outer boundary
       hh =(x2-x1)/(NP+1)  !stepsize: radial accuracy parm.
       h2 = hh/2.e0
       a2 = c3       ! cos^3 term in alpha  
 
-C
-C
-C Check!!!! verifica la definizione di c3
-C           verifica se i coeefficienti per c3 non zero sono validi anche per m=1, sembra di no
 C
 C rotp = periodo di rotazione in unita' di quello solare
 C
@@ -145,11 +127,6 @@ C
       ETA=1
       endif
 
-c      write(*,*) ETA
-c      write(*,*) SR, SR0, OMEGAEQ, co
-c      stop
-
-
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
       um = C_U*eta/(SR*SR0)
@@ -160,7 +137,7 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
-C              WRITE ITERATIONS on screeen
+C              WRITE ITERATIONS on screen
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
@@ -175,20 +152,9 @@ c in this case the coefficients are not computed....
       if(ans2.eq.'Q'.and.mmm.eq.0) write(*,*) '********** S0-MODE *********'
       if(ans2.eq.'Q'.and.mmm.ne.0) write(*,*) '********** A1-MODE *********'
 
-      write(*,'(1x,a,I4,1x,a,I4,1x,a,I4)') ' it=', it,' NA=', NB, ' NP=',NP
-
-c      write(*,'(a,1p,e12.5,a,1p,e12.5,a,1p,e12.5,a,1p,
-c     &   e12.5,a,1p,e12.5,a,1p,e12.5)' )
-c     & ' c_alpha=',turb, '  c_omega=', co, '  reynolds=',c_u, ' f-f=', beta
-c     & ,'  eta=',eta,'  um=',um 
-
-      write(*,'(a,e12.5,a,e12.5)' ) ' c_alpha=',turb, ' c_omega=', co 
-      write(*,'(a,e12.5,a,e12.5)' ) ' R_flow =',c_u,  ' f-f=    ', beta 
-
-c      write(*,'(a,1p,e12.5,a,1p,e12.5,a,1p,e12.5,a,1p,
-c     &   e12.5,a,1p,e12.5,a,1p,e12.5)' )
-c     & ' c_alpha=',turb, '  c_omega=', co, '  reynolds=',c_u, ' f-f=', beta
-c     & ,'  eta=',eta,'  um=',um 
+      write(*,'(1x,a,I4,1x,a,I4,1x,a,I4)') ' it=', it,' NA=', NB, ' NP=', NP
+      write(*,'(a,e12.5,a,e12.5)' ) ' c_alpha=', turb, ' c_omega=', co 
+      write(*,'(a,e12.5,a,e12.5)' ) ' R_flow =', c_u,  ' f-f=    ', beta 
 
 
 C
@@ -240,9 +206,6 @@ c
       call eta_turb(x, e1, e2, e3)
       call stream(x,ar,arp, bt,btp, psi)
 
-
-c bench test newtest
-
       rho=x**gd 
       rho=0
       psi=0
@@ -250,17 +213,9 @@ c bench test newtest
       psipp=0
 
       c1(i) = ca*alp*hh**2
-
-c      c2(i) = -c_u*(3*psi/rho/x/x)*hh**2
-c check sign 
-
       c2(i) =  c_u*ar*hh**2
 
-c      betb=10*beta
-
        betb=beta
-
-cc      betb=2000
 
 c  alpha beta gamma of the notes for a-vectors
 c  in the matrix we write  
@@ -500,13 +455,9 @@ C
 C DEFINE SIGMENO COMPLEX !!!! ..... otherwise it will be wrong.....!!!!
 C
 
-c       apu = -3*psi/x/x/rho
        apu = ar
-c       apup = -3*psip/x/x/rho +(2+gd)*psi/x/x 
        apup =  arp
-c       bapu = -3*psip/x/rho 
        bapu =  bt
-c       bapup = -3*psipp/x/x/rho + (2+gd)*3*psip/x/x/x/rho
        bapup  = btp
 
 c  check sign with the m-independent terms 
@@ -520,9 +471,6 @@ c coefficient of the non-derivative term CHANGED of sign - the overall - goes in
      & J*(6*apu/x/x+bapup/x-bapu/x/x)   !ok 
 
        sigmapi  = 12*apu/x+6*apup+2*(J+1)*bapu/x  !ok
-
-corg       deltapi  = 6*apu*J*(J+1)/x/x - 6*apup/x + 2*J*bapu/x/x+(J+1)*
-corg     & (J+2)*(6*apu/x/x+bapup/x-bapu/x/x)
 
        deltapi  = 6*apu*J*(J+1)/x/x - 6*apup/x - 2*(J+1)*bapu/x/x-(J+1)*
      & (J+2)*(6*apu/x/x+bapup/x-bapu/x/x)  ! ok
@@ -868,7 +816,6 @@ C     runs col 2*nb  INNER BN
       if(j/nb.eq.0)AXX(i+k1,j+(k-1)*nb+k1+2)= -(-fanp2p(k+1,nas)-fanp2p(k+1,nas)/(2*hh*(nas+3.+ffc)+3))
       if(j/nb.eq.1)AXX(i+k1,j+(k-1)*nb+k1+2)= -( fanp2(k+1,nas) +fanp2p(k+1,nas)*4/(2*hh*(nas+3.+ffc)+3))
       endif
-CCC             CHECK!!!!!!!! BENE !!!!!!!!!!!!!!!!!
 
       !FANM4P 
       if(nas.ge.nafm2+2)then
@@ -1139,8 +1086,6 @@ C-------     write the inner blocks of the matrix------- BN
       nas = nas_count-1	
       nas=2*nas+qb
 
-check segno di beta nel boundary!!!!!!!!!
-
       if(j/nb.eq.0)AXX(i+k1,j+(k-1)*nb+k1) =  alb(k+1,nas)
       if(j/nb.eq.1)AXX(i+k1,j+(k-1)*nb+k1) = -beb(k+1,nas)
       if(j/nb.eq.2)AXX(i+k1,j+(k-1)*nb+k1) =  gab(k+1,nas)
@@ -1265,9 +1210,6 @@ c------- rescale the eigenvalues
        forall (i=1:nt,j=1:nt) axr(i,j) = real(axx(i,j))
        axR = real(axx)
 
-C CHECK CALL VR or VC, it should be OK, but maybe better use another
-C name?
-
        CALL DGEEV(JOBVL, JOBVR, NT, AXR, NT, WR, WI, VR, NT, 
      &  VR, NT, WORK, LWORK, INFO )
 C
@@ -1279,25 +1221,12 @@ C
 
        endif
 
- 
-c-------  order in increasing order for the real part
-C------   vedi se esiste una nuova subr in F90 
-
       call sort2(NT,wr,INDE)     
 
       INDEG=INT(INDE)
 
-c      wr(NT) = wr(NT)-10
-    
       rate = wr(NT) 
-
-c      rate = wr(NT-1)
-c      if(abs(wr(NT-1)) .eq. abs(wr(NT))) rate=wr(NT-2)  
-      
       imag = wi(INT(INDEG(NT)))
- 
-c       print*, wi(INT(INDEG(NT))), wi(INT(INDEG(NT-1)))
-c       print*, wr(nt), wr(nt-1)
 
         do i2 =1,NB
         k = 1          
@@ -1305,17 +1234,6 @@ c       print*, wr(nt), wr(nt-1)
         k = -1         
         do i3 = i2,NT,NB
         k = k + 1   
-
-c        write(13,'(I4, 3e15.5)') i2, x1+(k+1)*hh, VR(i3,INDEG(NT)), VR(i3,INDEG(NT-1)) 
-
-        ! check sort2 - 
-c        do ii2=1,NT 
-c        write(44,*) ii2, INDEG(ii2), WR(ii2)
-c        enddo
-c        stop
-c        write(*,*) nt, indeg(nt)
-c        stop
-c        print*, INFO, WORK(1), max(1,LWORK)
 
         EGR(k+1,i2) = VR(i3,INDEG(NT))
         EGI(k+1,i2) = VR(i3,INDEG(NT-1)) 
@@ -1340,14 +1258,8 @@ c        print*, INFO, WORK(1), max(1,LWORK)
          enddo
          enddo
 
-c max_Btor / max_Bpol
-
          eep=(maxval(abs(bgr)) + maxval(abs(bgi)))/(maxval(abs(agr)) + maxval(abs(agi)))
 
-c         write(*,*) maxval(abs(bgr))
-c         write(*,*) maxval(abs(agr))
-
-         
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
        rt = rate  
        vtu = turb 
@@ -1356,10 +1268,6 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C------------ write the period in years ---------------------------
 
       facp= 2.e0*PI*(SR*SR0)**2.e0/ETA/3.1536e7
-c      facp= SR**2.e0/eta/3.1536e7
-c        write(*,*) (REAL(WW(J))/hh**2,AIMAG(WW(J))/hh**2,J=1,NT) 
-c      print*, facp 
-c      do kk = 0,9
       do kk = 0,5
       WRITE(*,'(I4, 1P,3e13.5)') kk, WR(NT-KK), WI(INT(INDEG(NT-KK))),   facp/WI(INT(INDEG(NT-KK)))
       enddo
@@ -1372,10 +1280,8 @@ c      do kk = 0,9
       enddo
  
       if(JOBVR.eq.'V')then
-c      write(*,*) 'time elapsed before writing ', secnds(t1)
       call writefield
       endif
-
 
       return
       END

@@ -44,7 +44,6 @@ C
       COMMON/PSI/s0,s2,s4,s6,A2P,A4P,xm
 
       CHARACTER*102 dir 
-c      CHARACTER*72 dir 
       CHARACTER*8 ANS1,ANS2,ANS3,ANS4 
       COMMON/var3/ANS1,ANS2,ANS3,ANS4, dir
 
@@ -56,12 +55,8 @@ c      CHARACTER*72 dir
       CHARACTER*82 fel,fes,fel2,fes2,fen
       CHARACTER*2 qq, q
 
-c      REAL vtu,rt,imag,co,c_u,beta,ffree
       REAL imag
       COMMON/part/vtu,rt,imag,CO,C_U,beta,ffree,betb,etep,etet,xbt,xbo
-
-c      CHARACTER*52 bfeld1,bfeld2,bfeld3,bfeld4,bfeld5
-c     & ,bfeld6,bfeld7,bfeld8,bfeld9,bfeld10
 
       CHARACTER*512 bfeld1,bfeld2,bfeld3,bfeld4,bfeld5
      & ,bfeld6,bfeld7,bfeld8,bfeld9,bfeld10
@@ -72,10 +67,7 @@ c     & ,bfeld6,bfeld7,bfeld8,bfeld9,bfeld10
       COMMON/vec/CVR
       COMMON/parker/gam,zeta_r,ratio
 
-c      PARAMETER(NFT = 400)   
       PARAMETER(NFT = 200)   
-c      PARAMETER(NFT = 500)   
-c      PARAMETER(NFT = 1200)   
 
       REAL ang(N_THETA)              
 
@@ -93,7 +85,6 @@ c      PARAMETER(NFT = 1200)
 
 
       EXTERNAL PLGNDR
-c      real bin(2), bax(2), rin(2), rax(2)
       INTEGER bin(2), bax(2), rin(2), rax(2)
 
 c initialize
@@ -151,19 +142,6 @@ CCC   IMPORTANT mmm can only be LE 1 in this subroutine !!!!
       write(bfeld2,2010) trim(dir)//'/vect.',ii,q,mm 
       open(13,status='unknown',file=adjustl(bfeld2))
 
-c      if(flg.eq.1)then
-
-c        write(13,'(1x,I4,2x,I4)')    NP, NB
-c        write(13,'(1x,f9.5,2x,f9.5)') x1,x2
-c        do i3 =1, NT
-c        write(13,'(e15.5)') REAL(CVR(i3,INT(INDEG(NT))))    ! WRITE FIRST EIGENVECTOR
-c        enddo
-c        do i3 =1, NT
-c        write(13,'(e15.5)') AIMAG(CVR(i3,INT(INDEG(NT))))   ! WRITE SECOND / IM part of first
-c        enddo
-
-c         write(*,*) flg
-
       if(flg.eq.1)then
         do i2 =1, NB
          k = 1          
@@ -183,7 +161,6 @@ c         write(*,*) flg
         VC(k,i2,1) = VR(i3,INDEG(NT))
 c it should be -  (after long check with lapack libraries)
            VC(k,i2,2) = -VR(i3,INDEG(NT-1))
-c        write(13,'(I4, 3e15.5)') i2, x1+(k+1)*hh, VC(k,i2,1) , VC(k,i2,2)
 
         enddo
         enddo
@@ -191,8 +168,7 @@ c        write(13,'(I4, 3e15.5)') i2, x1+(k+1)*hh, VC(k,i2,1) , VC(k,i2,2)
        endif   ! flg mode
 
        close(13)
-c       print*, 'imag', imag 
-c
+
       theta1 = 0.
       theta2 = 3.1415926
       theta = theta1-theta2/(n_theta)
@@ -355,10 +331,6 @@ C     location of max bphi
         rax=maxloc(sqrt(apr**2+api**2))
         rin=minloc(sqrt(apr**2+api**2))
 
-c        write(*, '(a,f10.4)') 'max poloidal / max toroidal  ' , 
-c     .  (sqrt(bphi(bax(1), bax(2))**2 + iphi(bax(1), bax(2))**2)
-c     .  /sqrt(apr(rax(1), rax(2))**2 + api(rax(1), rax(2))**2) )**(-1)
-
          ratio= (sqrt(bphi(bax(1), bax(2))**2 + iphi(bax(1), bax(2))**2)
      .   /sqrt(apr(rax(1), rax(2))**2 + api(rax(1), rax(2))**2) )**(-1)
 
@@ -375,10 +347,7 @@ c     .  /sqrt(apr(rax(1), rax(2))**2 + api(rax(1), rax(2))**2) )**(-1)
         write(32,'(e12.5)') theta
       enddo
 
-C TEST
-
        x=0
-c       DO J =1,NP+2 + NFT        ! radial loop
        DO J =1,NP+2 + NF        ! radial loop
        x = x1+(J-1)*hh
        XR(J) = x
@@ -481,15 +450,6 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C radial butterfly diagram N and S 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
-C   normalization
-c       rnor=1
-c       k2=50
-c       DO J =2,NP+2+NF-1       ! radial loop
-c      rnor= rnor+ BPHI(J, K2)**2 + IPHI(J,K2)**2
-c       enddo
-c      print*, rnor
- 
-
         bax=maxloc(abs(bphi))
         bin=minloc(abs(bphi))
         zq1= bphi(bax(1), bax(2))
@@ -534,23 +494,12 @@ c      print*, rnor
         ang(k2)=theta
         enddo
 
-
-c  average on theta 
         nag=2
-
-
-C +/- 30 degrees latitude
 
        abt=1.047
        abm=2.094
 
-
-c       abt=.07
-c       abm=2.094
-
-
        call hunt(ang,n_theta, abt, kb)
-
        call hunt(ang,n_theta, abm, km)
 
        dt=theta2/n_theta
@@ -588,16 +537,11 @@ c first derivative wrt x
         dbx= (bptjp-bptjm)/hh/2
 
 c second derivative wrt x 
- 
         if(j.ne.NP+2)then
         dax2=(aptjp-2*apt+aptjm)/hh/hh
         else
-c        dax2=0
         dax2=(apt-2*aptjm+aptjm2)/hh/hh
         endif
-
-c        dbx2=(bptjp-2*bpt+bptjm)/hh/hh
-c to understand this formula for the cross helicity, just open the mathematica notebook notation.nb
 
         chelN=(2*apt*bpt/sin(ang(ko))**2 + apt*dbtheta*cos(ang(ko))/sin(ang(ko))
      . +datheta*dbtheta -bpt*datheta2)/xr(J)/xr(J)
@@ -605,9 +549,6 @@ c to understand this formula for the cross helicity, just open the mathematica n
 
         cja=cja+chelN   
 
-c         write(33,'(e12.5)')  chelN/rnor
-c         write(33,'(e12.5)')  apt*bpt
-c         write(19, '(7e14.5)') xr(J), apt, bpt, dax, dbx, dax2, dbx2
        ENDDO
 
          write(33,'(e12.5)')  cja/rnor/2./nag
@@ -645,12 +586,9 @@ c second derivative wrt x
         if(j.ne.NP+2)then
         dax2=(aptjp-2*apt+aptjm)/hh/hh
         else
-c        dax2=0
         dax2=(apt-2*aptjm+aptjm2)/hh/hh
         endif
 
-c        dax2=(aptjp-2*apt+aptjm)/hh/hh
-c to understand this formula for the cross helicity, just open the mathematica notebook notation.nb
         chelS=(2*apt*bpt/sin(ang(ko))**2 + apt*dbtheta*cos(ang(ko))/sin(ang(ko))
      . +datheta*dbtheta -bpt*datheta2)/xr(J)/xr(J)
      . +(-bpt*dax+apt*dbx)/xr(J)+dax*dbx -bpt*dax2
@@ -660,11 +598,7 @@ c to understand this formula for the cross helicity, just open the mathematica n
 
 
          write(34,'(e12.5)')  cja/rnor/2./nag
-c         write(34,'(e12.5)')  apt*bpt
-c         write(19, '(7e14.5)') xr(J), apt, bpt, dax, dbx, dax2, dbx2
        ENDDO
-
-c      stop
 
       ENDDO
 

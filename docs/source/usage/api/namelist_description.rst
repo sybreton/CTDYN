@@ -4,3 +4,162 @@ Namelist description
 The description of the parameters that have to 
 be provided by the user in the namelist is given
 here. 
+
+Parameters
+----------
+
+DIR : str
+  directory where the output files will be written.
+
+AL_I : float
+  ???
+
+AL_F : float
+  ???
+
+NSA : float
+  ???
+
+XA1 : float
+  ???
+
+XA2 : float
+  ???
+
+XA3 : float
+  ???
+
+XB : float
+  ???
+
+XDA1 : float
+  ???
+
+XDA2 : float
+  ???
+
+RM_I : float
+  ???
+
+RM_F : float 
+  ???
+
+NSR : float 
+  ???
+
+CM_I : float 
+  ???
+
+CM_F : float 
+  ???
+
+NSO : float      
+  ???
+
+EDR : float        
+  ???
+
+XE1 : float         
+  ???
+
+XDE1 : float       
+  ???
+
+X_IN : float    
+  ???
+
+C3 : float      
+  ???
+
+BCT : float    
+  ???
+
+ACCU : float   
+  accuracy to reach on ``lambda``
+
+ANS1 : str    
+  ???
+
+ANS2 : str    
+  ???
+
+ANS3 : str    
+  ???
+
+ANS4 : str    
+  Set to ``'V'`` to right field in outputs.
+
+S0 : float    
+  ???
+
+S2 : float  
+  ???
+
+S4 : float  
+  ???
+
+S6 : float   
+  ???
+
+A2P : float     
+  ???
+
+A4P : float   
+  ???
+
+MMM : float     
+  ???
+
+HD : float      
+  ???
+
+SR : float      
+  ???
+
+ROTP : float    
+  ???
+
+GD : float      
+  ???
+
+aqu : float     
+  ???
+
+flg : float     
+  ???
+
+dd1 : float     
+  ???
+
+rc1 : float     
+  ???
+
+rc2 : float     
+  ???
+
+oco : float     
+  ???
+
+xm : float     
+  ???
+
+BETA_I : float 
+  ???
+
+BETA_F : float  
+  ???
+
+BETA_S : float 
+  ???
+
+ZETA_R : float  
+  ???
+
+FFREE : float 
+  ???
+  
+xbt : float   
+  ???
+  
+xbo : float     
+  ???

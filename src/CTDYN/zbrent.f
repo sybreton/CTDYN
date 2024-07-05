@@ -1,3 +1,4 @@
+C  (C) Copr. 1986-92 Numerical Recipes Software <&)1.
       SUBROUTINE zbr(x1,x2,tol,zbrent)
       CHARACTER*1 JOBVR,JOBVL
       COMMON/lap/JOBVR,JOBVL
@@ -5,25 +6,21 @@
       INTEGER II,IT
       COMMON/ipar/II,IT
       REAL zbrent,tol,x1,x2,func,EPS,x3
-c      EXTERNAL func
       PARAMETER (ITMAX=100,EPS=3.e-8)
       INTEGER iter
       REAL a,b,c,d,e,fa,fb,fc,p,q,r,s,tol1,xm
       a=x1
       b=x2
 
-      it =1
+      it=1
       call dynamo(a,fa) 
       it=2
       call dynamo(b,fb)
-c      fa=func(a)
-c      fb=func(b)
       if((fa.gt.0..and.fb.gt.0.).or.(fa.lt.0..and.fb.lt.0.))STOP
 c     *'root must be bracketed for zbrent'
       c=b
       fc=fb
       do 11 iter=1,ITMAX
-
          it=iter+2
 
         if((fb.gt.0..and.fc.gt.0.).or.(fb.lt.0..and.fc.lt.0.))then
@@ -43,6 +40,7 @@ c     *'root must be bracketed for zbrent'
         tol1=2.*EPS*abs(b)+0.5*tol
         xm=.5*(c-b)
         if(abs(xm).le.tol1 .or. fb.eq.0.)then
+          write(*,*) 'Tolerance threshold met at iteration', it
           zbrent=b
           return
         endif
@@ -80,15 +78,12 @@ c     *'root must be bracketed for zbrent'
         call dynamo(b,fb)
         if(abs(fb).le.1.0e-4)then
          zbrent=b
-         write(*,*) 'number of iterations=', iter
+         write(*,*) 'fb below 1e-4 at iteration number', iter
          write(*,*)
          return
         endif
-cc        write(*,*) iter
-cc        fb=func(b)
 11    continue
-      pause 'zbrent exceeding maximum iterations'
+      write(*,*) 'zbrent exceeding maximum iterations'
       zbrent=b
       return
       END
-C  (C) Copr. 1986-92 Numerical Recipes Software <&)1.
