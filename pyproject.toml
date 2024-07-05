@@ -1,0 +1,28 @@
+[project]
+name = "py_ctdyn"
+version = "0.1"
+authors = [
+  { name="Sylvain N. Breton", email="sylvain.breton@inaf.it" },
+  { name="Alfio Bonanno", email="alfio.bonanno@inaf.it" },
+]
+description = "Python tools and interface for the Catania dynamo code"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = ['numpy', 'matplotlib']
+keywords = ["stellar physics", "solar-type stars", "stellar dynamo"]
+license = {file = "LICENSE"}
+
+[build-system]
+requires = ["setuptools >= 40.8.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.urls]
+"Homepage" = "https://github.com/sybreton/CTDYN"
+
