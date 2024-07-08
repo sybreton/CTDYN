@@ -83,7 +83,7 @@ integer               ::  ires,nsr
 
 common/parker/gam,zeta_r,ratio
 
-include 'cint'
+include 'cint.f90'
 
 call getarg(1,inp)
 open(31,file=inp,status='old')

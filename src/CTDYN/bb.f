@@ -240,11 +240,11 @@ CU    USES beschb
       chebev=y*d-dd+0.5*c(1)
       return
       END
+
       SUBROUTINE beschb(x,gam1,gam2,gampl,gammi)
       INTEGER NUSE1,NUSE2
       DOUBLE PRECISION gam1,gam2,gammi,gampl,x
       PARAMETER (NUSE1=5,NUSE2=5)
-CU    USES chebev
       REAL xx,c1(7),c2(8),chebev
       SAVE c1,c2
       DATA c1/-1.142022680371168d0,6.5165112670737d-3,3.087090173086d-4,
