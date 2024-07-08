@@ -52,7 +52,7 @@
      &      xbo
 
 	
-C INIT NAMELIST      
+! INIT NAMELIST      
      
            dir='tdata'
            AL_I      = 0.0

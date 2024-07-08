@@ -24,19 +24,19 @@ vpath %.o .:$(OBJDIR)
 $(EXE): dyna.o advection.o err.o func_flow.o plg.o  sort2.o zbrent.o writefield.o bessel.o hunt.o
 	$(LINKER) $(LDFLAGS) -o $@ $^  $(LIB) 
 
-dyna.o: dyna.f cint ccov cvect cio
+dyna.o: dyna.f cint ccov cvect cio.f90
 	$(FC) $(FFLAGS) $(INCDIR) $(F77FLAGS) -c $< -o $@
-advection.o: advection.f cint  
+advection.o: advection.f90 cint  
 	$(FC) $(FFLAGS) $(INCDIR) $(F77FLAGS) -c $< -o $@
-err.o: err.f cio 
+err.o: err.f cio.f90 
 	$(FC) $(FFLAGS) $(INCDIR) $(F77FLAGS) -c $< -o $@
-func_flow.o: func_flow.f b2func b3func b4func b5func c1s2func c3s2func cdfunc cio  
+func_flow.o: func_flow.f b2func b3func b4func b5func c1s2func c3s2func cdfunc cio.f90  
 	$(FC) $(FFLAGS) $(INCDIR) $(F77FLAGS) -c $< -o $@
 plg.o: plg.f  
 	$(FC) $(FFLAGS) $(INCDIR) $(F77FLAGS) -c $< -o $@
 zbrent.o: zbrent.f  
 	$(FC) $(FFLAGS) $(INCDIR) $(F77FLAGS) -c $< -o $@
-outw.o: wwritefield.f cio ccov load_tor.f load_pol.f write_poloidal.f write_toroidal.f load_vec.f
+outw.o: wwritefield.f cio.f90 ccov load_tor.f load_pol.f write_poloidal.f write_toroidal.f load_vec.f
 	$(FC) $(FFLAGS) $(INCDIR) $(F77FLAGS) -c $< -o $@
 bessel.o: bessel.f 
 	$(FC) $(FFLAGS) $(INCDIR) $(F77FLAGS) -c $< -o $@
