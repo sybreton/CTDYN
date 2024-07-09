@@ -31,8 +31,10 @@
 subroutine dynamo(turb,rate)
 !-------------------------------------------------------------
 
+  use cio
+  use cvect
+  use ccov
   implicit none
-  use cio, cvect, ccov
   
   real :: imag
   common/part/vtu,rt,imag,co,c_u,beta,ffree,betb,etep,etet,xbt,xbo

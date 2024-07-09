@@ -1,5 +1,6 @@
 module cvect
 
+  use cio
   implicit none
 
   !########## definition of matrix arrays

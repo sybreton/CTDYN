@@ -1,13 +1,14 @@
 module ccov
 
+  use cio 
   implicit none 
 
-  integer :: indeg(nt)     ! index the eigenvalues      
-  real :: inde(nt)     ! index the eigenvalues      
-  real :: vr(nt,nt)
-  complex*16 :: cvr(nt,nt)
-  complex*16 :: ww(nt)
-  real :: wr(nt),wi(nt)  ! eigenvalues
+  integer, dimension (nt) :: indeg     ! index the eigenvalues      
+  real, dimension (nt) :: inde     ! index the eigenvalues      
+  real, dimension (nt, nt) :: vr
+  complex*16, dimension (nt, nt) :: cvr
+  complex*16, dimension (nt)  :: ww
+  real, dimension (nt) :: wr, wi  ! eigenvalues
   common/vec1/vr,indeg,wr,wi
   
 end module ccov 
