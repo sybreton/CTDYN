@@ -32,14 +32,20 @@ program advection
   use cio
   implicit none   
 
-  real :: imag
+  real :: imag, astep, beta, beta_f, beta_i, &
+          & beta_s, betb, c_u, cm_f, cm_i, co, &
+          & critical, etep, etet, ffree, gam, hd, &
+          & rate, ratio, rm_f, rm_i, rt, vtu, &
+          & xbo, xbt, zeta_r 
   common/part/vtu,rt,imag,co,c_u,beta,ffree,betb,etep,etet,xbt,xbo
   
   real :: ca(10,10,4)
   real :: reg(10),ieg(10)
   real :: eep
+  real :: accu
+  real :: al_i, al_f
   common/eira/reg,ieg,eep
-  integer :: ii,it
+  integer :: i, ii, it
   common/ipar/ii,it
   
   real :: xa1,xa2,xa3,xb,xda1,xda2
@@ -77,9 +83,9 @@ program advection
   external version
   integer :: mm
   
-  integer :: iome,nso
-  integer :: ialo,nsa
-  integer :: ires,nsr
+  integer :: iome, nso
+  integer :: ialo, nsa
+  integer :: ires, nsr
   
   common/parker/gam,zeta_r,ratio
   

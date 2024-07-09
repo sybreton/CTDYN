@@ -5,8 +5,6 @@ module b2func
 contains 
 
   real function b0p1(m)
-    """
-    """
     integer m
     real cgret
   
@@ -16,8 +14,6 @@ contains
   end 
   
   real function b0m1(m)
-    """
-    """
     integer m
     real cgret
   
@@ -27,8 +23,6 @@ contains
   end 
   
   real function b1p2 (n)
-    """
-    """
     integer n
     real cgret
     real x_in, bct, c3,mmm
@@ -40,8 +34,6 @@ contains
   end
   
   real function b1m2 (n)
-    """
-    """
     integer n
     real cgret
     real x_in, bct, c3,mmm
@@ -53,8 +45,6 @@ contains
   end
   
   real function b10 (n)
-    """
-    """
     integer n
     real cgret
     real x_in, bct, c3,mmm
@@ -66,8 +56,6 @@ contains
   end
   
   real function b2p3 (m)
-    """
-    """
     integer m
     real cgret
   
@@ -77,8 +65,6 @@ contains
   end
   
   real function b2m3 (n)
-    """
-    """
     integer n
     real cgret
   
@@ -88,8 +74,6 @@ contains
   end
   
   real function b2p1 (n)
-    """
-    """
     integer n
     real cgret
   
@@ -99,8 +83,6 @@ contains
   end
   
   real function b2m1 (n)
-    """
-    """
     integer n
     real cgret
   

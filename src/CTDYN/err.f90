@@ -1,10 +1,14 @@
 subroutine rot(x, om0, om0p, om2, om2p, om4, om4p)
-  implicit none
-  use cio
 
-  real :: x,x1,x2,x3,xd,xd2,xd3
-  real :: om0, om2, om0p, om2p, om4, om4p, a1, a2, xmax
-  real :: omc,omeq,hzn,c2,c4,omegac,oms,xbi,omegaeq
+  use cio
+  implicit none
+
+  real :: x, x1, x2, x3, xd ,xd2, xd3, &
+          & om0, om2, om0p, om2p, om4, om4p, a1, a2, xmax, &
+          & omc, omeq, hzn, c2, c4, omegac, oms, xbi, omegaeq, &
+          & a4, b0, b4, d1, delta, dw, facn, ome0, &
+          & omec, omes, omet, r, r1, rc, rs, rt, xi, xw, &
+          & xx1, xx2, xxd1, xxd2 
        
   !---------- common main
   
@@ -248,14 +252,15 @@ subroutine alt(x,a1,a2)
   !
   !-------------------------------------------------------------------------
 
+  use cio
   implicit none
 
-  use cio
-  real :: xa1,xa2,xa3,xb,xda1,xda2
-  common/apar/xa1,xa2,xa3,xb,xda1,xda2
+  real :: x, a1, a2, d1, d_xi, delta, r1, x_xi, xi
+  real :: xa1, xa2, xa3, xb, xda1, xda2
+  common/apar/xa1, xa2, xa3, xb, xda1, xda2
 
-  real :: x_in, bct, c3,mmm,sr,gd, aqu, flg
-  common/ppar/x_in,bct,c3,mmm,sr,gd, aqu, flg
+  real :: x_in, bct, c3, mmm, sr, gd, aqu, flg
+  common/ppar/x_in, bct, c3, mmm, sr, gd, aqu, flg
 
   character*52 :: dir
   character*8 :: ans1,ans2,ans3,ans4
@@ -383,20 +388,21 @@ subroutine eta_turb(x, e1, e2, e3)
   !   edr is the ratio eta_c/eta_top
   !---------------------------------------------------------------------------
 
-  implicit none
   use cio
+  implicit none
 
-  real :: x, x1,x2,xd
-  real :: e1,e2,e3
+  real :: x, x1, x2, xd
+  real :: e1, e2, e3
+  real :: delta, et2, ett
 
-  real :: edr,xe1,xde1,hd
+  real :: edr, xe1, xde1, hd
   common/epar/edr,xe1,xde1,hd
 
-  real :: s0,s2,s4,s6,a2p,a4p,xm
+  real :: s0, s2, s4, s6, a2p, a4p, xm
   common/psi/s0,s2,s4,s6,a2p,a4p,xm
 
   character*53 :: dir
-  character*8 :: ans1,ans2,ans3,ans4
+  character*8 :: ans1, ans2, ans3, ans4
   common/var3/ans1,ans2,ans3,ans4,dir
 
   x1 = xe1
