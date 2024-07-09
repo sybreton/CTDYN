@@ -3,6 +3,26 @@ module bessel
   implicit none
 
 contains
+  
+  real function chebev(a,b,c,m,x)
+    integer :: m
+    real :: a,b,x,c(m)
+    integer :: j
+    real :: d,dd,sv,y,y2
+  
+    if ((x-a)*(x-b) .gt. 0.) write (*,*) 'x not in range in chebev'
+    d=0.
+    dd=0.
+    y=(2.*x-a-b)/(b-a)
+    y2=2.*y
+    do j=m,2,-1
+      sv=d
+      d=y2*d-dd+c(j)
+      dd=sv
+    enddo
+    chebev=y*d-dd+0.5*c(1)
+    return
+  end
 
   subroutine bess(x,j,corr)
   
@@ -235,30 +255,10 @@ contains
     return
   end
   
-  function chebev(a,b,c,m,x)
-    integer :: m
-    real :: chebev,a,b,x,c(m)
-    integer :: j
-    real :: d,dd,sv,y,y2
-  
-    if ((x-a)*(x-b) .gt. 0.) write (*,*) 'x not in range in chebev'
-    d=0.
-    dd=0.
-    y=(2.*x-a-b)/(b-a)
-    y2=2.*y
-    do j=m,2,-1
-      sv=d
-      d=y2*d-dd+c(j)
-      dd=sv
-    enddo
-    chebev=y*d-dd+0.5*c(1)
-    return
-  end
-  
   subroutine beschb(x,gam1,gam2,gampl,gammi)
     double precision :: gam1,gam2,gammi,gampl,x
     integer, parameter :: nuse1=5, nuse2=5
-    real :: xx,c1(7),c2(8),chebev
+    real :: xx,c1(7),c2(8) 
     save c1,c2
     data c1/-1.142022680371168d0,6.5165112670737d-3,3.087090173086d-4, &
          &-3.4706269649d-6,6.9437664d-9,3.67795d-11,-1.356d-13/ 

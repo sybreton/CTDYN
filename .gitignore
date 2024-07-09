@@ -1,7 +1,7 @@
 **/*.o
 **/*.mod
 **/*.x
-*.x
+ctdyn
 *.swp
 **/*.swp
 **/.DS_Store

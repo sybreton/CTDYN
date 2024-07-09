@@ -34,6 +34,15 @@ subroutine dynamo(turb,rate)
   use cio
   use cvect
   use ccov
+  use b2func
+  use b3func
+  use b4func
+  use b5func
+  use c1s2func
+  use c3s2func
+  use cdfunc
+  use bessel
+
   implicit none
   
   real :: imag, turb, rate, a2, alp, alp_p, &
@@ -44,7 +53,7 @@ subroutine dynamo(turb,rate)
           & om0, om0p, om2, om2p, om4, om4p, psip, &
           & psipp, ratio, rho, rt, sigmami, sigmapi, &
           & um, vtu, x, x1, x2, xbo, xbt, zeta_r, &
-          & bt, nabp1, nabp3, psi, b0m1, b0p1
+          & bt, nabp1, nabp3, psi
   common/part/vtu,rt,imag,co,c_u,beta,ffree,betb,etep,etet,xbt,xbo
   real :: eep
   real :: reg(10),ieg(10)

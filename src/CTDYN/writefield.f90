@@ -32,6 +32,7 @@ subroutine writefield
   use cio 
   use ccov
   use cdfunc
+  use bessel
   implicit none
 
   real :: aai, aar, abm, abt, adum, apt, aptjm, &
