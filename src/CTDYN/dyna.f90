@@ -36,7 +36,15 @@ subroutine dynamo(turb,rate)
   use ccov
   implicit none
   
-  real :: imag
+  real :: imag, turb, rate, a2, alp, alp_p, &
+          & am, apu, apup, ar, arp, bapu, bapup, &
+          & beta, betb, btp, c_u, ca, co, ct, &
+          & deltami, deltapi, e1, e2, e3, etep, &
+          & etet, facp, ffc, ffree, gam, h2, hh, &
+          & om0, om0p, om2, om2p, om4, om4p, psip, &
+          & psipp, ratio, rho, rt, sigmami, sigmapi, &
+          & um, vtu, x, x1, x2, xbo, xbt, zeta_r, &
+          & bt, nabp1, nabp3, psi, b0m1, b0p1
   common/part/vtu,rt,imag,co,c_u,beta,ffree,betb,etep,etet,xbt,xbo
   real :: eep
   real :: reg(10),ieg(10)
@@ -48,7 +56,14 @@ subroutine dynamo(turb,rate)
   !      c_omega = omega_zero*sr**2/eta
   !      common param
   
-  integer :: ii,it                 ! loop counter
+  integer :: i, j, k, i2, i3, nabm1, &
+             & k1, ki, kk, nabm3, napb3, &
+             & naf, nafm2, nafp2, nai, nas, &
+             & nas_count, nbam1, nbam3, nbap1, &
+             & nbap3, nbf, nbfm2, nbfp2, &
+             & nbi, nc                
+  integer :: info
+  integer :: ii, it ! loop counter
   common/ipar/ii,it
   
   real :: xa1,xa2,xa3,xb,xda1,xda2
@@ -170,9 +185,9 @@ subroutine dynamo(turb,rate)
   
   !----------------- Load arrays in m and n
   
-  nc              =  2 ! number of latitudinal cells /2 set to 2 by def.
-  if(a4p.ne.0)nc  =  4 ! if a4p not zero there are two cells-> nc=4
-  if(s6.ne.0) nc  =  6       
+  nc                =  2 ! number of latitudinal cells /2 set to 2 by def.
+  if (a4p.ne.0) nc  =  4 ! if a4p not zero there are two cells-> nc=4
+  if (s6.ne.0)  nc  =  6       
   !
   ! These are the conversion factors for p1n for utheta
   !
@@ -483,7 +498,7 @@ subroutine dynamo(turb,rate)
   
   ! -------------------------------------------
   
-  if(ans2.eq.'d')then       ! vector is a1 b2 a3 b4 ...
+  if (ans2 .eq. 'd') then       ! vector is a1 b2 a3 b4 ...
   
     naf    = na
     nai    = 0
@@ -506,7 +521,7 @@ subroutine dynamo(turb,rate)
     nbfm2 =  4
     nbfp2 =  nb-2
   
-  else if(ans2.eq.'q')then ! vector is b1 a2 b3 a4 ...
+  else if ( ans2.eq.'q') then ! vector is b1 a2 b3 a4 ...
   
     naf    =  nb
     nai    =  1 
@@ -548,82 +563,80 @@ subroutine dynamo(turb,rate)
       if(j/nb.eq.1)axx(k1+1,j+k1) = +gaa(1,nas)
   
       !bn+1
-      if(nas.le.nabp1)then
-      if(j/nb.eq.0)axx(1+k1,j+k1+1)= c1(1)*(nas+2.)*(nas+abs(mmm)+1)/(2*nas+3.)/(nas+1.) &
-        & -a2*c1(1)*3*(nas+2)*(nas**2+2*nas-2.) &
-        & /(2*nas+5.)/(2*nas+3.)/(2*nas-1.) &
-        & +6*c2(1)*(0,1)*mmm*(nas+abs(mmm)+1.0)/nas/(nas+1)/(2*nas+3)  
+      if (nas.le.nabp1) then
+        if(j/nb.eq.0)axx(1+k1,j+k1+1)= c1(1)*(nas+2.)*(nas+abs(mmm)+1)/(2*nas+3.)/(nas+1.) &
+          & -a2*c1(1)*3*(nas+2)*(nas**2+2*nas-2.) &
+          & /(2*nas+5.)/(2*nas+3.)/(2*nas-1.) &
+          & +6*c2(1)*(0,1)*mmm*(nas+abs(mmm)+1.0)/nas/(nas+1)/(2*nas+3)  
       endif 
       !bn-1
-      if(nas.ge.nabm1)then
-      if(j/nb.eq.0)axx(1+k1,j+k1-1)= c1(1)*(nas-1.)*(nas-abs(mmm))/(2*nas-1.)/nas &
-        & -a2*c1(1)*3*(nas**2-3.)*(nas-1.) &
-        & /(2*nas-3.)/(2*nas+3.)/(2*nas-1.) &
-        &  +6*c2(1)*(0,1)*mmm*(nas-abs(mmm))/nas/(nas+1)/(2*nas-1.0)
+      if (nas.ge.nabm1) then
+        if(j/nb.eq.0)axx(1+k1,j+k1-1)= c1(1)*(nas-1.)*(nas-abs(mmm))/(2*nas-1.)/nas &
+          & -a2*c1(1)*3*(nas**2-3.)*(nas-1.) &
+          & /(2*nas-3.)/(2*nas+3.)/(2*nas-1.) &
+          &  +6*c2(1)*(0,1)*mmm*(nas-abs(mmm))/nas/(nas+1)/(2*nas-1.0)
       endif
       !bn+3
-      if(nas.le.nabp3)then
+      if (nas.le.nabp3) then
         if(j/nb.eq.0)axx(1+k1,j+k1+3)= &
           & -a2*c1(1)*(nas+2.) &
           & *(nas+3.)*(nas+4.)/(2*nas+3.)/(2*nas+5.)/(2*nas+7.)
-        endif
+      endif
       !bn-3
-      if(nas.ge.nabm3)then
+      if (nas.ge.nabm3) then
        if(j/nb.eq.0)axx(1+k1,j+k1-3)= & 
          & -a2*c1(1)*(nas-1.)*(nas-2.)*(nas-3.) &
          & /(2*nas-1.)/(2*nas-5.)/(2*nas-3.)  
       endif
   
       !fanm2
-      if(nas.ge.nafm2)then
+      if (nas.ge.nafm2) then
         if(j/nb.eq.0)axx(1+k1,j+k1-2)=-fanm2(1,nas)
-        endif
+      endif
       !fanp2          
-      if(nas.le.nafp2)then
+      if (nas.le.nafp2) then
         if(j/nb.eq.0)axx(1+k1,j+k1+2)=-fanp2(1,nas)
-        endif
+      endif
       !fanm2p 
-      if(nas.ge.nafm2)then
+      if (nas.ge.nafm2) then
         if(j/nb.eq.1)axx(1+k1,j+k1-2)= -fanm2p(1,nas)
-        endif
+      endif
       !fanp2p 
-      if(nas.le.nafp2)then
+      if (nas.le.nafp2) then
         if(j/nb.eq.1)axx(1+k1,j+k1+2)= -fanp2p(1,nas)
-        endif
-  
+      endif
       !fanm4
-      if(nas.ge.nafm2+2)then
+      if (nas.ge.nafm2+2) then
         if(j/nb.eq.0)axx(1+k1,j+k1-4)=-fanm4(1,nas)
-        endif
+      endif
       !fanp4          
-      if(nas.le.nafp2-2)then
+      if (nas.le.nafp2-2) then
         if(j/nb.eq.0)axx(1+k1,j+k1+4)=-fanp4(1,nas)
-        endif
+      endif
       !fanm4p 
-      if(nas.ge.nafm2+2)then
+      if (nas.ge.nafm2+2) then
         if(j/nb.eq.1)axx(1+k1,j+k1-4)= -fanm4p(1,nas)
-        endif
+      endif
       !fanp4p 
-      if(nas.le.nafp2-2)then
+      if (nas.le.nafp2-2) then
         if(j/nb.eq.1)axx(1+k1,j+k1+4)= -fanp4p(1,nas)
-        endif
-  
+      endif
       !fanm6
-      if(nas.ge.nafm2+4)then
+      if (nas.ge.nafm2+4) then
         if(j/nb.eq.0)axx(1+k1,j+k1-6)=-fanm6(1,nas)
-        endif
+      endif
       !fanp6          
-      if(nas.le.nafp2-4)then
+      if (nas.le.nafp2-4) then
         if(j/nb.eq.0)axx(1+k1,j+k1+6)=-fanp6(1,nas)
-        endif
+      endif
       !fanm6p 
-      if(nas.ge.nafm2+4)then
+      if (nas.ge.nafm2+4)  then
         if(j/nb.eq.1)axx(1+k1,j+k1-6)= -fanm6p(1,nas)
-        endif
+      endif
       !fanp6p 
-      if(nas.le.nafp2-4)then
+      if (nas.le.nafp2-4) then
         if(j/nb.eq.1)axx(1+k1,j+k1+6)= -fanp6p(1,nas)
-        endif
+      endif
     enddo
   enddo
   
@@ -641,97 +654,97 @@ subroutine dynamo(turb,rate)
        & +bct*x1*alb(1,nas)/(2*hh-3*x1)      
   
       !an-1     !alpha-omega + alpha^2
-      if(nas.ge.nbam1)then
+      if (nas.ge.nbam1) then
         if(j/nb.eq.0)axx(1+k1,j+k1-1) = beqm1(1,nas) + omem1(1, nas)
         if(j/nb.eq.1)axx(1+k1,j+k1-1) = gaqm1(1,nas) + omem1p(1,nas)
-        endif
+      endif
       !an+1     !alpha-omega + alpha^2
-      if(nas.le.nbap1)then
+      if (nas.le.nbap1) then
         if(j/nb.eq.0)axx(1+k1,j+k1+1) = beqp1(1,nas) + omep1(1, nas)
         if(j/nb.eq.1)axx(1+k1,j+k1+1) = gaqp1(1,nas) + omep1p(1,nas)
-        endif
+      endif
       !an-3     !omega
-      if(nas.ge.nbam3)then
+      if (nas.ge.nbam3) then
         if(j/nb.eq.0)axx(1+k1,j+k1-3)= beqm3(1,nas) + omem3(1, nas)
         if(j/nb.eq.1)axx(1+k1,j+k1-3)= gaqm3(1,nas) + omem3p(1,nas)
-        endif
+      endif
       !an+3     !omega
-      if(nas.le.nbap3)then
+      if (nas.le.nbap3) then
         if(j/nb.eq.0)axx(1+k1,j+k1+3)= beqp3(1,nas) + omep3(1, nas)
         if(j/nb.eq.1)axx(1+k1,j+k1+3)= gaqp3(1,nas) + omep3p(1,nas)
-        endif
+      endif
       !an-5
-      if(nas.ge.nbam3+2)then
+      if (nas.ge.nbam3+2) then
         if(j/nb.eq.0)axx(1+k1,j+k1-5)= omem5(1, nas)
         if(j/nb.eq.1)axx(1+k1,j+k1-5)= omem5p(1,nas)
-        endif
+      endif
       !an+3     !omega
-      if(nas.le.nbap3-2)then
+      if (nas.le.nbap3-2) then
         if(j/nb.eq.0)axx(1+k1,j+k1+5)= omep5(1, nas)
         if(j/nb.eq.1)axx(1+k1,j+k1+5)= omep5p(1,nas)
-        endif
+      endif
   
       !fbnm4
-      if(nas.ge.nbfm2+2)then
+      if (nas.ge.nbfm2+2) then
         if(j/nb.eq.0)axx(1+k1,j+k1-4)=-fbnm4(1,nas) &
           & -bct*4*x1*fbnm4p(1,nas)/(2*hh-3.*x1)
-        endif  
+      endif  
       !fbnp4
-      if(nas.le.nbfp2-2)then
+      if (nas.le.nbfp2-2) then
         if(j/nb.eq.0)axx(1+k1,j+k1+4)=-fbnp4(1,nas) &
           & -bct*4*x1*fbnp4p(1,nas)/(2*hh-3.*x1)
-         endif  
+      endif  
       !fbnm4p
-      if(nas.ge.nbfm2+2)then
+      if (nas.ge.nbfm2+2) then
         if(j/nb.eq.1)axx(1+k1,j+k1-4)=-fbnm4p(1,nas) + &
           & bct*x1*fbnm4p(1,nas)/(2*hh-3.*x1)
-        endif  
+      endif  
       !fbnp4p
-      if(nas.le.nbfp2-2)then
+      if (nas.le.nbfp2-2) then
         if(j/nb.eq.1)axx(1+k1,j+k1+4)=-fbnp4p(1,nas) + &
           & bct*x1*fbnp4p(1,nas)/(2*hh-3.*x1)
-         endif  
+      endif  
   
       !fbnm6
-      if(nas.ge.nbfm2+4)then
+      if (nas.ge.nbfm2+4) then
         if(j/nb.eq.0)axx(1+k1,j+k1-6)=-fbnm6(1,nas) &  
           & -bct*4*x1*fbnm6p(1,nas)/(2*hh-3.*x1)
-        endif  
+      endif  
       !fbnp6
-      if(nas.le.nbfp2-4)then
+      if (nas.le.nbfp2-4) then
         if(j/nb.eq.0)axx(1+k1,j+k1+6)=-fbnp6(1,nas) &  
           & -bct*4*x1*fbnp6p(1,nas)/(2*hh-3.*x1)
-        endif  
+      endif  
       !fbnm6p
-      if(nas.ge.nbfm2+4)then
+      if (nas.ge.nbfm2+4) then
         if(j/nb.eq.1)axx(1+k1,j+k1-6)=-fbnm6p(1,nas) + &
           & bct*x1*fbnm6p(1,nas)/(2*hh-3.*x1)
-        endif  
+      endif  
       !fbnp6p
-      if(nas.le.nbfp2-4)then
+      if (nas.le.nbfp2-4) then
         if(j/nb.eq.1)axx(1+k1,j+k1+6)=-fbnp6p(1,nas) + &
           & bct*x1*fbnp6p(1,nas)/(2*hh-3.*x1)
       endif  
       !fbnm2
-      if(nas.ge.nbfm2)then
+      if (nas.ge.nbfm2) then
         if(j/nb.eq.0)axx(1+k1,j+k1-2)=-fbnm2(1,nas) & 
           & -bct*4*x1*fbnm2p(1,nas)/(2*hh-3.*x1)
-        endif  
+      endif  
       !fbnp2
-      if(nas.le.nbfp2)then
+      if (nas.le.nbfp2) then
         if(j/nb.eq.0)axx(1+k1,j+k1+2)=-fbnp2(1,nas) &  
           & -bct*4*x1*fbnp2p(1,nas)/(2*hh-3.*x1)
-        endif  
+      endif  
       !fbnm2p
-      if(nas.ge.nbfm2)then
+      if (nas.ge.nbfm2) then
         if(j/nb.eq.1)axx(1+k1,j+k1-2)=-fbnm2p(1,nas) + &
           & bct*x1*fbnm2p(1,nas)/(2*hh-3.*x1)
-        endif  
+      endif  
       !fbnp2p
-      if(nas.le.nbfp2)then
+      if (nas.le.nbfp2) then
         if(j/nb.eq.1)axx(1+k1,j+k1+2)=-fbnp2p(1,nas) + &
          & bct*x1*fbnp2p(1,nas)/(2*hh-3.*x1)
-        endif  
+      endif  
     enddo
   enddo
   
@@ -744,71 +757,71 @@ subroutine dynamo(turb,rate)
       nas_count = nas_count+1
       nas = nas_count-1
       nas=2*nas+qa
-      if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1)=  ala(k+1,nas)
-      if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1)= -bea(k+1,nas)
+      if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1)=  ala(k+1,nas)
+      if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1)= -bea(k+1,nas)
   
       !bn+1
-      if(nas.le.nabp1)then
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+1)= c1(k+1)*(nas+2.)*(nas+abs(mmm)+1)/(2*nas+3.)/(nas+1.) &   
+      if (nas.le.nabp1) then
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+1)= c1(k+1)*(nas+2.)*(nas+abs(mmm)+1)/(2*nas+3.)/(nas+1.) &   
           & -a2*c1(k+1)*3*(nas+2)*(nas**2+2*nas-2.) &
           & /(2*nas+5.)/(2*nas+3.)/(2*nas-1.) &
           & +6*c2(k+1)*(0,1)*mmm*(nas+abs(mmm)+1.0)/nas/(nas+1)/(2*nas+3)
       endif
       !bn-1
-      if(nas.ge.nabm1)then
+      if (nas.ge.nabm1) then
         if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-1)= c1(k+1)*(nas-1.)*(nas-abs(mmm))/(2*nas-1.)/nas  &
           & -a2*c1(k+1)*3*(nas**2-3.)*(nas-1.)/(2*nas-3.)/(2*nas+3.)/(2*nas-1.) &
           &  +6*c2(k+1)*(0,1)*mmm*(nas-abs(mmm))/nas/(nas+1)/(2*nas-1.0)
       endif
       !bn+3
-      if(nas.le.nabp3)then
+      if (nas.le.nabp3) then
         if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+3)= &
           & -a2*c1(k+1)*(nas+2)*(nas+3)*(nas+4)/(2*nas+3.)/(2*nas+5.)/(2*nas+7.)
       endif
       !bn-3
-      if(nas.ge.nabm3)then
+      if (nas.ge.nabm3) then
         if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-3)= &
           & -a2*c1(k+1)*(nas-1.)*(nas-2.)*(nas-3.)/(2*nas-1.)/(2*nas-5.)/(2*nas-3.)  
       endif
   
       !fanm2p 
-      if(nas.ge.nafm2)then
+      if (nas.ge.nafm2) then
         call bess(beta, nas-2, ffc)
-        if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1-2)= -(-fanm2p(k+1,nas)-fanm2p(k+1,nas)/(2*hh*(nas-1.+ffc)+3))
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-2)= -( fanm2(k+1,nas) +fanm2p(k+1,nas)*4/(2*hh*(nas-1.+ffc)+3))
+        if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1-2)= -(-fanm2p(k+1,nas)-fanm2p(k+1,nas)/(2*hh*(nas-1.+ffc)+3))
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1-2)= -( fanm2(k+1,nas) +fanm2p(k+1,nas)*4/(2*hh*(nas-1.+ffc)+3))
       endif
       !fanp2p 
-      if(nas.le.nafp2)then
+      if (nas.le.nafp2) then
         call bess(beta, nas+2, ffc)
-        if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1+2)= -(-fanp2p(k+1,nas)-fanp2p(k+1,nas)/(2*hh*(nas+3.+ffc)+3))
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+2)= -( fanp2(k+1,nas) +fanp2p(k+1,nas)*4/(2*hh*(nas+3.+ffc)+3))
+        if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1+2)= -(-fanp2p(k+1,nas)-fanp2p(k+1,nas)/(2*hh*(nas+3.+ffc)+3))
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+2)= -( fanp2(k+1,nas) +fanp2p(k+1,nas)*4/(2*hh*(nas+3.+ffc)+3))
       endif
   
       !fanm4p 
-      if(nas.ge.nafm2+2)then
+      if (nas.ge.nafm2+2) then
         call bess(beta, nas-2, ffc)
-        if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1-4)=-(-fanm4p(k+1,nas)-fanm4p(k+1,nas)/(2*hh*(nas-1.+ffc)+3))
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-4)=-( fanm4(k+1,nas) +fanm4p(k+1,nas)*4/(2*hh*(nas-1.+ffc)+3))
+        if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1-4)=-(-fanm4p(k+1,nas)-fanm4p(k+1,nas)/(2*hh*(nas-1.+ffc)+3))
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1-4)=-( fanm4(k+1,nas) +fanm4p(k+1,nas)*4/(2*hh*(nas-1.+ffc)+3))
       endif
       !fanp4p 
-      if(nas.le.nafp2-2)then
+      if (nas.le.nafp2-2) then
         call bess(beta, nas+2, ffc)
-        if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1+4)=-(-fanp4p(k+1,nas)-fanp4p(k+1,nas)/(2*hh*(nas+3.+ffc)+3))
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+4)=-( fanp4(k+1,nas) +fanp4p(k+1,nas)*4/(2*hh*(nas+3.+ffc)+3))
+        if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1+4)=-(-fanp4p(k+1,nas)-fanp4p(k+1,nas)/(2*hh*(nas+3.+ffc)+3))
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+4)=-( fanp4(k+1,nas) +fanp4p(k+1,nas)*4/(2*hh*(nas+3.+ffc)+3))
       endif
   
       !fanm6p 
-      if(nas.ge.nafm2+4)then
+      if (nas.ge.nafm2+4) then
         call bess(beta, nas-2, ffc)
-        if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1-6)= -(-fanm6p(k+1,nas)-fanm6p(k+1,nas)/(2*hh*(nas-1.+ffc)+3))
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-6)= -( fanm6(k+1,nas) +fanm6p(k+1,nas)*4/(2*hh*(nas-1.+ffc)+3))
+        if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1-6)= -(-fanm6p(k+1,nas)-fanm6p(k+1,nas)/(2*hh*(nas-1.+ffc)+3))
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1-6)= -( fanm6(k+1,nas) +fanm6p(k+1,nas)*4/(2*hh*(nas-1.+ffc)+3))
       endif
   
       !fanp6p 
-      if(nas.le.nafp2-4)then
+      if (nas.le.nafp2-4) then
         call bess(beta, nas+2, ffc)
-        if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1+6)= -(-fanp6p(k+1,nas)-fanp6p(k+1,nas)/(2*hh*(nas+3.+ffc)+3))
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+6)= -( fanp6(k+1,nas) +fanp6p(k+1,nas)*4/(2*hh*(nas+3.+ffc)+3))
+        if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1+6)= -(-fanp6p(k+1,nas)-fanp6p(k+1,nas)/(2*hh*(nas+3.+ffc)+3))
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+6)= -( fanp6(k+1,nas) +fanp6p(k+1,nas)*4/(2*hh*(nas+3.+ffc)+3))
       endif
     enddo
   enddo
@@ -821,109 +834,109 @@ subroutine dynamo(turb,rate)
       nas_count = nas_count+1
       nas = nas_count-1
       nas = 2*nas+qb   
-      if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1)=+alb(k+1,nas)
-      if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1)=-beb(k+1,nas)
+      if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1)=+alb(k+1,nas)
+      if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1)=-beb(k+1,nas)
   
       !an-1     !alpha-omega + alpha^2
-      if(nas.ge.nbam1)then
+      if (nas.ge.nbam1) then
         call bess(beta,nas-1,ffc)
-        if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1-1)= &
+        if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1-1)= &
           & alqm1(k+1,nas)-gaqm1(k+1,nas)/(2*hh*(nas+ffc)+3)-omem1p(k+1,nas)*(1+1/(2*hh*(nas+ffc)+3))
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-1)=beqm1(k+1,nas) &
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1-1)=beqm1(k+1,nas) &
           & +4*gaqm1(k+1,nas)/(2*hh*(nas+ffc)+3)+omem1(k+1,nas)+4*omem1p(k+1,nas)/(2*hh*(nas+ffc)+3)
       endif
   
       !an+1     !alpha-omega + alpha^2
-      if(nas.le.nbap1)then
+      if (nas.le.nbap1) then
         call bess(beta,nas+1,ffc)
-        if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1+1)= &
+        if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1+1)= &
           & alqp1(k+1,nas) - gaqp1(k+1,nas)/(2*hh*(nas+2+ffc)+3)-omep1p(k+1,nas)*(1.+1./(2*hh*(nas+2+ffc)+3) )
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+1)= &
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+1)= &
           & beqp1(k+1,nas) + 4*gaqp1(k+1,nas)/(2*hh*(nas+2+ffc)+3)+omep1(k+1,nas)+4*omep1p(k+1,nas)/(2*hh*(nas+2+ffc)+3)
       endif
   
       !an-3     !alpha-omega + alpha^2
-      if(nas.ge.nbam3)then
+      if (nas.ge.nbam3) then
         call bess(beta,nas-3,ffc)
-        if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1-3)= &
+        if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1-3)= &
           & -omem3p(k+1,nas)*(1.+1./(2*hh*(nas-2+ffc)+3))+alqm3(k+1,nas)*(1.+1./(2*hh*(nas-2+ffc)+3))             
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-3)= &
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1-3)= &
           & +omem3(k+1, nas)+4*omem3p(k+1,nas)/(2*hh*(nas-2+ffc)+3)+beqm3(k+1, nas)-4*alqm3(k+1,nas)/(2*hh*(nas-2+ffc)+3)    
       endif
   
       !an+3     !alpha-omega + alpha^2
-      if(nas.le.nbap3)then
+      if (nas.le.nbap3) then
         call bess(beta,nas+3,ffc)
-        if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1+3)= &
+        if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1+3)= &
           & -omep3p(k+1,nas)*(1.+1./(2*hh*(nas+4+ffc)+3))+alqp3(k+1,nas)*(1.+1./(2*hh*(nas+4+ffc)+3))             
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+3)= &
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+3)= &
           & +omep3(k+1, nas)+4*omep3p(k+1,nas)/(2*hh*(nas+4+ffc)+3) &
           & +beqp3(k+1, nas)-4*alqp3(k+1,nas)/(2*hh*(nas+4+ffc)+3)     
       endif
   
       !an-5     !alpha-omega 
-      if(nas.ge.nbam3+2)then
+      if (nas.ge.nbam3+2) then
         call bess(beta,nas-3,ffc)
-        if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1-5)=-omem5p(k+1,nas)*(1.+1./(2*hh*(nas-2+ffc)+3) )
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-5)=+omem5(k+1,nas)+4*omem5p(k+1,nas)/(2*hh*(nas-2+ffc)+3)
+        if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1-5)=-omem5p(k+1,nas)*(1.+1./(2*hh*(nas-2+ffc)+3) )
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1-5)=+omem5(k+1,nas)+4*omem5p(k+1,nas)/(2*hh*(nas-2+ffc)+3)
       endif
   
       !an+5     !alpha-omega 
-      if(nas.le.nbap3-2)then
+      if (nas.le.nbap3-2) then
         call bess(beta,nas+3,ffc)
-        if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1+5)=-omep5p(k+1,nas)*(1.+1./(2*hh*(nas+4+ffc)+3) )
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+5)=+omep5(k+1,nas)+4*omep5p(k+1,nas)/(2*hh*(nas+4+ffc)+3)
+        if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1+5)=-omep5p(k+1,nas)*(1.+1./(2*hh*(nas+4+ffc)+3) )
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+5)=+omep5(k+1,nas)+4*omep5p(k+1,nas)/(2*hh*(nas+4+ffc)+3)
       endif
   
       !fbnm2
-      if(nas.ge.nbfm2)then
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-2)=-fbnm2(k+1,nas) 
+      if (nas.ge.nbfm2) then
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1-2)=-fbnm2(k+1,nas) 
       endif  
       !fbnp2
-      if(nas.le.nbfp2)then
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+2)=-fbnp2(k+1,nas) !here
+      if (nas.le.nbfp2) then
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+2)=-fbnp2(k+1,nas) !here
       endif  
       !fbnm2p
-      if(nas.ge.nbfm2)then
-        if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1-2)=fbnm2p(k+1,nas) 
+      if (nas.ge.nbfm2) then
+        if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1-2)=fbnm2p(k+1,nas) 
       endif  
       !fbnp2p
-      if(nas.le.nbfp2)then
-        if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1+2)=fbnp2p(k+1,nas) 
+      if (nas.le.nbfp2) then
+        if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1+2)=fbnp2p(k+1,nas) 
       endif  
   
       !fbnm4
-      if(nas.ge.nbfm2+2)then
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-4)=-fbnm4(k+1,nas) 
+      if (nas.ge.nbfm2+2) then
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1-4)=-fbnm4(k+1,nas) 
       endif  
       !fbnp4
-      if(nas.le.nbfp2-2)then
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+4)=-fbnp4(k+1,nas)
+      if (nas.le.nbfp2-2) then
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+4)=-fbnp4(k+1,nas)
       endif  
       !fbnm4p
-      if(nas.ge.nbfm2+2)then
-        if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1-4)=fbnm4p(k+1,nas) 
+      if (nas.ge.nbfm2+2) then
+        if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1-4)=fbnm4p(k+1,nas) 
       endif  
       !fbnp4p
-      if(nas.le.nbfp2-2)then
-        if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1+4)=fbnp4p(k+1,nas) 
+      if (nas.le.nbfp2-2) then
+        if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1+4)=fbnp4p(k+1,nas) 
       endif  
   
       !fbnm6
-      if(nas.ge.nbfm2+4)then
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-6)=-fbnm6(k+1,nas) 
+      if (nas.ge.nbfm2+4) then
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1-6)=-fbnm6(k+1,nas) 
       endif  
       !fbnp6
-      if(nas.le.nbfp2-4)then
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+6)=-fbnp6(k+1,nas)
+      if (nas.le.nbfp2-4) then
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+6)=-fbnp6(k+1,nas)
       endif  
       !fbnm6p
-      if(nas.ge.nbfm2+4)then
-        if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1-6)= fbnm6p(k+1,nas) 
+      if (nas.ge.nbfm2+4) then
+        if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1-6)= fbnm6p(k+1,nas) 
       endif  
       !fbnp6p
-      if(nas.le.nbfp2-4)then
-        if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1+6)= fbnp6p(k+1,nas) 
+      if (nas.le.nbfp2-4) then
+        if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1+6)= fbnp6p(k+1,nas) 
       endif  
     enddo
   enddo
@@ -940,95 +953,95 @@ subroutine dynamo(turb,rate)
         nas = nas_count-1
         nas=2*nas+qa
   
-        if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1)=  ala(k+1,nas)
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1)= -bea(k+1,nas)
-        if(j/nb.eq.2)axx(i+k1,j+(k-1)*nb+k1)=  gaa(k+1,nas)
+        if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1)=  ala(k+1,nas)
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1)= -bea(k+1,nas)
+        if (j/nb.eq.2) axx(i+k1,j+(k-1)*nb+k1)=  gaa(k+1,nas)
   
         !bn+1
-        if(nas.le.nabp1)then
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+1)= &
-          & c1(k+1)*(nas+2.)*(nas+abs(mmm)+1)/(2*nas+3.)/(nas+1.) &   
-          &-a2*c1(k+1)*3*(nas+2)*(nas**2+2*nas-2.) &
-          & /(2*nas+5.)/(2*nas+3.)/(2*nas-1.) &
-          & +6*c2(k+1)*(0,1)*mmm*(nas+abs(mmm)+1.0)/nas/(nas+1)/(2*nas+3) ! 4.11b ! check sign
+        if (nas.le.nabp1) then
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+1)= &
+            & c1(k+1)*(nas+2.)*(nas+abs(mmm)+1)/(2*nas+3.)/(nas+1.) &   
+            &-a2*c1(k+1)*3*(nas+2)*(nas**2+2*nas-2.) &
+            & /(2*nas+5.)/(2*nas+3.)/(2*nas-1.) &
+            & +6*c2(k+1)*(0,1)*mmm*(nas+abs(mmm)+1.0)/nas/(nas+1)/(2*nas+3) ! 4.11b ! check sign
         endif
   
         !bn-1
-        if(nas.ge.nabm1)then
-          if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-1)= c1(k+1)*(nas-1.)*(nas-abs(mmm))/(2*nas-1.)/nas &    
+        if (nas.ge.nabm1) then
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1-1)= c1(k+1)*(nas-1.)*(nas-abs(mmm))/(2*nas-1.)/nas &    
             &-a2*c1(k+1)*3*(nas**2-3.)*(nas-1.)/(2*nas-3.)/(2*nas+3)/(2*nas-1.) &  !check
             &  +6*c2(k+1)*(0,1)*mmm*(nas-abs(mmm))/nas/(nas+1)/(2*nas-1.0)
         endif
   
         !bn+3
-        if(nas.le.nabp3)then
-          if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+3)= &
+        if (nas.le.nabp3) then
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+3)= &
             & -a2*c1(k+1)*(nas+2.)*(nas+3.)*(nas+4.) &
             & /(2*nas+3.)/(2*nas+5.)/(2*nas+7.)
         endif
   
         !bn-3
-        if(nas.ge.nabm3)then
-          if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-3)= &
+        if (nas.ge.nabm3) then
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1-3)= &
             & -a2*c1(k+1)*(nas-1.)*(nas-2.)*(nas-3.)/(2*nas-1.) &
             & /(2*nas-5.)/(2*nas-3.)  
         endif
   
         !fanm2
-        if(nas.ge.nafm2)then
+        if (nas.ge.nafm2) then
           if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-2)=-fanm2(k+1,nas)
         endif
         !fanp2          
-        if(nas.le.nafp2)then
-          if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+2)=-fanp2(k+1,nas)
+        if (nas.le.nafp2) then
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+2)=-fanp2(k+1,nas)
         endif
         !fanm2p 
-        if(nas.ge.nafm2)then
-          if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1-2)= fanm2p(k+1,nas)
-          if(j/nb.eq.2)axx(i+k1,j+(k-1)*nb+k1-2)=-fanm2p(k+1,nas)
+        if (nas.ge.nafm2) then
+          if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1-2)= fanm2p(k+1,nas)
+          if (j/nb.eq.2) axx(i+k1,j+(k-1)*nb+k1-2)=-fanm2p(k+1,nas)
         endif
         !fanp2p 
-        if(nas.le.nafp2)then
-          if(j/(nb).eq.0)axx(i+k1,j+(k-1)*nb+k1+2)=  fanp2p(k+1,nas)
-          if(j/(nb).eq.2)axx(i+k1,j+(k-1)*nb+k1+2)= -fanp2p(k+1,nas)
+        if (nas.le.nafp2) then
+          if (j/(nb).eq.0) axx(i+k1,j+(k-1)*nb+k1+2)=  fanp2p(k+1,nas)
+          if (j/(nb).eq.2) axx(i+k1,j+(k-1)*nb+k1+2)= -fanp2p(k+1,nas)
         endif
   
         !fanm4
-        if(nas.ge.nafm2+2)then
-          if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-4)=-fanm4(k+1,nas)
+        if (nas.ge.nafm2+2) then
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1-4)=-fanm4(k+1,nas)
         endif
         !fanp4          
-        if(nas.le.nafp2-2)then
-          if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+4)=-fanp4(k+1,nas)
+        if (nas.le.nafp2-2) then
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+4)=-fanp4(k+1,nas)
         endif
         !fanm4p 
-        if(nas.ge.nafm2+2)then
-          if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1-4)=+fanm4p(k+1,nas)
-          if(j/nb.eq.2)axx(i+k1,j+(k-1)*nb+k1-4)=-fanm4p(k+1,nas)
+        if (nas.ge.nafm2+2) then
+          if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1-4)=+fanm4p(k+1,nas)
+          if (j/nb.eq.2) axx(i+k1,j+(k-1)*nb+k1-4)=-fanm4p(k+1,nas)
         endif
         !fanp4p 
-        if(nas.le.nafp2-2)then
-          if(j/(nb).eq.0)axx(i+k1,j+(k-1)*nb+k1+4)=+fanp4p(k+1,nas)
-          if(j/(nb).eq.2)axx(i+k1,j+(k-1)*nb+k1+4)=-fanp4p(k+1,nas)
+        if (nas.le.nafp2-2) then
+          if (j/(nb).eq.0) axx(i+k1,j+(k-1)*nb+k1+4)=+fanp4p(k+1,nas)
+          if (j/(nb).eq.2) axx(i+k1,j+(k-1)*nb+k1+4)=-fanp4p(k+1,nas)
         endif
   
         !fanm6
-        if(nas.ge.nafm2+4)then
-          if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-6)=-fanm6(k+1,nas)
+        if (nas.ge.nafm2+4) then
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1-6)=-fanm6(k+1,nas)
         endif
         !fanp6          
-        if(nas.le.nafp2-4)then
-          if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+6)=-fanp6(k+1,nas)
+        if (nas.le.nafp2-4) then
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+6)=-fanp6(k+1,nas)
         endif
         !fanm6 
-        if(nas.ge.nafm2+4)then
-          if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1-6)=+fanm6p(k+1,nas)
-          if(j/nb.eq.2)axx(i+k1,j+(k-1)*nb+k1-6)=-fanm6p(k+1,nas)
+        if (nas.ge.nafm2+4) then
+          if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1-6)=+fanm6p(k+1,nas)
+          if (j/nb.eq.2) axx(i+k1,j+(k-1)*nb+k1-6)=-fanm6p(k+1,nas)
         endif
         !fanp6p 
-        if(nas.le.nafp2-4)then
-          if(j/(nb).eq.0)axx(i+k1,j+(k-1)*nb+k1+6)=+fanp6p(k+1,nas)
-          if(j/(nb).eq.2)axx(i+k1,j+(k-1)*nb+k1+6)=-fanp6p(k+1,nas)
+        if (nas.le.nafp2-4) then
+          if (j/(nb).eq.0) axx(i+k1,j+(k-1)*nb+k1+6)=+fanp6p(k+1,nas)
+          if (j/(nb).eq.2) axx(i+k1,j+(k-1)*nb+k1+6)=-fanp6p(k+1,nas)
         endif
   
       enddo
@@ -1047,128 +1060,127 @@ subroutine dynamo(turb,rate)
         nas = nas_count-1
         nas=2*nas+qb
   
-        if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1) =  alb(k+1,nas)
-        if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1) = -beb(k+1,nas)
-        if(j/nb.eq.2)axx(i+k1,j+(k-1)*nb+k1) =  gab(k+1,nas)
+        if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1) =  alb(k+1,nas)
+        if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1) = -beb(k+1,nas)
+        if (j/nb.eq.2) axx(i+k1,j+(k-1)*nb+k1) =  gab(k+1,nas)
         !an-1     !alpha-omega + alpha^2
-        if(nas.ge.nbam1)then
-          if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1-1)= alqm1(k+1,nas) - omem1p(k+1,nas)
-          if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-1)= beqm1(k+1,nas) + omem1(k+1, nas)
-          if(j/nb.eq.2)axx(i+k1,j+(k-1)*nb+k1-1)= gaqm1(k+1,nas) + omem1p(k+1,nas)
+        if (nas.ge.nbam1) then
+          if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1-1)= alqm1(k+1,nas) - omem1p(k+1,nas)
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1-1)= beqm1(k+1,nas) + omem1(k+1, nas)
+          if (j/nb.eq.2) axx(i+k1,j+(k-1)*nb+k1-1)= gaqm1(k+1,nas) + omem1p(k+1,nas)
         endif
         !an+1     !alpha-omega + alpha^2
-        if(nas.le.nbap1)then
-          if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1+1)= alqp1(k+1,nas) - omep1p(k+1,nas)     
-          if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+1)= beqp1(k+1,nas) + omep1(k+1, nas)
-          if(j/nb.eq.2)axx(i+k1,j+(k-1)*nb+k1+1)= gaqp1(k+1,nas) + omep1p(k+1,nas)
+        if( nas.le.nbap1) then
+          if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1+1)= alqp1(k+1,nas) - omep1p(k+1,nas)     
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+1)= beqp1(k+1,nas) + omep1(k+1, nas)
+          if (j/nb.eq.2) axx(i+k1,j+(k-1)*nb+k1+1)= gaqp1(k+1,nas) + omep1p(k+1,nas)
         endif
         !an-3     !alpha-omega + alpha^2
-        if(nas.ge.nbam3)then
-          if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1-3)= alqm3(k+1,nas) - omem3p(k+1,nas)
-          if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-3)= beqm3(k+1,nas) + omem3(k+1, nas)
-          if(j/nb.eq.2)axx(i+k1,j+(k-1)*nb+k1-3)= gaqm3(k+1,nas) + omem3p(k+1,nas)
+        if (nas.ge.nbam3) then
+          if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1-3)= alqm3(k+1,nas) - omem3p(k+1,nas)
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1-3)= beqm3(k+1,nas) + omem3(k+1, nas)
+          if (j/nb.eq.2) axx(i+k1,j+(k-1)*nb+k1-3)= gaqm3(k+1,nas) + omem3p(k+1,nas)
         endif
         !an+3     !alpha-omega + alpha^2
-        if(nas.le.nbap3)then
-          if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1+3)= alqp3(k+1,nas) - omep3p(k+1,nas)     
-          if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+3)= beqp3(k+1,nas) + omep3(k+1, nas)
-          if(j/nb.eq.2)axx(i+k1,j+(k-1)*nb+k1+3)= gaqp3(k+1,nas) + omep3p(k+1,nas)
+        if (nas.le.nbap3) then
+          if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1+3)= alqp3(k+1,nas) - omep3p(k+1,nas)     
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+3)= beqp3(k+1,nas) + omep3(k+1, nas)
+          if (j/nb.eq.2) axx(i+k1,j+(k-1)*nb+k1+3)= gaqp3(k+1,nas) + omep3p(k+1,nas)
         endif
         !an-5     !alpha-omega + alpha^2
-        if(nas.ge.nbam3+2)then
-          if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1-5)= - omem5p(k+1,nas)
-          if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-5)= + omem5(k+1, nas)
-          if(j/nb.eq.2)axx(i+k1,j+(k-1)*nb+k1-5)= + omem5p(k+1,nas)
+        if (nas.ge.nbam3+2) then
+          if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1-5)= - omem5p(k+1,nas)
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1-5)= + omem5(k+1, nas)
+          if (j/nb.eq.2) axx(i+k1,j+(k-1)*nb+k1-5)= + omem5p(k+1,nas)
         endif
         !an+5     !alpha-omega + alpha^2
-        if(nas.le.nbap3-2)then
-          if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1+5)= - omep5p(k+1,nas)     
-          if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+5)= + omep5(k+1, nas)
-          if(j/nb.eq.2)axx(i+k1,j+(k-1)*nb+k1+5)= + omep5p(k+1,nas)
+        if (nas.le.nbap3-2) then
+          if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1+5)= - omep5p(k+1,nas)     
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+5)= + omep5(k+1, nas)
+          if (j/nb.eq.2) axx(i+k1,j+(k-1)*nb+k1+5)= + omep5p(k+1,nas)
+        endif
         !fbnm2
-        if(nas.ge.nbfm2)then
-          if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-2)=-fbnm2(k+1,nas)
+        if (nas.ge.nbfm2) then
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1-2)=-fbnm2(k+1,nas)
         endif  
         !fbnp2
-        if(nas.le.nbfp2)then
-          if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+2)=-fbnp2(k+1,nas) !here
+        if (nas.le.nbfp2) then
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+2)=-fbnp2(k+1,nas) !here
         endif  
         !fbnm2p
-        if(nas.ge.nbfm2)then
-          if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1-2)= fbnm2p(k+1,nas)
-          if(j/nb.eq.2)axx(i+k1,j+(k-1)*nb+k1-2)=-fbnm2p(k+1,nas)
+        if (nas.ge.nbfm2) then
+          if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1-2)= fbnm2p(k+1,nas)
+          if (j/nb.eq.2) axx(i+k1,j+(k-1)*nb+k1-2)=-fbnm2p(k+1,nas)
         endif  
         !fbnp2p
-        if(nas.le.nbfp2)then
-          if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1+2)= fbnp2p(k+1,nas)  
-          if(j/nb.eq.2)axx(i+k1,j+(k-1)*nb+k1+2)=-fbnp2p(k+1,nas) 
+        if (nas.le.nbfp2) then
+          if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1+2)= fbnp2p(k+1,nas)  
+          if (j/nb.eq.2) axx(i+k1,j+(k-1)*nb+k1+2)=-fbnp2p(k+1,nas) 
         endif  
         !fbnm4
-        if(nas.ge.nbfm2+2)then
-          if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-4)=-fbnm4(k+1,nas)
+        if (nas.ge.nbfm2+2) then
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1-4)=-fbnm4(k+1,nas)
         endif  
         !fbnp4
-        if(nas.le.nbfp2-2)then
-          if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+4)=-fbnp4(k+1,nas)
+        if (nas.le.nbfp2-2) then
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+4)=-fbnp4(k+1,nas)
         endif  
         !fbnm4p
-        if(nas.ge.nbfm2+2)then
-          if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1-4)= fbnm4p(k+1,nas)
-          if(j/nb.eq.2)axx(i+k1,j+(k-1)*nb+k1-4)=-fbnm4p(k+1,nas)
+        if (nas.ge.nbfm2+2) then
+          if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1-4)= fbnm4p(k+1,nas)
+          if (j/nb.eq.2) axx(i+k1,j+(k-1)*nb+k1-4)=-fbnm4p(k+1,nas)
         endif  
         !fbnp4p
-        if(nas.le.nbfp2-2)then
-         if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1+4)= fbnp4p(k+1,nas) 
-          if(j/nb.eq.2)axx(i+k1,j+(k-1)*nb+k1+4)=-fbnp4p(k+1,nas) 
+        if (nas.le.nbfp2-2) then
+          if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1+4)= fbnp4p(k+1,nas) 
+          if (j/nb.eq.2) axx(i+k1,j+(k-1)*nb+k1+4)=-fbnp4p(k+1,nas) 
         endif  
         !fbnm6
-        if(nas.ge.nbfm2+4)then
-          if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1-6)=-fbnm6(k+1,nas)
+        if (nas.ge.nbfm2+4) then
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1-6)=-fbnm6(k+1,nas)
         endif  
         !fbnp6
-        if(nas.le.nbfp2-4)then
-          if(j/nb.eq.1)axx(i+k1,j+(k-1)*nb+k1+6)=-fbnp6(k+1,nas)
+        if (nas.le.nbfp2-4) then
+          if (j/nb.eq.1) axx(i+k1,j+(k-1)*nb+k1+6)=-fbnp6(k+1,nas)
         endif  
         !fbnm6p
-        if(nas.ge.nbfm2+4)then
-          if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1-6)= fbnm6p(k+1,nas)
-          if(j/nb.eq.2)axx(i+k1,j+(k-1)*nb+k1-6)=-fbnm6p(k+1,nas)
+        if (nas.ge.nbfm2+4) then
+          if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1-6)= fbnm6p(k+1,nas)
+          if (j/nb.eq.2) axx(i+k1,j+(k-1)*nb+k1-6)=-fbnm6p(k+1,nas)
         endif  
         !fbnp6p
-        if(nas.le.nbfp2-4)then
-          if(j/nb.eq.0)axx(i+k1,j+(k-1)*nb+k1+6)= fbnp6p(k+1,nas) 
-          if(j/nb.eq.2)axx(i+k1,j+(k-1)*nb+k1+6)=-fbnp6p(k+1,nas) 
+        if (nas.le.nbfp2-4) then
+          if (j/nb.eq.0) axx(i+k1,j+(k-1)*nb+k1+6)= fbnp6p(k+1,nas) 
+          if (j/nb.eq.2) axx(i+k1,j+(k-1)*nb+k1+6)=-fbnp6p(k+1,nas) 
         endif  
       enddo
     enddo
   enddo
   
   !----- lapack solvers
-  !       stop  
   
   if(mmm.ne.0) flg=1
-    if(flg.eq.1) then
-       call zgeev(jobvl, jobvr, nt, axx, nt, ww, cvr, nt, cvr, nt, &
-                  &  work, lwork, rwork, info )
-       ! rescale the eigenvalues 
+  if(flg.eq.1) then
+     call zgeev(jobvl, jobvr, nt, axx, nt, ww, cvr, nt, cvr, nt, &
+                &  work, lwork, rwork, info )
+     ! rescale the eigenvalues 
+     do i=1, nt
+       wr(i) = real(ww(i))/hh**2    
+       wi(i) = aimag(ww(i))/hh**2
+       inde(i) = i
+     enddo
+  else
+    forall (i=1:nt,j=1:nt) axr(i,j) = real(axx(i,j))
+    axr = real(axx)
   
-       do i=1, nt
-         wr(i) = real(ww(i))/hh**2    
-         wi(i) = aimag(ww(i))/hh**2
-         inde(i) = i
-       enddo
-    else
-      forall (i=1:nt,j=1:nt) axr(i,j) = real(axx(i,j))
-      axr = real(axx)
+    call dgeev(jobvl, jobvr, nt, axr, nt, wr, wi, vr, nt, & 
+               &  vr, nt, work, lwork, info )
   
-      call dgeev(jobvl, jobvr, nt, axr, nt, wr, wi, vr, nt, 
-                 &  vr, nt, work, lwork, info )
-  
-      do i=1, nt
-        wr(i) = wr(i)/hh**2    
-        wi(i) = wi(i)/hh**2
-        inde(i) = i
-      enddo
+    do i=1, nt
+      wr(i) = wr(i)/hh**2    
+      wi(i) = wi(i)/hh**2
+      inde(i) = i
+    enddo
   endif
   
   call sort2(nt,wr,inde)     

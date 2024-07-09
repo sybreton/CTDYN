@@ -86,7 +86,7 @@ subroutine bessjy(x,xnu,rj,ry,rjp,ryp)
   d=0.d0
   c=h
   i = 1 
-  do while (i .lt. maxit .and. abs(del-1.d0) .gt. eps)
+  do while (i .le. maxit .and. abs(del-1.d0) .gt. eps)
     b=b+xi2
     d=b-d
     if (abs(d) .lt. fpmin) d=fpmin
@@ -146,7 +146,7 @@ subroutine bessjy(x,xnu,rj,ry,rjp,ryp)
     sum=ff+r*q
     sum1=p
     i = 1
-    do while (i .lt. maxit .and. abs(del) .gt. (1.d0+abs(sum))*eps)
+    do while (i .le. maxit .and. abs(del) .gt. (1.d0+abs(sum))*eps)
       ff=(i*ff+p+q)/(i*i-xmu2)
       c=c*d/i
       p=p/(i-xmu)
@@ -182,7 +182,7 @@ subroutine bessjy(x,xnu,rj,ry,rjp,ryp)
     q=p*dli+q*dlr
     p=temp
     i=2
-    do while (i .lt. maxit .and. abs(dlr-1.d0)+abs(dli) .gt. eps)
+    do while (i .le. maxit .and. abs(dlr-1.d0)+abs(dli) .gt. eps)
       a=a+2*(i-1)
       bi=bi+2.d0
       dr=a*dr+br
