@@ -50,17 +50,19 @@ advection.o: advection.f90 cint.f90
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 err.o: err.f90 cio.mod 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
-func_flow.o: func_flow.f90 b2func.mod b3func.mod b4func.mod b5func.mod c1s2func.mod c3s2func.mod cdfunc.mod cio.mod  
+func_flow.o: func_flow.f90 cio.mod  
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 plg.o: plg.f90  
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 zbrent.o: zbrent.f90  
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
-outw.o: writefield.f90 cio.mod ccov.mod load_tor.f90 load_pol.f90 write_poloidal.f90 write_toroidal.f90 load_vec.f90
+writefield.o: writefield.f90 cio.mod ccov.mod cdfunc.mod load_tor.f90 load_pol.f90 write_poloidal.f90 write_toroidal.f90 load_vec.f90
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 bessel.o: bessel.f90 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 hunt.o: hunt.f90 
+	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
+sort2.o: sort2.f90 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 clean:	
 clean:	

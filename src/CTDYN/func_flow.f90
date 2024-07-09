@@ -1,38 +1,37 @@
 subroutine stream(x, ax, axp,  bx, bxp, fx)
-  """
-  Stream function and density / normalized
-  output 
+  !Stream function and density / normalized
+  !output 
+  !
+  !STREAM FUNCTION DEFINITION AND NORMALIZATION  (one cell in latitude)
+  !
+  !P2  = (3 cos(theta)**2 - 1) / 2
+  !
+  !P12   = 3 cos(theta) sin(theta)  = - Diff (P2, theta) 
+  !
+  !Define the stream function as:        Psi = fx * P12     
+  !
+  !Up = - Curl (0,0,Psi) = (3 fx (1 - 3 cos^2) /x , 3 (fx x)'/x  sin cos, 0) =  (ax * (1- 3 cos^2) , bx sin cos, 0) = input code!
+  !
+  !so that Div (Up) = 0
+  !
+  !But mass conservation implies  Div ( rho Up ) = 0
+  !
+  !thus :    
+  !
+  !Up  ->  Up/rho   
+  ! 
+  !Ur =  -(3*cos(x)^2-1) fx / x   =>  ax = fx/x/rho       see eq.10a
+  !
+  !Utheta = (x fx)'/x  cos sin     =>  bx = (x fx )'  / x / rho   see eq.10b
+  !
+  !so that Div ( rho Up ) = 0
+  !
+  !Bullard-Gellard formalism:
 
-  STREAM FUNCTION DEFINITION AND NORMALIZATION  (one cell in latitude)
+  !Curl Curl (s2 P2, 0, 0) = (- 3 fx/x^2 * (3 cos^2 -1 ), -3 fx'/x * sin cos, 0)  
 
-  P2  = (3 cos(theta)**2 - 1) / 2
-
-  P12   = 3 cos(theta) sin(theta)  = - Diff (P2, theta) 
- 
-  Define the stream function as:        Psi = fx * P12     
-
-  Up = - Curl (0,0,Psi) = (3 fx (1 - 3 cos^2) /x , 3 (fx x)'/x  sin cos, 0) =  (ax * (1- 3 cos^2) , bx sin cos, 0) = input code!
-  
-  so that Div (Up) = 0
-
-  But mass conservation implies  Div ( rho Up ) = 0
- 
-  thus :    
- 
-  Up  ->  Up/rho   
- 
-  Ur =  -(3*cos(x)^2-1) fx / x   =>  ax = fx/x/rho       see eq.10a
-  
-  Utheta = (x fx)'/x  cos sin     =>  bx = (x fx )'  / x / rho   see eq.10b
-
-  so that Div ( rho Up ) = 0
-
-  Bullard-Gellard formalism:
-
-  Curl Curl (s2 P2, 0, 0) = (- 3 fx/x^2 * (3 cos^2 -1 ), -3 fx'/x * sin cos, 0)  
-  """
-  implicit none
   use cio
+  implicit none
 
   real :: x_in, bct, c3, mmm,sr,rotp,gd, aqu, flg
   common/ppar/x_in,bct,c3,mmm,sr,rotp,gd, aqu, flg
@@ -40,7 +39,7 @@ subroutine stream(x, ax, axp,  bx, bxp, fx)
   common/apar/xa1,xa2,xa3,xb,xda1,xda2
   real :: s0,s2,s4,s6,a2p,a4p,xm
   common/psi/s0,s2,s4,s6,a2p,a4p,xm
-  real :: ur, ut
+  real :: ur, ut, ax, axp, bx, bxp, fx, sigma, x0
   real :: rho     
   real :: xi, xo, xd, y1, y2
   real :: norm, m1,m2,m3,m4
@@ -103,7 +102,4 @@ subroutine stream(x, ax, axp,  bx, bxp, fx)
   endif
   return
 end
-
-use b2func, b3func, b4func, b5func
-use c1s2func, c3s2func, cdfunc
 

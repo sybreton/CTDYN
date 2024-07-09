@@ -19,7 +19,7 @@ subroutine zbr(x1,x2,tol,zbrent)
   it=2
   call dynamo(b,fb)
   ! --------------------------------------------------------
-  if((fa.gt.0..and.fb.gt.0.).or.(fa.lt.0..and.fb.lt.0.))
+  if ((fa.gt.0. .and. fb.gt.0.) .or. (fa.lt.0. .and. fb.lt.0.)) then
     write (*,*) 'Root must be bracketed for zbrent'
     stop
   endif
@@ -81,7 +81,7 @@ subroutine zbr(x1,x2,tol,zbrent)
       b=b+sign(tol1,xm)
     endif
     call dynamo(b,fb)
-    if(abs(fb).le.1.0e-4)then
+    if (abs(fb) .le. 1.0e-4) then
       zbrent=b
       write(*,*) 'fb below 1e-4 at iteration number', iter
       write(*,*)

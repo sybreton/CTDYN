@@ -29,7 +29,24 @@
 
 subroutine writefield
 
+  use cio 
+  use ccov
+  use cdfunc
   implicit none
+
+  real :: aai, aar, abm, abt, adum, apt, aptjm, &
+          & aptjm2, aptjp, aptkm, aptkp, ax, &
+          & axp, bbi, bbr, beta, betb, bphi7, bpt, &
+          & bptjm, bptjp, bptkm, bptkp, brs, bx, bxp, &
+          & c_u, chel, chel2, cheln, chels, cja, co, datheta, &
+          & datheta2, dax, dax2, dbtheta, dbtheta2, dbx, dd1, dt, &
+          & epol, etep, etet, etor, ffc, ffree, fx, gam, h2, hd, hh, &
+          & om0, om0p, om2, om2p, om4, om4p, plgndr, ratio, rj, &
+          & rj1, rjp, rjp1, rnor, rosym, rt, ry, ry1, ryp, ryp1, &
+          & sz1, sz2, t_fin, t_in, tc, theta, theta1, theta2, time, &
+          & vtu, x, x1, x2, xbo, xbt, xf, xnu, zeta_r, zq1, zq2
+  integer :: i, i2, i3, j, jbo, jbt, jj, jo, k, k1, k2, kb, &
+             & km, ko, mm, nag, nep, net, nf, nj, nsp, nst
 
   integer :: ii,it                 ! iteration counter
   common/ipar/ii,it
@@ -62,12 +79,10 @@ subroutine writefield
   character*512 :: bfeld1,bfeld2,bfeld3,bfeld4,bfeld5, &
                    & bfeld6,bfeld7,bfeld8,bfeld9,bfeld10
 
-  use cio, ccov
-
   common/vec/cvr
   common/parker/gam,zeta_r,ratio
 
-  parameter(nft = 200)   
+  integer, parameter :: nft=200   
 
   real :: ang(n_theta)              
 

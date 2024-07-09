@@ -1,10 +1,10 @@
 subroutine sort2(n,arr,brr)
 
-  integer :: n,m,nstack
+  integer :: n, m, nstack
   real :: arr(n), brr(n)
-  parameter (m=7,nstack=500)
-  integer :: i,ir,j,jstack,k,l,istack(nstack)
-  real :: a,b,temp
+  parameter (m=7, nstack=500)
+  integer :: i, ir, j, jstack, k, l, istack(nstack)
+  real :: a, b, temp
 
   jstack=0
   l=1
