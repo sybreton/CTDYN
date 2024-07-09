@@ -62,8 +62,7 @@ subroutine writefield
   character*512 :: bfeld1,bfeld2,bfeld3,bfeld4,bfeld5, &
                    & bfeld6,bfeld7,bfeld8,bfeld9,bfeld10
 
-  include 'cio'
-  include 'ccov'
+  use cio, ccov
 
   common/vec/cvr
   common/parker/gam,zeta_r,ratio
@@ -230,7 +229,7 @@ subroutine writefield
     enddo   ! close radial  
   enddo   ! close theta
 
-  include 'write_omega.f'
+  include 'write_omega.f90'
 
   ! determine the outer mesh point equal to zeta_r+1
 
@@ -245,17 +244,17 @@ subroutine writefield
   ! the exterior solution is different if ffree is not zero (pure force-free)
   ! parameter, or beta is zero or not zero (potential vs helmholtz extrapolation)    
     
-  include 'load_pol.f'   
-  include 'load_tor.f'
-  include 'load_vec.f'
+  include 'load_pol.f90'   
+  include 'load_tor.f90'
+  include 'load_vec.f90'
 
   !  ---------- write toroidal  retor.dat ed itor
   !  nj is the number of time slices
   nj = 8
 
   do jj =1,nj
-    include 'write_toroidal.f'
-    include 'write_poloidal.f'
+    include 'write_toroidal.f90'
+    include 'write_poloidal.f90'
   enddo
 
   !  butterfly diagram block      

@@ -28,19 +28,19 @@ dyna.o: dyna.f90 cint.f90 ccov.f90 cvect.f90 cio.f90
 	$(FC) $(FFLAGS) $(INCDIR) $(F77FLAGS) -c $< -o $@
 advection.o: advection.f90 cint.f90  
 	$(FC) $(FFLAGS) $(INCDIR) $(F77FLAGS) -c $< -o $@
-err.o: err.f cio.f90 
+err.o: err.f90 cio.f90 
 	$(FC) $(FFLAGS) $(INCDIR) $(F77FLAGS) -c $< -o $@
-func_flow.o: func_flow.f b2func.f90 b3func.f90 b4func.f90 b5func.f90 c1s2func.f90 c3s2func.f90 cdfunc.f90 cio.f90  
+func_flow.o: func_flow.f90 b2func.f90 b3func.f90 b4func.f90 b5func.f90 c1s2func.f90 c3s2func.f90 cdfunc.f90 cio.f90  
 	$(FC) $(FFLAGS) $(INCDIR) $(F77FLAGS) -c $< -o $@
-plg.o: plg.f  
+plg.o: plg.f90  
 	$(FC) $(FFLAGS) $(INCDIR) $(F77FLAGS) -c $< -o $@
 zbrent.o: zbrent.f90  
 	$(FC) $(FFLAGS) $(INCDIR) $(F77FLAGS) -c $< -o $@
-outw.o: writefield.f cio.f90 ccov.f90 load_tor.f load_pol.f write_poloidal.f write_toroidal.f load_vec.f
+outw.o: writefield.f90 cio.f90 ccov.f90 load_tor.f90 load_pol.f90 write_poloidal.f90 write_toroidal.f90 load_vec.f90
 	$(FC) $(FFLAGS) $(INCDIR) $(F77FLAGS) -c $< -o $@
-bessel.o: bessel.f 
+bessel.o: bessel.f90 
 	$(FC) $(FFLAGS) $(INCDIR) $(F77FLAGS) -c $< -o $@
-hunt.o: hunt.f 
+hunt.o: hunt.f90 
 	$(FC) $(FFLAGS) $(INCDIR) $(F77FLAGS) -c $< -o $@
 clean:	
 clean:	
