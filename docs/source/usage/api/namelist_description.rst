@@ -1,132 +1,149 @@
-Namelist description
-#####################
+CTDYN input namelist description
+################################
 
-The description of the parameters that have to 
+A short description of the parameters that have to 
 be provided by the user in the namelist is given
 here. 
 
 Parameters
 ----------
 
-DIR : str
+dir : str
   directory where the output files will be written.
 
-AL_I : float
+al_i : float
+  Value (or lower bound if ``al_i`` is different from ``al_f``) 
+  for the ``C_alpha`` dynamo number. We recall that 
+  ``C_alpha = R * alpha * eta_T``.
+
+al_f : float
+  Upper bound for ``C_alpha``. If ``al_i`` is different
+  from ``al_f``, CTDYN will search by bisection a
+  critical ``C_alpha`` value corresponding to a real
+  eigenvalues. 
+
+nsa : float
   ???
 
-AL_F : float
+xa1 : float
   ???
 
-NSA : float
+xa2 : float
   ???
 
-XA1 : float
+xa3 : float
   ???
 
-XA2 : float
+xb : float
   ???
 
-XA3 : float
+xda1 : float
   ???
 
-XB : float
+xda2 : float
   ???
 
-XDA1 : float
+rm_i : float
   ???
 
-XDA2 : float
+rm_f : float 
   ???
 
-RM_I : float
+nsr : float 
   ???
 
-RM_F : float 
+cm_i : float 
   ???
 
-NSR : float 
+cm_f : float 
   ???
 
-CM_I : float 
+nso : float      
   ???
 
-CM_F : float 
+edr : float        
   ???
 
-NSO : float      
+xe1 : float         
   ???
 
-EDR : float        
+xde1 : float       
   ???
 
-XE1 : float         
+x_in : float    
+  Internal bound to consider for the dynamo problem (in stellar radius). 
+  The equation will be solved considering a grid on ``[x_in, 1]``
+
+c3 : float      
   ???
 
-XDE1 : float       
+bct : float    
   ???
 
-X_IN : float    
+accu : float   
+  Convergence criteria on the imaginary part of the eigenvalue
+  to validate a stationary solution. Solutions with imaginary
+  parts smaller than ``accu`` will be accepted and the bisection
+  search will be interrupted.
+
+ans1 : str    
+  Specify the rotation profile, the magnetic diffusivity profile to use.
+  **TODO: List the possible values and profiles affected.** 
+
+ans2 : str    
+  Specify the angular symmetry of the solution to search, ``'d'`` for 
+  dipole modes and ``q`` for quadrupole modes.
+
+ans3 : str    
   ???
 
-C3 : float      
+ans4 : str    
+  If set to ``'n'``, the code will only compute eigenvalues.
+  If set to ``'v'``, the code will compute both eigenvalues and 
+  eigenvectors.
+
+s0 : float    
   ???
 
-BCT : float    
+s2 : float  
   ???
 
-ACCU : float   
-  accuracy to reach on ``lambda``
-
-ANS1 : str    
+s4 : float  
   ???
 
-ANS2 : str    
+s6 : float   
   ???
 
-ANS3 : str    
+a2p : float     
   ???
 
-ANS4 : str    
-  Set to ``'V'`` to right field in outputs.
-
-S0 : float    
+a4p : float   
   ???
 
-S2 : float  
-  ???
+mmm : float     
+  Azimuthal wave number.
 
-S4 : float  
-  ???
+hd : float      
+  Whether to include turbulent pumping, ``1`` or not, ``0``.
 
-S6 : float   
-  ???
+sr : float      
+  Stellar radius in solar units.
 
-A2P : float     
-  ???
+rotp : float    
+  Rotation period, in solar units.
 
-A4P : float   
-  ???
-
-MMM : float     
-  ???
-
-HD : float      
-  ???
-
-SR : float      
-  ???
-
-ROTP : float    
-  ???
-
-GD : float      
+gd : float      
   ???
 
 aqu : float     
-  ???
+  Set to ``1`` to include the ``alpha**2`` term in the equation, or
+  to ``0`` to ignore it. 
 
 flg : float     
-  ???
+  If set to ``1``, lapack solver for complex matrixes will be used, if
+  set to ``0``, the solver for real matrixes will be used. 
+  If ``mmm`` is different from ``0``, ``flg`` is automatically set to
+  ``1``.
 
 dd1 : float     
   ???
@@ -141,21 +158,23 @@ oco : float
   ???
 
 xm : float     
+  Exponent to use in the power law ``R_M \propto Omega**xm``,
+  where ``R_M`` is the Reynolds number of the meridian circulation
+  and ``Omega`` is the angular velocity of the star.
+
+beta_i : float 
   ???
 
-BETA_I : float 
+beta_f : float  
   ???
 
-BETA_F : float  
+beta_s : float 
   ???
 
-BETA_S : float 
+zeta_r : float  
   ???
 
-ZETA_R : float  
-  ???
-
-FFREE : float 
+ffree : float 
   ???
   
 xbt : float   

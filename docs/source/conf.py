@@ -21,7 +21,7 @@ autodoc_mock_imports = ['numpy', 'scipy', 'matplotlib']
 
 project = 'CTDYN'
 copyright = '2024, A. Bonanno, S.N. Breton'
-author = 'A. Bonanno, S.N. Breton'
+author = 'A. Bonanno, S.N. Breton, G. Licciardello'
 release = '0.1'
 master_doc = 'index'
 source_suffix = ".rst"
