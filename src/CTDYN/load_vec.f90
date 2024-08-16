@@ -20,7 +20,6 @@ do k2 = nsp,nep,2
         aai = vc(np+2,k2,2)/x**(k2+1)
       endif
     endif
-    write(16,'(i2,e15.6,e15.6,e15.6)')  k2, x, aar,aai 
   enddo 
 enddo 
 
@@ -48,7 +47,6 @@ do k2 = nst,net,2
         bbi = vc(np+2,k2,2)/x**(k2+1)
       endif
     endif
-    write(15,'(i2,e15.6,e15.6,e15.6)')  k2, x, bbr,bbi 
   enddo 
 enddo 
 
