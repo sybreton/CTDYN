@@ -20,7 +20,7 @@ EXE = ../../ctdyn
 
 vpath %.o .:$(OBJDIR)
 
-$(EXE): dyna.o advection.o err.o func_flow.o plg.o sort2.o zbrent.o writefield.o bessel.o hunt.o \
+$(EXE): dyna.o main.o profiles.o func_flow.o plg.o sort2.o zbrent.o write_outputs.o bessel.o hunt.o \
 	ccov.o cvect.o cio.o b2func.o b3func.o b4func.o b5func.o c1s2func.o c3s2func.o cdfunc.o
 	$(LINKER) $(LDFLAGS) -o $@ $^  $(LIB) 
 
@@ -46,6 +46,9 @@ cdfunc.mod: cdfunc.f90
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
 bessel.mod: bessel.f90 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
+write_outputs.mod: write_outputs.f90 cio.mod ccov.mod cdfunc.mod \
+                   bessel.mod load_tor.f90 load_pol.f90 load_vec.f90 
+	$(FC) $(FFLAGS) $(INCDIR) -c $< 
 
 cio.o: cio.f90 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
@@ -69,24 +72,24 @@ cdfunc.o: cdfunc.f90
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@ 
 bessel.o: bessel.f90  
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
+write_outputs.o: write_outputs.f90 cio.mod ccov.mod cdfunc.mod \
+	bessel.mod load_tor.f90 load_pol.f90 load_vec.f90
+	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 
 dyna.o: dyna.f90 cint.f90 ccov.mod cvect.mod cio.mod \
 	b2func.mod b3func.mod b4func.mod b5func.mod  \
-        c1s2func.mod c3s2func.mod cdfunc.mod bessel.mod 
+        c1s2func.mod c3s2func.mod cdfunc.mod bessel.mod \
+        write_outputs.mod 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
-advection.o: advection.f90 cint.f90  
+main.o: main.f90 cint.f90  
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
-err.o: err.f90 cio.mod 
+profiles.o: profiles.f90 cio.mod 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 func_flow.o: func_flow.f90 cio.mod  
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 plg.o: plg.f90  
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 zbrent.o: zbrent.f90  
-	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
-writefield.o: writefield.f90 cio.mod ccov.mod cdfunc.mod \
-	bessel.mod load_tor.f90 load_pol.f90 write_poloidal.f90 \
-	write_toroidal.f90 load_vec.f90
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 hunt.o: hunt.f90 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@

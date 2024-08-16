@@ -42,6 +42,7 @@ subroutine dynamo(turb,rate)
   use c3s2func
   use cdfunc
   use bessel
+  use write_outputs
 
   implicit none
   
@@ -1249,7 +1250,7 @@ subroutine dynamo(turb,rate)
     ieg(kk+1) =  wi(int(indeg(nt-kk)))
   enddo
   
-  if(jobvr.eq.'v')then
+  if (jobvr.eq.'v') then
     call writefield
   endif
   
