@@ -37,20 +37,22 @@ module write_outputs
 
   character(*), parameter :: fmt_2010 = "(a220,i6.6,a2,i2.2)" 
   character(*), parameter :: fmt_2011 = "(a220,i6.6,a2,i2.2,a2,i2.2)" 
+  integer, parameter :: nft=200   
+
+  real, parameter :: theta1 = 0.
+  real, parameter :: theta2 = 3.1415926
 
 contains 
 
-  subroutine write_toroidal (dir, bfeld3, nf, nft, nj, ii, jj, q, mm, &
-                             theta1, theta2, theta, imag, x, x1, xf, tc, &
-                             bphi, iphi)
+  subroutine write_toroidal (bfeld3, nf, nj, jj, q, mm, &
+                             theta, x, x1, xf, tc, bphi, iphi)
   
-    character*102 :: dir
     character*512 :: bfeld3
     character*2 :: q
-    integer :: nf, nft, nj, ii, jj, mm
-    real :: theta1, theta2, theta, imag, x, x1, xf, tc
-    real :: bphi(np+2+nft,n_theta)        ! toroidal real
-    real :: iphi(np+2+nft,n_theta)        ! toroidal im
+    integer :: nf, nj, jj, mm
+    real :: theta, x, x1, xf, tc
+    real :: bphi(np+2+nft, n_theta)        ! toroidal real
+    real :: iphi(np+2+nft, n_theta)        ! toroidal im
   
     integer :: i, j
   
@@ -69,14 +71,13 @@ contains
     close(60)
   end subroutine
   
-  subroutine write_poloidal (dir, bfeld4, nf, nft, nj, ii, jj, q, mm, &
-                             theta1, theta2, theta, imag, x, x1, xf, tc, apr, api) 
+  subroutine write_poloidal (bfeld4, nf, nj, jj, q, mm, &
+                             theta, x, x1, xf, tc, apr, api) 
   
-    character*102 :: dir
     character*512 :: bfeld4
     character*2 :: q
-    integer :: nf, nft, nj, ii, jj, mm
-    real :: theta1, theta2, theta, imag, x, x1, xf, tc
+    integer :: nf, nj, jj, mm
+    real :: theta, x, x1, xf, tc
     real :: apr(np+2+nft, n_theta)         ! b poloidal (potential)
     real :: api(np+2+nft, n_theta)         ! b poloidal (potential)
   
@@ -142,57 +143,33 @@ contains
   end subroutine 
   
   subroutine writefield
-  
+    !------------------------------------------------------
+    !
+    ! Write the fields computed when solving the eigenvalue
+    ! problem. 
+    !
+    !------------------------------------------------------
     real :: aai, aar, abm, abt, adum, apt, aptjm, &
             & aptjm2, aptjp, aptkm, aptkp, ax, &
-            & axp, bbi, bbr, beta, betb, bphi7, bpt, &
+            & axp, bbi, bbr, bphi7, bpt, &
             & bptjm, bptjp, bptkm, bptkp, brs, bx, bxp, &
-            & c_u, chel, chel2, cheln, chels, cja, co, datheta, &
+            & chel, chel2, cheln, chels, cja, datheta, &
             & datheta2, dax, dax2, dbtheta, dbtheta2, dbx, dd1, dt, &
-            & epol, etep, etet, etor, ffc, ffree, fx, gam, h2, hd, hh, &
-            & om0, om0p, om2, om2p, om4, om4p, plgndr, ratio, rj, &
-            & rj1, rjp, rjp1, rnor, rosym, rt, ry, ry1, ryp, ryp1, &
+            & epol, etor, ffc, fx, h2, hd, hh, &
+            & om0, om0p, om2, om2p, om4, om4p, plgndr, rj, &
+            & rj1, rjp, rjp1, rnor, rosym, ry, ry1, ryp, ryp1, &
             & sz1, sz2, t_fin, t_in, tc, theta, theta1, theta2, time, &
-            & vtu, x, x1, x2, xbo, xbt, xf, xnu, zeta_r, zq1, zq2
+            & x, x1, x2, xf, xnu, zq1, zq2
     integer :: i, i2, i3, j, jbo, jbt, jj, jo, k, k1, k2, kb, &
                & km, ko, mm, nag, nep, net, nf, nj, nsp, nst
-  
-    integer :: ii,it                 ! iteration counter
-    common/ipar/ii,it
-  
-    real :: xa1,xa2,xa3,xb,xda1,xda2
-    common/apar/xa1,xa2,xa3,xb,xda1,xda2
-    real :: edr,xe1,xde1
-    common/epar/edr,xe1,xde1,hd
-    real :: x_in, bct, c3, mmm,sr,rotp,gd, aqu, flg
-    common/ppar/x_in,bct,c3,mmm,sr,rotp,gd, aqu, flg
-  
-    real :: s0,s2,s4,s6, a2p, a4p,xm
-    common/psi/s0,s2,s4,s6,a2p,a4p,xm
-  
-    character*102 :: dir 
-    character*8 :: ans1, ans2, ans3, ans4 
-    common/var3/ ans1, ans2, ans3, ans4, dir
-  
-    character*2 :: jobvr,jobvl
-    common/lap/jobvr,jobvl
   
     character*30 :: inp
     character*43 :: version, ver
     character*82 :: fel,fes,fel2,fes2,fen
     character*2 :: qq, q
-  
-    real :: imag
-    common/part/vtu,rt,imag,co,c_u,beta,ffree,betb,etep,etet,xbt,xbo
-  
     character*512 :: bfeld1,bfeld2,bfeld3,bfeld4,bfeld5, &
                      & bfeld6,bfeld7,bfeld8,bfeld9,bfeld10
   
-    complex*16, dimension (nt, nt) :: cvr
-    common/vec/cvr
-    common/parker/gam,zeta_r,ratio
-  
-    integer, parameter :: nft=200   
   
     real :: ang(n_theta)              
   
@@ -280,8 +257,6 @@ contains
     endif   ! flg mode
     close(13)
   
-    theta1 = 0.
-    theta2 = 3.1415926
     theta = theta1-theta2/(n_theta)
     bphi=0
     iphi=0
@@ -376,11 +351,10 @@ contains
     nj = 8
   
     do jj =1, nj
-      call write_toroidal (dir, bfeld3, nf, nft, nj, ii, jj, q, mm, &
-                           theta1, theta2, theta, imag, x, x1, xf, tc, &
-                           bphi, iphi)
-      call write_poloidal (dir, bfeld4, nf, nft, nj, ii, jj, q, mm, &
-                           theta1, theta2, theta, imag, x, x1, xf, tc, apr, api) 
+      call write_toroidal (bfeld3, nf, nj, jj, q, mm, &
+                           theta, x, x1, xf, tc, bphi, iphi)
+      call write_poloidal (bfeld4, nf, nj, jj, q, mm, &
+                           theta, x, x1, xf, tc, apr, api) 
     enddo
   
     !  butterfly diagram block      
@@ -553,7 +527,6 @@ contains
       write(34,'(e12.5)') x
     enddo
   
-    theta=3.1415926/2.0
     theta=0
     do k2 =1,n_theta
       theta = theta + theta2/n_theta

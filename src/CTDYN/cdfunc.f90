@@ -1,4 +1,6 @@
 module cdfunc
+  
+  use cio 
 
   implicit none
 
@@ -7,8 +9,6 @@ contains
   real function d1p2 (n)
     integer n
     real cgret
-    real x_in, bct, c3,mmm
-    common/ppar/x_in,bct,c3,mmm
     cgret = (n-1.0)*n*(n-abs(mmm)+1)*(n-abs(mmm)+2)/(6+19.0*n+16.0*n**2+4.0*n**3) 
     d1p2 = cgret
     return
@@ -17,8 +17,6 @@ contains
   real function d1m2 (n)
     integer n
     real cgret
-    real x_in, bct, c3,mmm
-    common/ppar/x_in,bct,c3,mmm
     cgret = -(n+1.0)*(n+2.0)*(n+abs(mmm)-1)*(n+abs(mmm))/(1.0-n-4.0*n**2+4.0*n**3)
     d1m2 = cgret
     return
@@ -27,8 +25,6 @@ contains
   real function d10 (n)
     integer n
     real cgret
-    real x_in, bct, c3,mmm
-    common/ppar/x_in,bct,c3,mmm
     cgret = -0.3e1 * (n + 0.2e1) * (n - 0.1e1) * (n*(n+1)-3*mmm**2)/ (0.2e1 * n - 0.1e1) &
        &/ (0.2e1 * n + 0.3e1)/n/(n+1.0)
     d10 = cgret
@@ -160,8 +156,6 @@ contains
   real function c2p2 (n)
     integer n
     real cgret
-    real x_in, bct, c3,mmm
-    common/ppar/x_in,bct,c3,mmm
     cgret = n*(1.e0-abs(mmm)+n)*(2.e0 -abs(mmm)+n) / (6.e0 +19.e0*n+16.e0*n**2+4*n**3) 
     c2p2 = cgret
     return
@@ -170,8 +164,6 @@ contains
   real function c2m2 (n)
     integer n
     real cgret
-    real x_in, bct, c3,mmm
-    common/ppar/x_in,bct,c3,mmm
     cgret  = (1.0+n)*(-1.0+abs(mmm)+n)*(abs(mmm)+n)/(1.0-n-4.0*n**2+4.0*n**3)
     c2m2 = cgret
     return
@@ -180,8 +172,6 @@ contains
   real function c20 (n)
     integer n
     real cgret
-    real x_in, bct, c3,mmm
-    common/ppar/x_in,bct,c3,mmm
     cgret = ((n*(n+1)-3*mmm**2)*2*(n*(n+1.)-3)/n/(n+1.)/(2*n-1.)/(2*n+3.) +1)/3.
     cgret = (0.2e1 * n ** 2 + 0.2e1 * n - 0.3e1) / (0.2e1 * n - 0.1e1 &
        &) / (0.2e1 * n + 0.3e1)

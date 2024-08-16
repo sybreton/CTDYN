@@ -1,16 +1,17 @@
 !  (c) Copr. 1986-92 Numerical Recipes Software <&)1.
 
 subroutine zbr(x1,x2,tol,zbrent)
+  
+  use cio
 
-  character*1 :: jobvr,jobvl
-  common/lap/jobvr,jobvl
+  implicit none 
+
   integer :: itmax
-  integer :: ii,it
-  common/ipar/ii,it
   real :: zbrent,tol,x1,x2,func,eps,x3
   parameter (itmax=100,eps=3.e-8)
   integer :: iter
-  real :: a,b,c,d,e,fa,fb,fc,p,q,r,s,tol1,xm
+  real :: a, b, c, d, e, fa, fb, fc 
+  real :: p, q, r, s, tol1
   
   a=x1
   b=x2
@@ -28,13 +29,13 @@ subroutine zbr(x1,x2,tol,zbrent)
   fc=fb
   do iter=1, itmax
     it=iter+2
-    if((fb.gt.0..and.fc.gt.0.).or.(fb.lt.0..and.fc.lt.0.))then
+    if ((fb.gt.0..and.fc.gt.0.).or.(fb.lt.0..and.fc.lt.0.)) then
       c=a
       fc=fa
       d=b-a
       e=d
     endif
-    if(abs(fc).lt.abs(fb)) then
+    if (abs(fc).lt.abs(fb)) then
       a=b
       b=c
       c=a

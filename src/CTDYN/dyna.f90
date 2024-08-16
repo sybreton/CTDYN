@@ -46,25 +46,19 @@ subroutine dynamo(turb,rate)
 
   implicit none
   
-  real :: imag, turb, rate, a2, alp, alp_p, &
+  real :: turb, rate, a2, alp, alp_p, &
           & am, apu, apup, ar, arp, bapu, bapup, &
-          & beta, betb, btp, c_u, ca, co, ct, &
-          & deltami, deltapi, e1, e2, e3, etep, &
-          & etet, facp, ffc, ffree, gam, h2, hh, &
-          & om0, om0p, om2, om2p, om4, om4p, psip, &
-          & psipp, ratio, rho, rt, sigmami, sigmapi, &
-          & um, vtu, x, x1, x2, xbo, xbt, zeta_r, &
-          & bt, nabp1, nabp3, psi
-  common/part/vtu,rt,imag,co,c_u,beta,ffree,betb,etep,etet,xbt,xbo
-  real :: eep
-  real :: reg(10),ieg(10)
-  common/eira/reg,ieg,eep
+          & btp, ca, ct, &
+          & deltami, deltapi, e1, e2, e3, &
+          & facp, ffc, h2, hh, &
+          & om0, om0p, om2, om2p, om4, om4p, psi, psip, &
+          & psipp, rho, sigmami, sigmapi, &
+          & um, x, x1, x2, bt, nabp1, nabp3 
   
   !      definitions:
   !      turb= c_alpha*c_omega
   !      c_alpha = alpha_zero*sr/eta
   !      c_omega = omega_zero*sr**2/eta
-  !      common param
   
   integer :: i, j, k, i2, i3, nabm1, &
              & k1, ki, kk, nabm3, napb3, &
@@ -73,27 +67,6 @@ subroutine dynamo(turb,rate)
              & nbap3, nbf, nbfm2, nbfp2, &
              & nbi, nc                
   integer :: info
-  integer :: ii, it ! loop counter
-  common/ipar/ii,it
-  
-  real :: xa1,xa2,xa3,xb,xda1,xda2
-  common/apar/xa1,xa2,xa3,xb,xda1,xda2
-  
-  real :: edr,xe1,xde1,hd
-  common/epar/edr,xe1,xde1,hd
-  
-  real :: x_in, bct, c3,mmm,sr,rotp, gd, aqu, flg
-  common/ppar/x_in,bct,c3,mmm,sr,rotp,gd, aqu, flg
-  
-  real :: s0,s2,s4,s6, a2p, a4p,xm
-  common/psi/s0,s2,s4,s6,a2p,a4p,xm 
-  
-  character(len=128) :: dir
-  character*8 :: ans1,ans2,ans3,ans4
-  common/var3/ans1,ans2,ans3,ans4, dir
-  
-  character*2 :: jobvr,jobvl
-  common/lap/jobvr,jobvl
   
   external version
   
@@ -117,8 +90,6 @@ subroutine dynamo(turb,rate)
   complex*16 :: axx(nt,nt)
   real :: axr(nt,nt)
   complex*16 :: drb, dra, sigmeno, sigpiu
-  common/parker/gam,zeta_r,ratio
-  common/vec/cvr
   
   real :: c1(np)                  ! coefficient dyn.  
   real :: c2(np)
@@ -387,17 +358,12 @@ subroutine dynamo(turb,rate)
       
       !     check the relative sign: in the old version "+" because they are imput with "-" in the matrix!!!!
       !     check omega hh**2    
-      !
-      !     4.13a pnm2   
       fbnm2(i,j) = fbnm2(i,j) + 3*(0,1)*mmm*(j-am-1)*(j-am)*hh**2*om2/2./(2*j-3.)/(2*j-1.)
-      !     4.13a pnp2
       fbnp2(i,j) = fbnp2(i,j) + 3*(0,1)*mmm*(j+am+1)*(j+am+2)*hh**2*om2/2./(2*j+3.)/(2*j+5.)
       fanm2(i,j) = fanm2(i,j) + 3*(0,1)*mmm*(j-2)*(j-1)*(j-am-1)*(j-am)*hh**2*om2/2./j/(j+1)/(2.*j-3.)/(2*j-1.)
       fanp2(i,j) = fanp2(i,j) + 3*(0,1)*mmm*(j+2)*(j+3)*(j+am+1)*(j+am+2)*hh**2*om2/2./j/(j+1)/(2.*j+3.)/(2*j+5.)
       
       ! ------------------- alpha^2 -----------------------------------
-      
-      
       ! include the full alpha^2 term for aqu=1
       
       ct = aqu*ca   ! org

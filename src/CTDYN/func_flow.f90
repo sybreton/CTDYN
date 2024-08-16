@@ -31,23 +31,13 @@ subroutine stream(x, ax, axp,  bx, bxp, fx)
   !Curl Curl (s2 P2, 0, 0) = (- 3 fx/x^2 * (3 cos^2 -1 ), -3 fx'/x * sin cos, 0)  
 
   use cio
+
   implicit none
 
-  real :: x_in, bct, c3, mmm,sr,rotp,gd, aqu, flg
-  common/ppar/x_in,bct,c3,mmm,sr,rotp,gd, aqu, flg
-  real :: xa1,xa2,xa3,xb,xda1,xda2
-  common/apar/xa1,xa2,xa3,xb,xda1,xda2
-  real :: s0,s2,s4,s6,a2p,a4p,xm
-  common/psi/s0,s2,s4,s6,a2p,a4p,xm
   real :: ur, ut, ax, axp, bx, bxp, fx, sigma, x0
   real :: rho     
   real :: xi, xo, xd, y1, y2
   real :: norm, m1,m2,m3,m4
-  
-  character*52 :: dir
-  character*8 :: ans1,ans2,ans3,ans4
-  common/var3/ans1,ans2,ans3,ans4,dir
- 
   real :: x, me
 
   if (x .ge. xb) then   

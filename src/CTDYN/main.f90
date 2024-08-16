@@ -30,49 +30,21 @@
 program advection
  
   use cio
+
   implicit none   
 
-  real :: imag, astep, beta, beta_f, beta_i, &
-          & beta_s, betb, c_u, cm_f, cm_i, co, &
-          & critical, etep, etet, ffree, gam, hd, &
-          & rate, ratio, rm_f, rm_i, rt, vtu, &
-          & xbo, xbt, zeta_r 
-  common/part/vtu,rt,imag,co,c_u,beta,ffree,betb,etep,etet,xbt,xbo
+  real :: astep, beta_f, beta_i, &
+          & beta_s, cm_f, cm_i, &
+          & critical, rate, rm_f, rm_i 
   
   real :: ca(10,10,4)
-  real :: reg(10),ieg(10)
-  real :: eep
   real :: accu
   real :: al_i, al_f
-  common/eira/reg,ieg,eep
-  integer :: i, ii, it
-  common/ipar/ii,it
-  
-  real :: xa1,xa2,xa3,xb,xda1,xda2
-  common/apar/xa1,xa2,xa3,xb,xda1,xda2
-  
-  real :: edr,xe1,xde1
-  common/epar/edr,xe1,xde1,hd
-  
-  real :: x_in, bct, c3, mmm,sr,rotp,gd, aqu, flg
-  common/ppar/x_in,bct,c3,mmm,sr,rotp, gd,aqu, flg
-  
-  real :: dd1,rc1,rc2,oco
-  common/dpar/dd1,rc1,rc2,oco
-  
-  real :: s0,s2,s4,s6, a2p, a4p,xm
-  common/psi/s0,s2,s4,s6,a2p,a4p,xm
-  
-  character(len=128) :: dir
-  character*8 :: ans1,ans2,ans3,ans4
-  common/var3/ans1,ans2,ans3,ans4, dir
-  
-  character*2 :: jobvr,jobvl
-  common/lap/jobvr,jobvl
-  
+
   character*30 :: inp
   character*52 :: mach, ddt
   character*43 :: version, ver
+  external version
   
   character(len=5)   :: char_m  ! converti m in char
   character(len=128) :: char_fm ! file input_am
@@ -80,22 +52,20 @@ program advection
   character(len=128) :: char_cf ! file crtaf_am
   character(len=128) :: fom     ! crea un format dinamico 
   character(len=5)   :: qq      ! _am
-  external version
   integer :: mm
   
+  integer :: i
   integer :: iome, nso
   integer :: ialo, nsa
   integer :: ires, nsr
   
-  common/parker/gam,zeta_r,ratio
-  
   include 'cint.f90'
   
   call getarg(1,inp)
-  open(31,file=inp,status='old')
-  read(31,namp)
+  open(31, file=inp, status='old')
+  read(31, namp)
   close(31)
-  !converti mm in char e crea stringa _am o _sm
+  !convert mm in char and create a string _am or _sm
   mm=int(mmm)
   write(char_m,'(i2)')  mm
   if (mod(mm,2) .eq. 0) then 

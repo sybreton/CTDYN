@@ -1,5 +1,7 @@
 module b2func 
 
+  use cio 
+
   implicit none
 
 contains 
@@ -25,8 +27,6 @@ contains
   real function b1p2 (n)
     integer n
     real cgret
-    real x_in, bct, c3,mmm
-    common/ppar/x_in,bct,c3,mmm
   
     cgret = n*(1.0+n)*(1-abs(mmm)+n)*(2-abs(mmm)+n)/(6.0+19.0*n+16.0*n**2+4*n**3)
     b1p2 = cgret
@@ -36,8 +36,6 @@ contains
   real function b1m2 (n)
     integer n
     real cgret
-    real x_in, bct, c3,mmm
-    common/ppar/x_in,bct,c3,mmm
   
     cgret = -n ** 2 * (n + 0.1e1) / (0.2e1 * n + 0.1e1) / (0.2e1 * n - 0.1e1)
     b1m2 = cgret
@@ -47,8 +45,6 @@ contains
   real function b10 (n)
     integer n
     real cgret
-    real x_in, bct, c3,mmm
-    common/ppar/x_in,bct,c3,mmm
   
     cgret = (n * (n + 0.1e1)  -3.0*mmm**2) / (0.2e1 * n  - 0.1e1) / (0.2e1 * n + 0.3e1)
     b10 = cgret

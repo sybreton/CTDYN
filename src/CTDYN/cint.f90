@@ -1,4 +1,5 @@
-namelist /namp/dir, &
+namelist /namp/  &
+           dir,  &
            al_i, &  
            al_f, &
            nsa,  &
@@ -52,10 +53,10 @@ namelist /namp/dir, &
            xbo
 
 ! Default values to initialise the namelist      
-dir='tdata'
+dir       = '.'
 al_i      = 0.0
 al_f      = 10.
-nsa      = 1
+nsa       = 1
 xa1       = 0.8
 xa2       = 0.9
 xa3       = 0.7

@@ -1,6 +1,7 @@
 module ccov
 
   use cio 
+
   implicit none 
 
   integer, dimension (nt) :: indeg     ! index the eigenvalues      
@@ -9,6 +10,5 @@ module ccov
   complex*16, dimension (nt, nt) :: cvr
   complex*16, dimension (nt)  :: ww
   real, dimension (nt) :: wr, wi  ! eigenvalues
-  common/vec1/vr,indeg,wr,wi
   
 end module ccov 

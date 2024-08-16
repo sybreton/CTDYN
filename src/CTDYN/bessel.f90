@@ -1,5 +1,7 @@
 module bessel 
 
+  use cio 
+
   implicit none
 
 contains
@@ -28,13 +30,12 @@ contains
   
     ! enter beta (=x) and j,  and output the correction at r/R=1
   
-    real x, corr, cord, corn, gam, ratio, rj, &
+    real x, corr, cord, corn, rj, &
          & rj1, rjm1, rjp, rjp1, rjpm1, rjpz, &
          & rjpz1, rjz, rjz1, ry, ry1, rym1, &
          & ryp, ryp1, rypm, rypm1, rypz, rypz1, ryz, &
-         & ryz1, xmu, xnu, xnu1, z, zeta_r
+         & ryz1, xmu, xnu, xnu1, z
     integer :: j
-    common/parker/gam,zeta_r,ratio
   
     ! gamma is fixed so that at about z=zeta_r  so that the field lines open!
   

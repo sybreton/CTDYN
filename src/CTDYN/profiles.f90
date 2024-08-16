@@ -7,26 +7,9 @@ subroutine rot(x, om0, om0p, om2, om2p, om4, om4p)
           & om0, om2, om0p, om2p, om4, om4p, a1, a2, xmax, &
           & omc, omeq, hzn, c2, c4, omegac, oms, xbi, omegaeq, &
           & a4, b0, b4, d1, delta, dw, facn, ome0, &
-          & omec, omes, omet, r, r1, rc, rs, rt, xi, xw, &
+          & omec, omes, omet, r, r1, rc, rs, xi, xw, &
           & xx1, xx2, xxd1, xxd2 
        
-  !---------- common main
-  
-  real :: xa1,xa2,xa3,xb,xda1,xda2
-  common/apar/xa1,xa2,xa3,xb,xda1,xda2
-  
-  real :: x_in, bct, c3,mmm,sr,rotp,gd,aqu,flg
-  common/ppar/x_in,bct,c3,mmm,sr,rotp,gd,aqu,flg
-  
-  real :: dd1,rc1,rc2,oco
-  common/dpar/dd1,rc1,rc2,oco
-  
-  character*52 dir
-  character*8 ans1,ans2,ans3,ans4
-  common/var3/ans1,ans2,ans3,ans4,dir
-  
-  real :: s0,s2,s4,s6,a2p,a4p,xm
-  common/psi/s0,s2,s4,s6,a2p,a4p,xm
   
   !--------- definition of omega see Dikpati & Chcarbonneau apj99.
                
@@ -45,7 +28,7 @@ subroutine rot(x, om0, om0p, om2, om2p, om4, om4p)
   om4  = 0.0e0
   om4p = 0.0e0
 
-  if(ans1.eq.'r86') then
+  if (ans1.eq.'r86') then
   ! eq (9) pag 91, rad86 an paper, appendix tables
   !-----------  if ans1 = r86  then we test radler '86  an paper --------
     dw = xda2
@@ -256,21 +239,12 @@ subroutine alt(x,a1,a2)
   implicit none
 
   real :: x, a1, a2, d1, d_xi, delta, r1, x_xi, xi
-  real :: xa1, xa2, xa3, xb, xda1, xda2
-  common/apar/xa1, xa2, xa3, xb, xda1, xda2
 
-  real :: x_in, bct, c3, mmm, sr, gd, aqu, flg
-  common/ppar/x_in, bct, c3, mmm, sr, gd, aqu, flg
-
-  character*52 :: dir
-  character*8 :: ans1,ans2,ans3,ans4
-  common/var3/ans1,ans2,ans3,ans4,dir
-
-  if(ans1.eq.'ns') then
+  if (ans1.eq.'ns') then
      a1 = (1+derf((x-xa1)/xda1))/2.e0
      a2 = exp(-(x-xa1)**2/xda1/xda1)/sqrt(pi)/xda1
 
-  else if(ans1.eq.'r86') then
+  else if (ans1.eq.'r86') then
      d_xi = xda1 
      x_xi = xa1 
      xi = (x-x_xi)/d_xi
@@ -394,16 +368,6 @@ subroutine eta_turb(x, e1, e2, e3)
   real :: x, x1, x2, xd
   real :: e1, e2, e3
   real :: delta, et2, ett
-
-  real :: edr, xe1, xde1, hd
-  common/epar/edr,xe1,xde1,hd
-
-  real :: s0, s2, s4, s6, a2p, a4p, xm
-  common/psi/s0,s2,s4,s6,a2p,a4p,xm
-
-  character*53 :: dir
-  character*8 :: ans1, ans2, ans3, ans4
-  common/var3/ans1,ans2,ans3,ans4,dir
 
   x1 = xe1
   xd = xde1 
