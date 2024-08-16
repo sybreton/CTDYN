@@ -6,4 +6,4 @@ ctdyn
 **/*.swp
 **/.DS_Store
 .DS_Store
-tests/**
+tests/test_ref
