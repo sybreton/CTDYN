@@ -32,6 +32,10 @@ module write_outputs
   use ccov
   use cdfunc
   use bessel
+  use hunt
+  use func_flow
+  use profiles
+  use plg
 
   implicit none 
   private 
@@ -49,7 +53,7 @@ module write_outputs
 contains 
 
   subroutine compute_pol (nsp, nep, nf, nft, vc, apr, api, &
-                          ffc, hh, x1, plgndr)
+                          ffc, hh, x1)
     ! -----------------------------------------------------------------------    
     ! Compute the a_n vectors for dipoles: 
     ! this defines the poloidal (potential)
@@ -60,7 +64,7 @@ contains
     real :: vc(np+2,nb,2)                 ! eigenvector
     real :: apr(np+2+nft, n_theta)         ! b poloidal (potential)
     real :: api(np+2+nft, n_theta)         ! b poloidal (potential)
-    real :: ffc, hh, x1, plgndr
+    real :: ffc, hh, x1
 
     ! local variables
     real :: x, xnu, theta, sz1, sz2
@@ -106,7 +110,7 @@ contains
   end subroutine
 
   subroutine compute_tor (nst, net, nf, nft, vc, bphi, iphi, ffc, &
-                          hh, x1, plgndr)
+                          hh, x1)
     ! -----------------------------------------------------------------
     ! Compute the toroidal field
     ! -----------------------------------------------------------------
@@ -116,7 +120,7 @@ contains
     real :: vc(np+2,nb,2)                 ! eigenvector
     real :: bphi(np+2+nft, n_theta)         ! b poloidal (potential)
     real :: iphi(np+2+nft, n_theta)         ! b poloidal (potential)
-    real :: ffc, hh, x1, plgndr
+    real :: ffc, hh, x1
   
     ! local variables
     real :: x, xnu, theta, sz1, sz2
@@ -383,7 +387,7 @@ contains
             & chel, chel2, cheln, chels, cja, datheta, &
             & datheta2, dax, dax2, dbtheta, dbtheta2, dbx, dd1, dt, &
             & epol, etor, ffc, fx, h2, hd, hh, &
-            & om0, om0p, om2, om2p, om4, om4p, plgndr, rnor, &
+            & om0, om0p, om2, om2p, om4, om4p, rnor, &
             & sz1, sz2, t_fin, t_in, tc, theta, theta1, theta2, time, &
             & x, x1, x2, xf, xnu, zq1, zq2
     integer :: i, i2, i3, j, jbo, jbt, jj, jo, k, k1, k2, kb, &
@@ -411,7 +415,6 @@ contains
     real :: vc(np+2,nb,2)                 ! eigenvector
     real :: xr(np+2+nft)                
   
-    external plgndr
     integer :: bin(2), bax(2), rin(2), rax(2)
     
     ! initialize
@@ -559,9 +562,9 @@ contains
     ! the exterior solution is different if ffree is not zero (pure force-free)
     ! parameter, or beta is zero or not zero (potential vs helmholtz extrapolation)    
     call compute_pol (nsp, nep, nf, nft, vc, apr, api, &
-                      ffc, hh, x1, plgndr)
+                      ffc, hh, x1)
     call compute_tor (nst, net, nf, nft, vc, bphi, iphi, ffc, &
-                      hh, x1, plgndr)
+                      hh, x1)
     call compute_ab_vector (vc, aai, aar, bbi, bbr, etet, etep, &
                             epol, etor, ffc, x1, hh, nsp, nep, &
                             nst, net, nf, mm)
@@ -626,8 +629,8 @@ contains
       xr(j) = x
     enddo
   
-    call hunt(xr, np+2+nf, xbt, jbt)
-    call hunt(xr, np+2+nf, xbo, jbo)
+    call hunt_hunt(xr, np+2+nf, xbt, jbt)
+    call hunt_hunt(xr, np+2+nf, xbo, jbo)
   
     do k1=1, n_time
       time = time + t_fin/n_time
@@ -754,8 +757,8 @@ contains
     abt=1.047
     abm=2.094
   
-    call hunt(ang,n_theta, abt, kb)
-    call hunt(ang,n_theta, abm, km)
+    call hunt_hunt(ang,n_theta, abt, kb)
+    call hunt_hunt(ang,n_theta, abm, km)
   
     do k1=1,n_time
       time = time + t_fin/n_time

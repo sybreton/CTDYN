@@ -20,7 +20,7 @@ EXE = ../../ctdyn
 
 vpath %.o .:$(OBJDIR)
 
-$(EXE): dyna.o main.o profiles.o func_flow.o plg.o sort2.o zbrent.o write_outputs.o bessel.o hunt.o \
+$(EXE): dyna.o main.o profiles.o func_flow.o plg.o sort.o zbrent.o write_outputs.o bessel.o hunt.o \
 	ccov.o cvect.o cio.o b2func.o b3func.o b4func.o b5func.o c1s2func.o c3s2func.o cdfunc.o
 	$(LINKER) $(LDFLAGS) -o $@ $^  $(LIB) 
 
@@ -47,7 +47,26 @@ cdfunc.mod: cdfunc.f90
 bessel.mod: bessel.f90 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
 write_outputs.mod: write_outputs.f90 cio.mod ccov.mod cdfunc.mod \
-                   bessel.mod 
+                   bessel.mod hunt.mod func_flow.mod profiles.mod \
+                   plg.mod 
+	$(FC) $(FFLAGS) $(INCDIR) -c $< 
+dyna.mod: dyna.f90 cint.f90 ccov.mod cvect.mod cio.mod \
+	  b2func.mod b3func.mod b4func.mod b5func.mod  \
+          c1s2func.mod c3s2func.mod cdfunc.mod bessel.mod \
+          write_outputs.mod func_flow.mod profiles.mod \
+          sort.mod 
+	$(FC) $(FFLAGS) $(INCDIR) -c $< 
+profiles.mod: profiles.f90 cio.mod 
+	$(FC) $(FFLAGS) $(INCDIR) -c $< 
+func_flow.mod: func_flow.f90 cio.mod  
+	$(FC) $(FFLAGS) $(INCDIR) -c $< 
+plg.mod: plg.f90  
+	$(FC) $(FFLAGS) $(INCDIR) -c $< 
+zbrent.mod: zbrent.f90 cio.mod dyna.mod 
+	$(FC) $(FFLAGS) $(INCDIR) -c $< 
+hunt.mod: hunt.f90 
+	$(FC) $(FFLAGS) $(INCDIR) -c $< 
+sort.mod: sort.f90 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
 
 cio.o: cio.f90 
@@ -79,9 +98,10 @@ write_outputs.o: write_outputs.f90 cio.mod ccov.mod cdfunc.mod \
 dyna.o: dyna.f90 cint.f90 ccov.mod cvect.mod cio.mod \
 	b2func.mod b3func.mod b4func.mod b5func.mod  \
         c1s2func.mod c3s2func.mod cdfunc.mod bessel.mod \
-        write_outputs.mod 
+        write_outputs.mod func_flow.mod profiles.mod \
+        sort.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
-main.o: main.f90 cint.f90 cio.mod 
+main.o: main.f90 cint.f90 cio.mod dyna.mod zbrent.mod 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 profiles.o: profiles.f90 cio.mod 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
@@ -89,11 +109,11 @@ func_flow.o: func_flow.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 plg.o: plg.f90  
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
-zbrent.o: zbrent.f90 cio.mod 
+zbrent.o: zbrent.f90 cio.mod dyna.mod 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 hunt.o: hunt.f90 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
-sort2.o: sort2.f90 
+sort.o: sort.f90 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 clean:	
 clean:	

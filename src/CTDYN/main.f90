@@ -27,9 +27,11 @@
 !    a1 comega = 20      -> calpha = 5.01   \nu = 7.43 = - \omega r86
 !    
 
-program advection
+program main
  
   use cio
+  use dyna
+  use zbrent
 
   implicit none   
 
