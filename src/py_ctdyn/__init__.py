@@ -4,5 +4,8 @@ __version__ = version ('py_ctdyn')
 
 from .outputs import (read_field, 
                       read_field_text_file,
-                      plot_meridional_mesh)
+                      read_butterfly_diagram,
+                      read_butterfly_diagram_text_file,
+                      plot_meridional_mesh,
+                      plot_butterfly_diagram)
 

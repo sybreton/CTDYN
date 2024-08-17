@@ -78,4 +78,68 @@ def plot_meridional_mesh (r, theta, mesh,
 
     return fig
 
+def read_butterfly_diagram (filename, return_meshgrid=True,
+                            output_format="txt") :
+    """
+    Read field output produced by CTDYN. 
+    """
+    if output_format=="txt" :
+      t, theta, mesh = read_butterfly_diagram_text_file (filename, 
+                                                         return_meshgrid=return_meshgrid) 
+    elif output_format=="hdf5" :
+      raise Exception ("hdf5 format is not implemented yet.")
+    else :
+      raise Exception ("Unknown output format. Supported format are 'txt' and 'hdf5'")
+    return t, theta, mesh
 
+def read_butterfly_diagram_text_file (filename, return_meshgrid=True) :
+    """
+    Read butterfly diagram from file saved under a text format.
+    """
+    # Reading the header
+    with open (Path (filename), "r") as f :
+        head = [next(f).strip() for _ in range(1)]
+    # Getting the number of latitudinal meshes 
+    # (note that it is ntheta-2 that is 
+    # actually written in the file)
+    n_theta = re.split (r"\s+", head[0])[0]
+    n_theta = int (n_theta)
+    data = np.loadtxt (filename, skiprows=1)
+    theta = data[:n_theta]
+    data = data[n_theta:].reshape (-1, n_theta+1)
+    t = data[:,0]
+    mesh = data[:,1:].T
+    if return_meshgrid :
+        t, theta = np.meshgrid (t, theta)
+    return t, theta, mesh
+
+def plot_butterfly_diagram (t, theta, mesh,
+                            figsize=(7,4), cmap="Blues_r",
+                            mode="contourf", contour=True,
+                            colorbar=True, label=None) :
+    """
+    Plot a butterfly diagram.
+    """
+    lat = 90 - theta/np.pi*180 
+    
+    fig, ax = plt.subplots (1, 1, figsize=figsize)
+    ax.set_yticks ([-60, -30, 0, 30, 60])
+
+    if mode=="pcolormesh" :
+        im = ax.pcolormesh (t, lat, mesh, cmap=cmap)
+    elif mode=="contourf" :
+        im = ax.contourf (t, lat, mesh, cmap=cmap)
+    else :
+        raise Exception ("Accepted arguments for mode are 'pcolormesh' or 'contourf'")
+    if contour :
+        ax.contour (t, lat, mesh, colors="darkgrey",
+                    linestyles="--")
+    if colorbar :
+        cbar = plt.colorbar (im, shrink=0.8)
+        if label is not None :
+            cbar.set_label (label)
+
+    ax.set_xlabel ("Time (year)")
+    ax.set_ylabel (r"Latitude ($\rm ^o$)")
+    
+    return fig
