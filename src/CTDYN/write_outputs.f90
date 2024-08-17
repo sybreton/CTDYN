@@ -5,7 +5,7 @@
 !
 !  IMPORTANT:
 !
-! The convetions for the vector potential and scalar potentials are in the Maple ws called currenthelicity.mw (and similar)
+! The conventions for the vector potential and scalar potentials are in the Maple ws called currenthelicity.mw (and similar)
 ! and on the mathematica notebook notation.nb
 !
 ! In spherical symmetry in order to make contact with the standard representation used in papers:
@@ -34,6 +34,9 @@ module write_outputs
   use bessel
 
   implicit none 
+  private 
+
+  public :: writefield 
 
   character(*), parameter :: fmt_2010 = "(a220,i6.6,a2,i2.2)" 
   character(*), parameter :: fmt_2011 = "(a220,i6.6,a2,i2.2,a2,i2.2)" 
@@ -41,8 +44,228 @@ module write_outputs
 
   real, parameter :: theta1 = 0.
   real, parameter :: theta2 = 3.1415926
+  real, parameter :: dt = (theta2 -  theta1) / n_theta
 
 contains 
+
+  subroutine compute_pol (nsp, nep, nf, nft, vc, apr, api, &
+                          ffc, hh, x1, plgndr)
+    ! -----------------------------------------------------------------------    
+    ! Compute the a_n vectors for dipoles: 
+    ! this defines the poloidal (potential)
+    ! -----------------------------------------------------------------------    
+
+    ! arguments
+    integer :: nsp, nep, nf, nft
+    real :: vc(np+2,nb,2)                 ! eigenvector
+    real :: apr(np+2+nft, n_theta)         ! b poloidal (potential)
+    real :: api(np+2+nft, n_theta)         ! b poloidal (potential)
+    real :: ffc, hh, x1, plgndr
+
+    ! local variables
+    real :: x, xnu, theta, sz1, sz2
+    integer :: k1, k2, j
+    real :: rj, ry, rjp, ryp
+    real :: rj1, ry1, rjp1, ryp1
+
+    do k1=1, n_theta   ! theta-loop
+      theta = theta1 + k1*dt
+      do j=1, np+2+nf    ! radial loop
+        x = x1+(j-1)*hh
+        do k2=nsp, nep, 2          !plm loop 
+
+          call bess(beta, k2, ffc)
+          vc(np+2,k2,1) = (4*vc(np+1,k2,1)-vc(np,k2,1))/(2*hh*(k2+1+ffc)+3)
+          vc(np+2,k2,2) = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)
+          if (j.ge.(np+2)) then
+            if (beta.ne.0) then
+              ! check the x infront of the definition as for the beta=0 case
+              xnu=k2*1.d0+1.0/2.0
+              call bessjy(x*beta,xnu,rj,ry,rjp,ryp)
+              call bessjy(beta,xnu,rj1,ry1,rjp1,ryp1)
+              sz1 = vc(np+2,k2,1)*(-plgndr(k2,1, cos(theta)))*sin(theta)*(gam*ry+rj)/sqrt(x)/(gam*ry1+rj1)
+              sz2 = vc(np+2,k2,2)*(-plgndr(k2,1, cos(theta)))*sin(theta)*(gam*ry+rj)/sqrt(x)/(gam*ry1+rj1)
+            else
+              !potential solution
+              sz1 = vc(np+2,k2,1)*(-plgndr(k2,1, cos(theta)))*sin(theta)/(x**(k2+1))
+              sz2 = vc(np+2,k2,2)*(-plgndr(k2,1, cos(theta)))*sin(theta)/(x**(k2+1))
+            endif
+          else ! interior 
+            sz1 = x*vc(j,k2,1)*(-plgndr(k2,1, cos(theta)))*sin(theta)
+            sz2 = x*vc(j,k2,2)*(-plgndr(k2,1, cos(theta)))*sin(theta)
+          endif
+
+          !load array
+          apr(j,k1) = apr(j,k1)+sz1
+          api(j,k1) = api(j,k1)+sz2
+
+        enddo ! plm
+      enddo ! radial   
+    enddo ! theta
+
+  end subroutine
+
+  subroutine compute_tor (nst, net, nf, nft, vc, bphi, iphi, ffc, &
+                          hh, x1, plgndr)
+    ! -----------------------------------------------------------------
+    ! Compute the toroidal field
+    ! -----------------------------------------------------------------
+  
+    ! arguments
+    integer :: nst, net, nf, nft
+    real :: vc(np+2,nb,2)                 ! eigenvector
+    real :: bphi(np+2+nft, n_theta)         ! b poloidal (potential)
+    real :: iphi(np+2+nft, n_theta)         ! b poloidal (potential)
+    real :: ffc, hh, x1, plgndr
+  
+    ! local variables
+    real :: x, xnu, theta, sz1, sz2
+    integer :: k1, k2, j
+    real :: rj, ry, rjp, ryp
+    real :: rj1, ry1, rjp1, ryp1
+  
+    do k1=1, n_theta   ! theta-loop
+      theta = theta1 + k1*dt
+      do j=1, np+2+nf    ! radial loop
+        x = x1+(j-1)*hh
+        ! load the b_n vectors for ff-solution or vacuum 
+        do k2=nst, net, 2
+          if(beta.ne.0)then
+            call bess(betb, k2, ffc)
+            if (betb.gt.10) ffc=betb
+            vc(np+2,k2,1) = (4*vc(np+1,k2,1)-vc(np,k2,1))/(2*hh*(k2+1+ffc)+3)
+            vc(np+2,k2,2) = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)
+          endif
+  
+          if (j.ge.(np+2)) then
+            if (beta.ne.0) then
+              xnu=k2*1.d0+1.0/2.0
+              call bessjy(x*betb,xnu,rj,ry,rjp,ryp)
+              call bessjy(betb,xnu,rj1,ry1,rjp1,ryp1)
+              if(betb.gt.10) ffc=betb
+              sz1 = vc(np+2,k2,1)*(-plgndr(k2,1, cos(theta)))*(gam*ry+rj)/sqrt(x)/(gam*ry1+rj1)
+              sz2 = vc(np+2,k2,2)*(-plgndr(k2,1, cos(theta)))*(gam*ry+rj)/sqrt(x)/(gam*ry1+rj1)
+            endif
+          else
+            sz1=0
+            sz2=0
+          endif
+          bphi(j,k1)  = bphi(j,k1)+sz1
+          iphi(j,k1)  = iphi(j,k1)+sz2
+  
+        enddo ! plm
+      enddo ! radial   
+    enddo ! theta
+  
+  end subroutine
+
+  subroutine compute_ab_vector (vc, aai, aar, bbi, bbr, etet, etep, &
+                                epol, etor, ffc, x1, hh, nsp, nep, &
+                                nst, net, nf, mm)
+    ! -----------------------------------------------------------------
+    ! Compute a and b vectors and surface energy
+  
+    ! The presence of aai and aar would make sense only if they were
+    ! vectors with the same size as vc.
+    ! -----------------------------------------------------------------
+  
+    ! arguments
+    real :: vc(np+2,nb,2)                 ! eigenvector
+    real :: aai, aar, bbi, bbr
+    real :: etet, etep, etor, epol
+    real :: ffc, x1, hh
+    integer :: nsp, nep, nst, net, nf, mm
+  
+    ! local variables
+    real :: x, xnu, theta, rosym, dd1
+    integer :: k2, j
+    real :: rj, ry, rjp, ryp
+    real :: rj1, ry1, rjp1, ryp1
+  
+    ! load a-vectors
+    do k2=nsp, nep, 2
+      call bess(beta, k2, ffc)
+      vc(np+2,k2,1) = (4*vc(np+1,k2,1)-vc(np,k2,1))/(2*hh*(k2+1+ffc)+3)
+      vc(np+2,k2,2) = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)
+      do j=2, np+2+nf
+        x = x1+(j-1)*hh
+        aar = vc(j, k2, 1)
+        aai = vc(j, k2, 2)
+        if (j.ge.(np+2)) then
+          if (beta .ne. 0) then
+            xnu=1.0*k2+1/2.
+            call bessjy(x*beta,xnu,rj,ry,rjp,ryp)
+            call bessjy(beta,xnu,rj1,ry1,rjp1,ryp1)
+            aar = vc(np+2,k2,1)*(gam*ry+rj)/sqrt(x)/(gam*ry1+rj1)
+            aai = vc(np+2,k2,2)*(gam*ry+rj)/sqrt(x)/(gam*ry1+rj1)
+          else
+            ! check exponent
+            aar = vc(np+2,k2,1)/x**(k2+1)
+            aai = vc(np+2,k2,2)/x**(k2+1)
+          endif
+        endif
+      enddo
+    enddo
+  
+    ! load b-vectors
+    do k2 = nst,net,2
+      if (beta .ne. 0) then
+         call bess(betb, k2, ffc)
+         vc(np+2,k2,1) = (4*vc(np+1,k2,1)-vc(np,k2,1))/(2*hh*(k2+1+ffc)+3)
+         vc(np+2,k2,2) = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)
+      endif
+      do j=2, np+2+nf
+        x = x1+(j-1)*hh
+        bbr = vc(j, k2, 1)
+        bbi = vc(j, k2, 2)
+        if (j.ge.(np+2)) then
+          if (beta .ne. 0) then
+            xnu=1.0*k2+1/2.
+            call bessjy(x*betb, xnu,rj, ry, rjp, ryp)
+            call bessjy(betb, xnu, rj1, ry1, rjp1, ryp1)
+  
+            bbr = vc(np+2,k2,1)*(gam*ry+rj)/sqrt(x)/(gam*ry1+rj1)
+            bbi = vc(np+2,k2,2)*(gam*ry+rj)/sqrt(x)/(gam*ry1+rj1)
+          else
+            bbr = vc(np+2,k2,1)/x**(k2+1)
+            bbi = vc(np+2,k2,2)/x**(k2+1)
+          endif
+        endif
+      enddo
+    enddo
+  
+    ! surface energy
+    etor = 0
+    do k2 = nst,net,2
+      if (beta .ne. 0) then
+        call bess(betb, k2, ffc)
+        vc(np+2,k2,1) = (4*vc(np+1,k2,1)-vc(np,k2,1))/(2*hh*(k2+1+ffc)+3)
+        vc(np+2,k2,2) = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)
+      endif
+      if (mm .ne. 0) stop
+        rosym = k2*(k2+1.0)/(2.0*k2+1.0)
+        etor= etor+(vc(np+2,k2,1)**2+vc(np+2,k2,2)**2)*rosym
+    enddo
+  
+    ! surface energy
+    epol = 0
+    do k2=nsp, nep, 2
+      call bess(beta, k2, ffc)
+      vc(np+2,k2,1) = (4*vc(np+1,k2,1)-vc(np,k2,1))/(2*hh*(k2+1+ffc)+3)
+      vc(np+2,k2,2) = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)
+      rosym = k2*(k2+1.0)/(2.0*k2+1.0)
+      dd1 = (vc(np+2,k2,1)-vc(np+1,k2,1))/hh
+      epol = epol+(vc(np+2,k2,1)**2+vc(np+2,k2,2)**2 +dd1**2+2*vc(np+2,k2,1)*dd1 )*rosym &
+            & +(vc(np+2,k2,1)**2+vc(np+2,k2,2)**2)*k2*(k2+1)*rosym
+    enddo
+  
+    etep = etor/epol
+    etet = etor/(epol+etor)
+  
+    write (*,*) 'et/ep', etep
+    write (*,*) 'et/etot', etet
+  
+  end subroutine
 
   subroutine write_toroidal (bfeld3, nf, nj, jj, q, mm, &
                              theta, x, x1, xf, tc, bphi, iphi)
@@ -57,7 +280,7 @@ contains
     integer :: i, j
   
     write(bfeld3, '(a220,i6.6,a2,i2.2,a2,i2.2)') trim(dir)//'/tfld.',ii,'.t', jj, q, mm
-    open(60 ,status='unknown',file=adjustl(bfeld3))
+    open(60, status='unknown', file=adjustl(bfeld3))
     write(60, '(a)') 'Radius'
     write(60, '(a)') 'theta'
     write(60, '(1x,I4,2x,I4)') np+2+nf, n_theta
@@ -115,10 +338,14 @@ contains
     real :: ute(np+2,n_theta)             ! utheta
   
     integer :: i, j
+
+    open(50,status='unknown',file=trim(dir)//'/omega.dat')
+    open(51,status='unknown',file=trim(dir)//'/stream.dat')
+    open(52,status='unknown',file=trim(dir)//'/utheta.dat')
   
     write(50,'(a)') 'Radius'
     write(50,'(a)') 'theta'
-    write(50,'(1x,I4,2x,I4)') np+2,n_theta
+    write(50,'(1x,I4,2x,I4)') np+2, n_theta
     write(50,'(1x,f9.5,2x,f9.5,2x,f9.5,2x,f9.5)') x1, x2, theta1, theta2
     write(51,'(a)') 'Radius'
     write(51,'(a)') 'theta'
@@ -156,8 +383,7 @@ contains
             & chel, chel2, cheln, chels, cja, datheta, &
             & datheta2, dax, dax2, dbtheta, dbtheta2, dbx, dd1, dt, &
             & epol, etor, ffc, fx, h2, hd, hh, &
-            & om0, om0p, om2, om2p, om4, om4p, plgndr, rj, &
-            & rj1, rjp, rjp1, rnor, rosym, ry, ry1, ryp, ryp1, &
+            & om0, om0p, om2, om2p, om4, om4p, plgndr, rnor, &
             & sz1, sz2, t_fin, t_in, tc, theta, theta1, theta2, time, &
             & x, x1, x2, xf, xnu, zq1, zq2
     integer :: i, i2, i3, j, jbo, jbt, jj, jo, k, k1, k2, kb, &
@@ -167,8 +393,8 @@ contains
     character*43 :: version, ver
     character*82 :: fel,fes,fel2,fes2,fen
     character*2 :: qq, q
-    character*512 :: bfeld1,bfeld2,bfeld3,bfeld4,bfeld5, &
-                     & bfeld6,bfeld7,bfeld8,bfeld9,bfeld10
+    character*512 :: bfeld1, bfeld2, bfeld3, bfeld4, bfeld5, &
+                     bfeld6, bfeld7, bfeld8, bfeld9, bfeld10
   
   
     real :: ang(n_theta)              
@@ -192,7 +418,7 @@ contains
     vc=0
     mm = int(mmm)
     !  important mmm can only be le 1 in this subroutine !!!! 
-    if (mm.ge.2) print *, 'Be careful that m is larger than 1 !' 
+    if (mm.ge.2) write (*, *) 'Be careful that m is larger than 1 !' 
     x1 = x_in           !inner boundary
     x2 = 1.0            !outer bound
     hh =(x2-x1)/(np+1)  !stepsize: radial accuracy parm.
@@ -227,13 +453,9 @@ contains
         nep=nb
       endif
     endif
-    jj = 1
   
-    open(50,status='unknown',file=trim(dir)//'/omega.dat')
-    open(51,status='unknown',file=trim(dir)//'/stream.dat')
-    open(52,status='unknown',file=trim(dir)//'/utheta.dat')
-    write(bfeld2, fmt_2010) trim(dir)//'/vect.',ii,q,mm 
-    open(13,status='unknown',file=adjustl(bfeld2))
+    write(bfeld2, fmt_2010) trim(dir)//'/vect.', ii, q, mm 
+    open(13, status='unknown', file=adjustl(bfeld2))
   
     if (flg.eq.1) then
       do i2 =1, nb
@@ -257,7 +479,6 @@ contains
     endif   ! flg mode
     close(13)
   
-    theta = theta1-theta2/(n_theta)
     bphi=0
     iphi=0
     brr=0
@@ -268,15 +489,12 @@ contains
   
     ! imp: interior solution
     ! imp: initialize to zero all the other quantities
-  
     do k1=1, n_theta    ! theta loop
-      theta = theta + theta2/(n_theta)
-      ! only for testing
-      !       bdum(k1)=cos(theta)
+      theta = theta1 + k1*dt
       do j =1,np+2         ! radial loop
         x = x1+(j-1)*hh
         !  load the bphi_n  vectors in b_n p1(cos(theta))_n
-        do k2 = nst, net,2    ! legendre polynomial  l-loop
+        do k2=nst, net, 2    ! legendre polynomial  l-loop
           if (mm.eq.0) then
             !note: in spherical  symmetry btoroidal = - \partial_\theta
             !t(r,theta)  where  t=\sum_n p^0_n(cos(theta))  and p^0_n are the associate
@@ -288,14 +506,14 @@ contains
             iphi(j,k1)=iphi(j,k1)+vc(j,k2,2)*(-plgndr(k2,1,cos(theta)))
           else
             ! mm not zero, but should be checked! 
-            print*, 'check please m not zero'
+            write (*,*) 'check please m not zero'
             stop 
             bphi(j,k1)=bphi(j,k1)+vc(j,k2,1)*(- plgndr(k2,1,cos(theta))*(-cos(theta)/sin(theta))+k2*(k2+1)*plgndr(k2,0,cos(theta)))
             iphi(j,k1)=iphi(j,k1)+vc(j,k2,2)*(- plgndr(k2,1,cos(theta))*(-cos(theta)/sin(theta))+k2*(k2+1)*plgndr(k2,0,cos(theta)))
           endif 
         enddo
         ! load the a_n vectors at the boundary...
-        do k2 = nsp,nep,2   ! legendre polynomial even l-loop         
+        do k2=nsp, nep, 2   ! legendre polynomial even l-loop         
           !
           !  obtain B_r in the interior !!!
           !  to get B_r  use second fundamental identity: (see mathematica notebook notation.nb)
@@ -306,16 +524,15 @@ contains
           !  so that  (note a minus sign in the definition of br and bphi) 
           !   
           !  B_r = (sum over n) + n(n+1) p0n / x
-  
-          vc(np+2,k2,1)   = (4*vc(np+1,k2,1)-vc(np,k2,1))/(2*hh*(k2+1+ffc)+3)  
-          vc(np+2,k2,2)   = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)    
-          brr(j,k1)   = brr(j,k1)+(k2*(k2+1)/x)*vc(j,k2,1)*(+plgndr(k2,0, cos(theta)))
-          bri(j,k1)   = bri(j,k1)+(k2*(k2+1)/x)*vc(j,k2,2)*(+plgndr(k2,0, cos(theta)))
+          vc(np+2,k2,1) = (4*vc(np+1,k2,1)-vc(np,k2,1))/(2*hh*(k2+1+ffc)+3)  
+          vc(np+2,k2,2) = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)    
+          brr(j,k1) = brr(j,k1)+(k2*(k2+1)/x)*vc(j,k2,1)*(+plgndr(k2,0, cos(theta)))
+          bri(j,k1) = bri(j,k1)+(k2*(k2+1)/x)*vc(j,k2,2)*(+plgndr(k2,0, cos(theta)))
   
         enddo ! legendre polynomial even l-loop  k2
   
         call rot(x, om0, om0p, om2, om2p, om4, om4p)
-        call stream(x,ax,axp,bx,bxp,fx)
+        call stream(x, ax, axp, bx, bxp, fx)
         if (ans1.eq.'h4' .or. ans1.eq.'h6' .or. ans1.eq.'h5') then 
           ome(j,k1) = om0 + om2*cos(theta)**2 + om4*cos(theta)**4
         else
@@ -341,16 +558,17 @@ contains
   
     ! the exterior solution is different if ffree is not zero (pure force-free)
     ! parameter, or beta is zero or not zero (potential vs helmholtz extrapolation)    
-      
-    include 'load_pol.f90'   
-    include 'load_tor.f90'
-    include 'load_vec.f90'
+    call compute_pol (nsp, nep, nf, nft, vc, apr, api, &
+                      ffc, hh, x1, plgndr)
+    call compute_tor (nst, net, nf, nft, vc, bphi, iphi, ffc, &
+                      hh, x1, plgndr)
+    call compute_ab_vector (vc, aai, aar, bbi, bbr, etet, etep, &
+                            epol, etor, ffc, x1, hh, nsp, nep, &
+                            nst, net, nf, mm)
   
-    !  ---------- write toroidal  retor.dat ed itor
-    !  nj is the number of time slices
+    ! nj is the number of time slices
     nj = 8
-  
-    do jj =1, nj
+    do jj=1, nj
       call write_toroidal (bfeld3, nf, nj, jj, q, mm, &
                            theta, x, x1, xf, tc, bphi, iphi)
       call write_poloidal (bfeld4, nf, nj, jj, q, mm, &
@@ -360,16 +578,16 @@ contains
     !  butterfly diagram block      
     !  time evolution butterfly diagram 
     write(bfeld1, fmt_2010) trim(dir)//'/butf.',ii,q,mm 
-    open(18,status='unknown',file=adjustl(bfeld1))      
+    open(18, status='unknown',file=adjustl(bfeld1))      
   
     write(bfeld6, fmt_2010) trim(dir)//'/jcin.',ii,q,mm 
-    open(30,status='unknown',file=adjustl(bfeld6))      
+    open(30, status='unknown',file=adjustl(bfeld6))      
   
     write(bfeld7, fmt_2010) trim(dir)//'/jcou.',ii,q,mm 
-    open(31,status='unknown',file=adjustl(bfeld7))      
+    open(31, status='unknown',file=adjustl(bfeld7))      
   
     write(bfeld8, fmt_2010) trim(dir)//'/brbp.',ii,q,mm 
-    open(32,status='unknown',file=adjustl(bfeld8))      
+    open(32, status='unknown',file=adjustl(bfeld8))      
   
     t_in = 0.
     t_fin = 12.
@@ -395,7 +613,7 @@ contains
     write(*,'(a,f10.4)') 'a max location',   rax(1)*(x2-x1)/(np+1) +x1
   
     do k2 =2,n_theta-1
-      theta = theta + theta2/(n_theta)
+      theta = theta1 + k2*dt
       write(18,'(e12.5)') theta
       write(30,'(e12.5)') theta
       write(31,'(e12.5)') theta
@@ -411,19 +629,18 @@ contains
     call hunt(xr, np+2+nf, xbt, jbt)
     call hunt(xr, np+2+nf, xbo, jbo)
   
-    do k1=1,n_time
+    do k1=1, n_time
       time = time + t_fin/n_time
       write(18,'(e12.5)') time
       write(30,'(e12.5)') time
       write(31,'(e12.5)') time
       write(32,'(e12.5)') time
       theta=0
-      do k2 =2, n_theta-1
-        theta = theta + theta2/(n_theta)
+      do k2=2, n_theta-1
+        theta = theta1 + k2*dt
         bphi7= bphi(jbt,k2)*cos(abg(imag)*time)+iphi(jbt,k2)*sin(abg(imag)*time)
         write(18,'(e12.5)')  bphi7
-        dt=theta2/n_theta
-        j=jbt
+        j = jbt
         brs  = brr(np,k2)*cos(abg(imag)*time)+bri(np,k2)*sin(abg(imag)*time)
         write(32,'(e12.5)') brs !* bphi7
         apt    = apr(j,k2)*cos(abg(imag)*time)+api(j,k2)*sin(abg(imag)*time)
@@ -540,8 +757,6 @@ contains
     call hunt(ang,n_theta, abt, kb)
     call hunt(ang,n_theta, abm, km)
   
-    dt=theta2/n_theta
-  
     do k1=1,n_time
       time = time + t_fin/n_time
       write(33,'(e12.5)') time
@@ -586,7 +801,7 @@ contains
          write(33,'(e12.5)')  cja/rnor/2./nag
        enddo
   
-       do j =3,np+2+nf-1       ! radial loop
+       do j=3, np+2+nf-1       ! radial loop
          cja=0
          do k2=km-nag,km+nag  ! average over angle 
            ko = k2

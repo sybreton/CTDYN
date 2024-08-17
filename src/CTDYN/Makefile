@@ -47,7 +47,7 @@ cdfunc.mod: cdfunc.f90
 bessel.mod: bessel.f90 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
 write_outputs.mod: write_outputs.f90 cio.mod ccov.mod cdfunc.mod \
-                   bessel.mod load_tor.f90 load_pol.f90 load_vec.f90 
+                   bessel.mod 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
 
 cio.o: cio.f90 
@@ -73,7 +73,7 @@ cdfunc.o: cdfunc.f90 cio.mod
 bessel.o: bessel.f90  cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 write_outputs.o: write_outputs.f90 cio.mod ccov.mod cdfunc.mod \
-	bessel.mod load_tor.f90 load_pol.f90 load_vec.f90
+	         bessel.mod 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 
 dyna.o: dyna.f90 cint.f90 ccov.mod cvect.mod cio.mod \
