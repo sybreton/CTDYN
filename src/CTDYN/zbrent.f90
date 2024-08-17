@@ -56,8 +56,8 @@ contains
       endif
       tol1=2.*eps*abs(b)+0.5*tol
       xm=.5*(c-b)
-      if(abs(xm).le.tol1 .or. fb.eq.0.)then
-        write(*,*) 'tolerance threshold met at iteration', it
+      if(abs(xm).le.tol1 .or. fb.eq.0.) then
+        write(*,*) 'Tolerance threshold met at iteration', it
         root=b
         return
       endif
@@ -96,13 +96,12 @@ contains
       if (abs(fb) .le. 1.0e-4) then
         root=b
         write(*,*) 'fb below 1e-4 at iteration number', iter
-        write(*,*)
         return
        endif
     enddo
     
     ! Case where the loop terminated without finishing
-    write(*,*) 'zbrent exceeding maximum iterations'
+    write(*,*) 'Brent algorithm exceeding maximum iterations'
     root=b
   
     return

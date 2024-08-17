@@ -140,20 +140,20 @@ contains
     !
     !-------------------------------------------------------------
     
-    ! In this case the coefficients are not computed....
-    if(c3.ne.0.and.mmm.ne.0)then
-      print*, 'not available'
+    ! In this case the coefficients are not computed !
+    if (c3.ne.0.and.mmm.ne.0) then
+      write (*,*) 'Not available'
       stop
     endif 
     
-    if(ans2.eq.'d'.and.mmm.eq.0) write(*,*) '********** a0-mode *********'
-    if(ans2.eq.'d'.and.mmm.ne.0) write(*,*) '********** s1-mode *********'
-    if(ans2.eq.'q'.and.mmm.eq.0) write(*,*) '********** s0-mode *********'
-    if(ans2.eq.'q'.and.mmm.ne.0) write(*,*) '********** a1-mode *********'
+    if (ans2.eq.'d' .and. mmm.eq.0) write(*,*) '********** a0-mode *********'
+    if (ans2.eq.'d' .and. mmm.ne.0) write(*,*) '********** s1-mode *********'
+    if (ans2.eq.'q' .and. mmm.eq.0) write(*,*) '********** s0-mode *********'
+    if (ans2.eq.'q' .and. mmm.ne.0) write(*,*) '********** a1-mode *********'
     
-    write(*,'(1x,a,i4,1x,a,i4,1x,a,i4)') ' it=', it,' na=', nb, ' np=', np
-    write(*,'(a,e12.5,a,e12.5)' ) ' c_alpha=', turb, ' c_omega=', co 
-    write(*,'(a,e12.5,a,e12.5)' ) ' r_flow =', c_u,  ' f-f=    ', beta 
+    write(*,'(a,i4.1,3x,a,i4.1,3x,a,i4.1)') 'it =', it,'na =', nb, 'np =', np
+    write(*,'(a,e12.5,a,e12.5)' ) ' c_alpha =', turb, ' c_omega =', co 
+    write(*,'(a,e12.5,a,e12.5)' ) ' r_flow  =', c_u,  ' f-f =    ', beta 
     
     
     !
