@@ -50,6 +50,8 @@ module write_outputs
   real, parameter :: theta2 = 3.1415926
   real, parameter :: dt = (theta2 -  theta1) / n_theta
 
+  integer :: mm 
+
 contains 
 
   subroutine compute_pol (nsp, nep, nf, nft, vc, apr, api, &
@@ -165,7 +167,7 @@ contains
 
   subroutine compute_ab_vector (vc, aai, aar, bbi, bbr, etet, etep, &
                                 epol, etor, ffc, x1, hh, nsp, nep, &
-                                nst, net, nf, mm)
+                                nst, net, nf)
     ! -----------------------------------------------------------------
     ! Compute a and b vectors and surface energy
   
@@ -271,12 +273,12 @@ contains
   
   end subroutine
 
-  subroutine write_toroidal (bfeld3, nf, nj, jj, q, mm, &
+  subroutine write_toroidal (bfeld3, nf, nj, jj, q, &
                              theta, x, x1, xf, tc, bphi, iphi)
   
     character*512 :: bfeld3
     character*2 :: q
-    integer :: nf, nj, jj, mm
+    integer :: nf, nj, jj
     real :: theta, x, x1, xf, tc
     real :: bphi(np+2+nft, n_theta)        ! toroidal real
     real :: iphi(np+2+nft, n_theta)        ! toroidal im
@@ -298,12 +300,12 @@ contains
     close(60)
   end subroutine
   
-  subroutine write_poloidal (bfeld4, nf, nj, jj, q, mm, &
+  subroutine write_poloidal (bfeld4, nf, nj, jj, q, &
                              theta, x, x1, xf, tc, apr, api) 
   
     character*512 :: bfeld4
     character*2 :: q
-    integer :: nf, nj, jj, mm
+    integer :: nf, nj, jj
     real :: theta, x, x1, xf, tc
     real :: apr(np+2+nft, n_theta)         ! b poloidal (potential)
     real :: api(np+2+nft, n_theta)         ! b poloidal (potential)
@@ -372,229 +374,64 @@ contains
     close(51)
     close(52)
   end subroutine 
-  
-  subroutine writefield
-    !------------------------------------------------------
+
+  subroutine write_vect (bfeld2, q) 
+    !-------------------------------------------------------------
     !
-    ! Write the fields computed when solving the eigenvalue
-    ! problem. 
-    !
-    !------------------------------------------------------
-    real :: aai, aar, abm, abt, adum, apt, aptjm, &
-            & aptjm2, aptjp, aptkm, aptkp, ax, &
-            & axp, bbi, bbr, bphi7, bpt, &
-            & bptjm, bptjp, bptkm, bptkp, brs, bx, bxp, &
-            & chel, chel2, cheln, chels, cja, datheta, &
-            & datheta2, dax, dax2, dbtheta, dbtheta2, dbx, dd1, dt, &
-            & epol, etor, ffc, fx, h2, hd, hh, &
-            & om0, om0p, om2, om2p, om4, om4p, rnor, &
-            & sz1, sz2, t_fin, t_in, tc, theta, theta1, theta2, time, &
-            & x, x1, x2, xf, xnu, zq1, zq2
-    integer :: i, i2, i3, j, jbo, jbt, jj, jo, k, k1, k2, kb, &
-               & km, ko, mm, nag, nep, net, nf, nj, nsp, nst
-  
-    character*30 :: inp
-    character*43 :: version, ver
-    character*82 :: fel,fes,fel2,fes2,fen
-    character*2 :: qq, q
-    character*512 :: bfeld1, bfeld2, bfeld3, bfeld4, bfeld5, &
-                     bfeld6, bfeld7, bfeld8, bfeld9, bfeld10
-  
-  
-    real :: ang(n_theta)              
-  
+    !-------------------------------------------------------------
+
+    character*512 :: bfeld2
+    character*2 :: q
+
+    write(bfeld2, fmt_2010) trim(dir)//'/vect.', ii, q, mm 
+    open(13, status='unknown', file=adjustl(bfeld2))
+    close(13)
+
+  end subroutine
+
+
+  subroutine time_butterfly (bfeld1, bfeld6, bfeld7, bfeld8, &
+                             nf, nft, x1, x2, hh, bphi, iphi, &
+                             brr, bri, apr, api, q) 
+    !-------------------------------------------------------------
+    !  butterfly diagram block      
+    !  time evolution butterfly diagram 
+    !-------------------------------------------------------------
+
+    character*512 :: bfeld1, bfeld6, bfeld7, bfeld8
+    character*2 :: q
+    integer :: nf, nft
+    real :: x1, x2, hh
     real :: bphi(np+2+nft,n_theta)        ! toroidal real
     real :: iphi(np+2+nft,n_theta)        ! toroidal im
     real :: brr(np+2+nft,n_theta)         ! radial real
     real :: bri(np+2+nft,n_theta)         ! radial im
     real :: apr(np+2+nft,n_theta)         ! b poloidal (potential)
     real :: api(np+2+nft,n_theta)         ! b poloidal (potential)
-    real :: ome(np+2,n_theta)             ! omega
-    real :: sfu(np+2,n_theta)             ! stream function 
-    real :: ute(np+2,n_theta)             ! utheta
-    real :: vc(np+2,nb,2)                 ! eigenvector
+
+
+    ! local arguments
+    real, parameter :: t_in = 0.
+    real, parameter :: t_fin = 12.
+    real :: time, ratio, theta
+    real :: x, xbt, xbo
     real :: xr(np+2+nft)                
-  
     integer :: bin(2), bax(2), rin(2), rax(2)
-    
-    ! initialize
-    vc=0
-    mm = int(mmm)
-    !  important mmm can only be le 1 in this subroutine !!!! 
-    if (mm.ge.2) write (*, *) 'Be careful that m is larger than 1 !' 
-    x1 = x_in           !inner boundary
-    x2 = 1.0            !outer bound
-    hh =(x2-x1)/(np+1)  !stepsize: radial accuracy parm.
-    h2 = hh/2.e0
-  
-    if (mod(mm,2).eq.0) then 
-      if (ans2.eq.'d') then
-        q='.a'
-        nst=2
-        net=nb
-        nsp=1
-        nep=na
-      else
-        q='.s'
-        nst=1
-        net=na
-        nsp=2
-        nep=nb
-      endif
-    else if (mod(mm,2).eq.1) then
-      if (ans2.eq.'d') then
-        q='.s'
-        nst=2
-        net=nb
-        nsp=1
-        nep=na
-      else
-        q='.a'
-        nst=1
-        net=na
-        nsp=2
-        nep=nb
-      endif
-    endif
-  
-    write(bfeld2, fmt_2010) trim(dir)//'/vect.', ii, q, mm 
-    open(13, status='unknown', file=adjustl(bfeld2))
-  
-    if (flg.eq.1) then
-      do i2 =1, nb
-        k = 1          
-        do i3 = i2, nt, nb
-          k = k + 1   
-          vc(k,i2,1) = real(cvr(i3,int(indeg(nt))))
-          vc(k,i2,2) = aimag(cvr(i3,int(indeg(nt))))
-        enddo
-      enddo
-    else   ! flg = 0 (real matrix inversion)
-      do i2 =1,nb
-        k = 1          
-        do i3 = i2,nt,nb
-          k = k + 1   
-          vc(k,i2,1) = vr(i3,indeg(nt))
-          ! it should be -  (after long check with lapack libraries)
-          vc(k,i2,2) = -vr(i3,indeg(nt-1))
-        enddo
-      enddo
-    endif   ! flg mode
-    close(13)
-  
-    bphi=0
-    iphi=0
-    brr=0
-    bri=0
-    apr=0
-    api=0
-    adum=0
-  
-    ! imp: interior solution
-    ! imp: initialize to zero all the other quantities
-    do k1=1, n_theta    ! theta loop
-      theta = theta1 + k1*dt
-      do j =1,np+2         ! radial loop
-        x = x1+(j-1)*hh
-        !  load the bphi_n  vectors in b_n p1(cos(theta))_n
-        do k2=nst, net, 2    ! legendre polynomial  l-loop
-          if (mm.eq.0) then
-            !note: in spherical  symmetry btoroidal = - \partial_\theta
-            !t(r,theta)  where  t=\sum_n p^0_n(cos(theta))  and p^0_n are the associate
-            !legendre functions of the first kind (see maple and mathematical definition
-            !with the correct branch cut.) 
-            !Therefore we can use the (ruediger corrected) fundamental identity:  
-            !\partial_\theta p^0_n(cos(theta)), theta) = (plus) p^1_n(cos(theta))
-            bphi(j,k1)=bphi(j,k1)+vc(j,k2,1)*(-plgndr(k2,1,cos(theta)))
-            iphi(j,k1)=iphi(j,k1)+vc(j,k2,2)*(-plgndr(k2,1,cos(theta)))
-          else
-            ! mm not zero, but should be checked! 
-            write (*,*) 'check please m not zero'
-            stop 
-            bphi(j,k1)=bphi(j,k1)+vc(j,k2,1)*(- plgndr(k2,1,cos(theta))*(-cos(theta)/sin(theta))+k2*(k2+1)*plgndr(k2,0,cos(theta)))
-            iphi(j,k1)=iphi(j,k1)+vc(j,k2,2)*(- plgndr(k2,1,cos(theta))*(-cos(theta)/sin(theta))+k2*(k2+1)*plgndr(k2,0,cos(theta)))
-          endif 
-        enddo
-        ! load the a_n vectors at the boundary...
-        do k2=nsp, nep, 2   ! legendre polynomial even l-loop         
-          !
-          !  obtain B_r in the interior !!!
-          !  to get B_r  use second fundamental identity: (see mathematica notebook notation.nb)
-          !
-          ! B_r = -(1/sintheta) \partial_\theta (sintheta\partial_\theta p0n) = 
-          !     = -(1/sintheta) \partia_\theta [ p1n sintheta ] = +n*(n+1) p0n
-          ! 
-          !  so that  (note a minus sign in the definition of br and bphi) 
-          !   
-          !  B_r = (sum over n) + n(n+1) p0n / x
-          vc(np+2,k2,1) = (4*vc(np+1,k2,1)-vc(np,k2,1))/(2*hh*(k2+1+ffc)+3)  
-          vc(np+2,k2,2) = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)    
-          brr(j,k1) = brr(j,k1)+(k2*(k2+1)/x)*vc(j,k2,1)*(+plgndr(k2,0, cos(theta)))
-          bri(j,k1) = bri(j,k1)+(k2*(k2+1)/x)*vc(j,k2,2)*(+plgndr(k2,0, cos(theta)))
-  
-        enddo ! legendre polynomial even l-loop  k2
-  
-        call rot(x, om0, om0p, om2, om2p, om4, om4p)
-        call stream(x, ax, axp, bx, bxp, fx)
-        if (ans1.eq.'h4' .or. ans1.eq.'h6' .or. ans1.eq.'h5') then 
-          ome(j,k1) = om0 + om2*cos(theta)**2 + om4*cos(theta)**4
-        else
-          ome(j,k1) = om0 + om2 *( -(1-3*cos(theta)**2)/2.0 )
-        endif
-        sfu(j,k1) = fx*sin(theta)*cos(theta)
-        ute(j,k1) = bx*sin(theta)*cos(theta) 
-  
-      enddo   ! close radial  
-    enddo   ! close theta
-  
-    call write_omega (np, n_theta, x1, x2, theta1, theta2, &
-                      ome, sfu, ute)
-  
-    ! determine the outer mesh point equal to zeta_r+1
-    xf=zeta_r+0.5
-    xf=zeta_r+0.3
-    nf=int((xf-1.0)/hh)
-    if(nf .ge. nft) then
-      print*, 'too small nft'
-      stop
-    endif
-  
-    ! the exterior solution is different if ffree is not zero (pure force-free)
-    ! parameter, or beta is zero or not zero (potential vs helmholtz extrapolation)    
-    call compute_pol (nsp, nep, nf, nft, vc, apr, api, &
-                      ffc, hh, x1)
-    call compute_tor (nst, net, nf, nft, vc, bphi, iphi, ffc, &
-                      hh, x1)
-    call compute_ab_vector (vc, aai, aar, bbi, bbr, etet, etep, &
-                            epol, etor, ffc, x1, hh, nsp, nep, &
-                            nst, net, nf, mm)
-  
-    ! nj is the number of time slices
-    nj = 8
-    do jj=1, nj
-      call write_toroidal (bfeld3, nf, nj, jj, q, mm, &
-                           theta, x, x1, xf, tc, bphi, iphi)
-      call write_poloidal (bfeld4, nf, nj, jj, q, mm, &
-                           theta, x, x1, xf, tc, apr, api) 
-    enddo
-  
-    !  butterfly diagram block      
-    !  time evolution butterfly diagram 
+    integer :: k1, k2, j, jo, jbt, jbo
+    real :: bphi7, brs, apt, bpt, bptkm, aptkm, &
+            bptkp, aptkp, bptjm, aptjm, bptjp, &
+            aptjp, dbtheta, datheta, dbtheta2, &
+            datheta2, dax, dbx, dax2, chel, chel2
+
+
     write(bfeld1, fmt_2010) trim(dir)//'/butf.',ii,q,mm 
     open(18, status='unknown',file=adjustl(bfeld1))      
-  
     write(bfeld6, fmt_2010) trim(dir)//'/jcin.',ii,q,mm 
     open(30, status='unknown',file=adjustl(bfeld6))      
-  
     write(bfeld7, fmt_2010) trim(dir)//'/jcou.',ii,q,mm 
     open(31, status='unknown',file=adjustl(bfeld7))      
-  
     write(bfeld8, fmt_2010) trim(dir)//'/brbp.',ii,q,mm 
     open(32, status='unknown',file=adjustl(bfeld8))      
-  
-    t_in = 0.
-    t_fin = 12.
-    time = -t_fin/n_time
   
     write(18,'(6x,i4)') n_theta-2
     write(30,'(6x,i4)') n_theta-2
@@ -602,7 +439,6 @@ contains
     write(32,'(6x,i4)') n_theta-2
   
     ! location of max bphi
-  
     bax=maxloc(sqrt(bphi**2+iphi**2))
     bin=minloc(sqrt(bphi**2+iphi**2))
     rax=maxloc(sqrt(apr**2+api**2))
@@ -612,10 +448,10 @@ contains
            & /sqrt(apr(rax(1), rax(2))**2 + api(rax(1), rax(2))**2) )**(-1)
   
     write(*, '(a,f10.4)') 'max poloidal / max toroidal  ',  ratio
-    write(*,'(a,f10.4)') 'bphi max location', bax(1)*(x2-x1)/(np+1) +x1
-    write(*,'(a,f10.4)') 'a max location',   rax(1)*(x2-x1)/(np+1) +x1
+    write(*,'(a,f10.4)') 'Bphi max location', bax(1)*(x2-x1)/(np+1) + x1
+    write(*,'(a,f10.4)') 'a max location', rax(1)*(x2-x1)/(np+1) + x1
   
-    do k2 =2,n_theta-1
+    do k2=2, n_theta-1
       theta = theta1 + k2*dt
       write(18,'(e12.5)') theta
       write(30,'(e12.5)') theta
@@ -623,8 +459,7 @@ contains
       write(32,'(e12.5)') theta
     enddo
   
-    x=0
-    do j =1,np+2 + nf        ! radial loop
+    do j=1, np+2+nf        ! radial loop
       x = x1+(j-1)*hh
       xr(j) = x
     enddo
@@ -632,20 +467,18 @@ contains
     call hunt_hunt(xr, np+2+nf, xbt, jbt)
     call hunt_hunt(xr, np+2+nf, xbo, jbo)
   
+    time = -t_fin/n_time
     do k1=1, n_time
       time = time + t_fin/n_time
       write(18,'(e12.5)') time
       write(30,'(e12.5)') time
       write(31,'(e12.5)') time
       write(32,'(e12.5)') time
-      theta=0
       do k2=2, n_theta-1
         theta = theta1 + k2*dt
-        bphi7= bphi(jbt,k2)*cos(abg(imag)*time)+iphi(jbt,k2)*sin(abg(imag)*time)
-        write(18,'(e12.5)')  bphi7
+        bphi7 = bphi(jbt,k2)*cos(abg(imag)*time)+iphi(jbt,k2)*sin(abg(imag)*time)
         j = jbt
         brs  = brr(np,k2)*cos(abg(imag)*time)+bri(np,k2)*sin(abg(imag)*time)
-        write(32,'(e12.5)') brs !* bphi7
         apt    = apr(j,k2)*cos(abg(imag)*time)+api(j,k2)*sin(abg(imag)*time)
         bpt    = bphi(j,k2)*cos(abg(imag)*time)+iphi(j,k2)*sin(abg(imag)*time)
         bptkm  = bphi(j,k2-1)*cos(abg(imag)*time)+iphi(j,k2-1)*sin(abg(imag)*time)
@@ -671,7 +504,6 @@ contains
         chel=(2*apt*bpt/sin(theta)**2 + apt*dbtheta*cos(theta)/sin(theta) & 
          & +datheta*dbtheta -bpt*datheta2)/xr(j)/xr(j) &
          & +(-bpt*dax+apt*dbx)/xr(j)+dax*dbx -bpt*dax2
-        write(30,'(e12.5)') chel
   
         jo = jbo
         apt    = apr(jo,k2)*cos(abg(imag)*time)+api(jo,k2)*sin(abg(imag)*time)
@@ -699,7 +531,11 @@ contains
         chel2=(2*apt*bpt/sin(theta)**2 + apt*dbtheta*cos(theta)/sin(theta) & 
          & +datheta*dbtheta -bpt*datheta2)/xr(jo)/xr(jo) &
          & +(-bpt*dax+apt*dbx)/xr(jo)+dax*dbx -bpt*dax2
+
+        write(18,'(e12.5)')  bphi7
+        write(30,'(e12.5)') chel
         write(31,'(e12.5)')  chel2
+        write(32,'(e12.5)') brs !* bphi7
       enddo
     enddo
   
@@ -707,18 +543,42 @@ contains
     close(30)
     close(31)
     close(32)
-  
-  !----------------------------------------------------------
-  ! radial butterfly diagram n and s 
-  !----------------------------------------------------------
-  
-    bax=maxloc(abs(bphi))
-    bin=minloc(abs(bphi))
-    zq1= bphi(bax(1), bax(2))
-    bax=maxloc(abs(iphi))
-    bin=minloc(abs(iphi))
-    zq2=iphi(bax(1), bax(2))
-    rnor=((zq1+zq2)/2.)**2
+
+  end subroutine 
+
+  subroutine radial_butterfly (bfeld9, bfeld10, nf, nft, x1, x2, &
+                               hh, bphi, iphi, brr, bri, apr, api, q) 
+    !----------------------------------------------------------
+    ! radial butterfly diagram n and s 
+    !----------------------------------------------------------
+    character*512 :: bfeld9, bfeld10
+    character*2 :: q
+    integer :: nf, nft
+    real :: x1, x2, hh
+    real :: bphi(np+2+nft,n_theta)        ! toroidal real
+    real :: iphi(np+2+nft,n_theta)        ! toroidal im
+    real :: brr(np+2+nft,n_theta)         ! radial real
+    real :: bri(np+2+nft,n_theta)         ! radial im
+    real :: apr(np+2+nft,n_theta)         ! b poloidal (potential)
+    real :: api(np+2+nft,n_theta)         ! b poloidal (potential)
+
+
+    ! local arguments
+    real, parameter :: t_in = 0.
+    real, parameter :: t_fin = 12.
+    real :: ang(n_theta)
+    real :: time, theta, zq1, zq2
+    real :: x, rnor, xbt, xbo, cja
+    real :: xr(np+2+nft)                
+    integer :: bin(2), bax(2), rin(2), rax(2)
+    integer :: k1, k2, kb, km, j, jo, ko, jbt, jbo
+    real :: bphi7, brs, apt, bpt, bptkm, aptkm, &
+            bptkp, aptkp, bptjm, aptjm, aptjm2, bptjp, &
+            aptjp, dbtheta, datheta, dbtheta2, &
+            datheta2, dax, dbx, dax2, chels, cheln
+    integer, parameter :: nag=2
+    real, parameter :: abt=1.047
+    real, parameter :: abm=2.094
     
     bax=maxloc(abs(apr))
     bin=minloc(abs(apr))
@@ -733,40 +593,31 @@ contains
     write(bfeld10, fmt_2010) trim(dir)//'/brts.',ii,q,mm 
     open(34,status='unknown',file=adjustl(bfeld10))      
   
-    t_in = 0.
-    t_fin = 12.
-    time = -t_fin/n_time
-  
     write(33,'(6x,i4)') np+2+nf-2
     write(34,'(6x,i4)') np+2+nf-2
   
-    x=0
-    do j =2,np+2+nf-1       ! radial loop
+    do j=2, np+2+nf-1       ! radial loop
       x = x1+(j-1)*hh
       write(33,'(e12.5)') x
       write(34,'(e12.5)') x
     enddo
   
-    theta=0
-    do k2 =1,n_theta
-      theta = theta + theta2/n_theta
-      ang(k2)=theta
+    do k2=1, n_theta
+      theta = theta1 + k2*dt
+      ang(k2) = theta
     enddo
-  
-    nag=2
-    abt=1.047
-    abm=2.094
   
     call hunt_hunt(ang,n_theta, abt, kb)
     call hunt_hunt(ang,n_theta, abm, km)
   
-    do k1=1,n_time
+    time = -t_fin/n_time
+    do k1=1, n_time
       time = time + t_fin/n_time
       write(33,'(e12.5)') time
       write(34,'(e12.5)') time
       do j =3,np+2+nf-1       ! radial loop
          cja=0
-         do k2=kb-nag,kb+nag  ! average over angle 
+         do k2=kb-nag, kb+nag  ! average over angle 
            ko = k2
            apt    = apr(j,ko)*cos(abg(imag)*time)+api(j,ko)*sin(abg(imag)*time)
            bpt    = bphi(j,ko)*cos(abg(imag)*time)+iphi(j,ko)*sin(abg(imag)*time)
@@ -786,8 +637,8 @@ contains
            datheta2 = (aptkp-2*apt+aptkm)/dt/dt
            dbtheta2 = (bptkp-2*bpt+bptkm)/dt/dt
            ! first derivative wrt x
-           dax= (aptjp-aptjm)/hh/2
-           dbx= (bptjp-bptjm)/hh/2
+           dax = (aptjp-aptjm)/hh/2
+           dbx = (bptjp-bptjm)/hh/2
            ! second derivative wrt x 
            if (j.ne.np+2) then
              dax2=(aptjp-2*apt+aptjm)/hh/hh
@@ -849,6 +700,205 @@ contains
   
     close(33)
     close(34)
+
+  end subroutine 
+  
+  subroutine writefield
+    !------------------------------------------------------
+    !
+    ! Write the fields computed when solving the eigenvalue
+    ! problem. 
+    !
+    !------------------------------------------------------
+    real :: aai, aar, adum, ax, axp, bbi, bbr, bpt, bx, bxp, &
+            & dbx, epol, etor, ffc, fx, h2, hh, &
+            & om0, om0p, om2, om2p, om4, om4p, &
+            & tc, theta, x, x1, x2, xf
+    integer :: i, i2, i3, j, jj, k, k1, k2, &
+               & nep, net, nf, nj, nsp, nst
+  
+    character*2 :: q
+    character*512 :: bfeld1, bfeld2, bfeld3, bfeld4, bfeld5, &
+                     bfeld6, bfeld7, bfeld8, bfeld9, bfeld10
+  
+  
+    real :: bphi(np+2+nft,n_theta)        ! toroidal real
+    real :: iphi(np+2+nft,n_theta)        ! toroidal im
+    real :: brr(np+2+nft,n_theta)         ! radial real
+    real :: bri(np+2+nft,n_theta)         ! radial im
+    real :: apr(np+2+nft,n_theta)         ! b poloidal (potential)
+    real :: api(np+2+nft,n_theta)         ! b poloidal (potential)
+    real :: ome(np+2,n_theta)             ! omega
+    real :: sfu(np+2,n_theta)             ! stream function 
+    real :: ute(np+2,n_theta)             ! utheta
+    real :: vc(np+2,nb,2)                 ! eigenvector
+    real :: xr(np+2+nft)                
+  
+    integer :: bin(2), bax(2), rin(2), rax(2)
+    
+    ! initialize
+    mm = int (mmm)
+    vc = 0
+    !  important mmm can only be le 1 in this subroutine !!!! 
+    if (mm.ge.2) write (*, *) 'Be careful that m is larger than 1 !' 
+    x1 = x_in           !inner boundary
+    x2 = 1.0            !outer bound
+    hh =(x2-x1)/(np+1)  !stepsize: radial accuracy parm.
+    h2 = hh/2.e0
+  
+    if (mod(mm,2).eq.0) then 
+      if (ans2.eq.'d') then
+        q='.a'
+        nst=2
+        net=nb
+        nsp=1
+        nep=na
+      else
+        q='.s'
+        nst=1
+        net=na
+        nsp=2
+        nep=nb
+      endif
+    else if (mod(mm,2).eq.1) then
+      if (ans2.eq.'d') then
+        q='.s'
+        nst=2
+        net=nb
+        nsp=1
+        nep=na
+      else
+        q='.a'
+        nst=1
+        net=na
+        nsp=2
+        nep=nb
+      endif
+    endif
+  
+    if (flg.eq.1) then
+      do i2=1, nb
+        k = 1          
+        do i3 = i2, nt, nb
+          k = k + 1   
+          vc(k,i2,1) = real(cvr(i3,int(indeg(nt))))
+          vc(k,i2,2) = aimag(cvr(i3,int(indeg(nt))))
+        enddo
+      enddo
+    else   ! flg = 0 (real matrix inversion)
+      do i2=1, nb
+        k = 1          
+        do i3 = i2, nt, nb
+          k = k + 1   
+          vc(k,i2,1) = vr(i3,indeg(nt))
+          ! it should be -  (after long check with lapack libraries)
+          vc(k,i2,2) = -vr(i3,indeg(nt-1))
+        enddo
+      enddo
+    endif   ! flg mode
+
+    call write_vect (bfeld2, q)
+  
+    bphi=0
+    iphi=0
+    brr=0
+    bri=0
+    apr=0
+    api=0
+    adum=0
+    ! imp: interior solution
+    ! imp: initialize to zero all the other quantities
+    do k1=1, n_theta    ! theta loop
+      theta = theta1 + k1*dt
+      do j=1, np+2         ! radial loop
+        x = x1+(j-1)*hh
+        !  load the bphi_n  vectors in b_n p1(cos(theta))_n
+        do k2=nst, net, 2    ! legendre polynomial  l-loop
+          if (mm.eq.0) then
+            !note: in spherical  symmetry btoroidal = - \partial_\theta
+            !t(r,theta)  where  t=\sum_n p^0_n(cos(theta))  and p^0_n are the associate
+            !legendre functions of the first kind (see maple and mathematical definition
+            !with the correct branch cut.) 
+            !Therefore we can use the (ruediger corrected) fundamental identity:  
+            !\partial_\theta p^0_n(cos(theta)), theta) = (plus) p^1_n(cos(theta))
+            bphi(j,k1)=bphi(j,k1)+vc(j,k2,1)*(-plgndr(k2,1,cos(theta)))
+            iphi(j,k1)=iphi(j,k1)+vc(j,k2,2)*(-plgndr(k2,1,cos(theta)))
+          else
+            ! mm not zero, but should be checked! 
+            write (*,*) 'check please m not zero'
+            stop 
+            bphi(j,k1)=bphi(j,k1)+vc(j,k2,1)*(- plgndr(k2,1,cos(theta))*(-cos(theta)/sin(theta))+k2*(k2+1)*plgndr(k2,0,cos(theta)))
+            iphi(j,k1)=iphi(j,k1)+vc(j,k2,2)*(- plgndr(k2,1,cos(theta))*(-cos(theta)/sin(theta))+k2*(k2+1)*plgndr(k2,0,cos(theta)))
+          endif 
+        enddo
+        ! load the a_n vectors at the boundary...
+        do k2=nsp, nep, 2   ! legendre polynomial even l-loop         
+          !
+          !  obtain B_r in the interior !!!
+          !  to get B_r  use second fundamental identity: (see mathematica notebook notation.nb)
+          !
+          ! B_r = -(1/sintheta) \partial_\theta (sintheta\partial_\theta p0n) = 
+          !     = -(1/sintheta) \partia_\theta [ p1n sintheta ] = +n*(n+1) p0n
+          ! 
+          !  so that  (note a minus sign in the definition of br and bphi) 
+          !   
+          !  B_r = (sum over n) + n(n+1) p0n / x
+          vc(np+2,k2,1) = (4*vc(np+1,k2,1)-vc(np,k2,1))/(2*hh*(k2+1+ffc)+3)  
+          vc(np+2,k2,2) = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)    
+          brr(j,k1) = brr(j,k1)+(k2*(k2+1)/x)*vc(j,k2,1)*(+plgndr(k2,0, cos(theta)))
+          bri(j,k1) = bri(j,k1)+(k2*(k2+1)/x)*vc(j,k2,2)*(+plgndr(k2,0, cos(theta)))
+  
+        enddo ! legendre polynomial even l-loop  k2
+  
+        call rot(x, om0, om0p, om2, om2p, om4, om4p)
+        call stream(x, ax, axp, bx, bxp, fx)
+        if (ans1.eq.'h4' .or. ans1.eq.'h6' .or. ans1.eq.'h5') then 
+          ome(j,k1) = om0 + om2*cos(theta)**2 + om4*cos(theta)**4
+        else
+          ome(j,k1) = om0 + om2 *( -(1-3*cos(theta)**2)/2.0 )
+        endif
+        sfu(j,k1) = fx*sin(theta)*cos(theta)
+        ute(j,k1) = bx*sin(theta)*cos(theta) 
+  
+      enddo   ! close radial  
+    enddo   ! close theta
+  
+    call write_omega (np, n_theta, x1, x2, theta1, theta2, &
+                      ome, sfu, ute)
+  
+    ! determine the outer mesh point equal to zeta_r+1
+    xf=zeta_r+0.5
+    xf=zeta_r+0.3
+    nf=int((xf-1.0)/hh)
+    if(nf .ge. nft) then
+      write (*, *) 'too small nft'
+      stop
+    endif
+  
+    ! the exterior solution is different if ffree is not zero (pure force-free)
+    ! parameter, or beta is zero or not zero (potential vs helmholtz extrapolation)    
+    call compute_pol (nsp, nep, nf, nft, vc, apr, api, &
+                      ffc, hh, x1)
+    call compute_tor (nst, net, nf, nft, vc, bphi, iphi, ffc, &
+                      hh, x1)
+    call compute_ab_vector (vc, aai, aar, bbi, bbr, etet, etep, &
+                            epol, etor, ffc, x1, hh, nsp, nep, &
+                            nst, net, nf)
+  
+    ! nj is the number of time slices
+    nj = 8
+    do jj=1, nj
+      call write_toroidal (bfeld3, nf, nj, jj, q, &
+                           theta, x, x1, xf, tc, bphi, iphi)
+      call write_poloidal (bfeld4, nf, nj, jj, q, &
+                           theta, x, x1, xf, tc, apr, api) 
+    enddo
+
+    call time_butterfly (bfeld2, bfeld6, bfeld7, bfeld8, &
+                         nf, nft, x1, x2, hh, bphi, iphi, &
+                         brr, bri, apr, api, q) 
+    call radial_butterfly (bfeld9, bfeld10, nf, nft, x1, x2, &
+                           hh, bphi, iphi, brr, bri, apr, api, q) 
   
   end subroutine
 
