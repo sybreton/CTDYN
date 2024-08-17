@@ -165,7 +165,7 @@ contains
   
   end subroutine
 
-  subroutine compute_ab_vector (vc, aai, aar, bbi, bbr, etet, etep, &
+  subroutine compute_ab_vector (vc, aai, aar, bbi, bbr, &
                                 epol, etor, ffc, x1, hh, nsp, nep, &
                                 nst, net, nf)
     ! -----------------------------------------------------------------
@@ -178,7 +178,7 @@ contains
     ! arguments
     real(dp) :: vc(np+2,nb,2)                 ! eigenvector
     real(dp) :: aai, aar, bbi, bbr
-    real(dp) :: etet, etep, etor, epol
+    real(dp) :: etor, epol
     real(dp) :: ffc, x1, hh
     integer :: nsp, nep, nst, net, nf, mm
   
@@ -414,7 +414,7 @@ contains
     real, parameter :: t_in = 0.
     real, parameter :: t_fin = 12.
     real(dp) :: time, ratio, theta
-    real(dp) :: x, xbt, xbo
+    real(dp) :: x
     real(dp) :: xr(np+2+nft)                
     integer :: bin(2), bax(2), rin(2), rax(2)
     integer :: k1, k2, j, jo, jbt, jbo
@@ -568,7 +568,7 @@ contains
     real, parameter :: t_fin = 12.
     real(dp) :: ang(n_theta)
     real(dp) :: time, theta, zq1, zq2
-    real(dp) :: x, rnor, xbt, xbo, cja
+    real(dp) :: x, rnor, cja
     real(dp) :: xr(np+2+nft)                
     integer :: bin(2), bax(2), rin(2), rax(2)
     integer :: k1, k2, kb, km, j, jo, ko, jbt, jbo
@@ -710,6 +710,7 @@ contains
     ! problem. 
     !
     !------------------------------------------------------
+    ! local variables
     real(dp) :: aai, aar, adum, ax, axp, bbi, bbr, bpt, bx, bxp, &
             & dbx, epol, etor, ffc, fx, h2, hh, &
             & om0, om0p, om2, om2p, om4, om4p, &
@@ -881,7 +882,7 @@ contains
                       ffc, hh, x1)
     call compute_tor (nst, net, nf, nft, vc, bphi, iphi, ffc, &
                       hh, x1)
-    call compute_ab_vector (vc, aai, aar, bbi, bbr, etet, etep, &
+    call compute_ab_vector (vc, aai, aar, bbi, bbr, &
                             epol, etor, ffc, x1, hh, nsp, nep, &
                             nst, net, nf)
   

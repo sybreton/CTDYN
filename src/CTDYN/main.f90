@@ -63,7 +63,7 @@ program main
   
   include 'cint.f90'
   
-  call getarg(1,inp)
+  call getarg(1, inp)
   open(31, file=inp, status='old')
   read(31, namp)
   close(31)

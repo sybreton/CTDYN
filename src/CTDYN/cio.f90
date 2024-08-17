@@ -40,12 +40,12 @@ module cio
   ! Additional variables that are used by several 
   ! subroutines. These were included in "common" 
   ! blocks in the old version of the code. 
+  integer :: ii, it
   real(dp) :: mmm
-  real(dp) :: vtu, rt, imag, co, c_u, beta, ffree, betb
+  real(dp) :: rt, imag, co, c_u, beta, ffree, betb
   real(dp) :: etep, etet, xbt, xbo
   real(dp) :: reg(10),ieg(10)
   real(dp) :: eep
-  integer :: ii, it
   real(dp) :: xa1, xa2, xa3, xb, xda1, xda2
   real(dp) :: edr, xe1, xde1, hd
   real(dp) :: x_in, bct, c3, sr, rotp, gd, aqu, flg
