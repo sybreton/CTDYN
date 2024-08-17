@@ -63,16 +63,16 @@ contains
 
     ! arguments
     integer :: nsp, nep, nf, nft
-    real :: vc(np+2,nb,2)                 ! eigenvector
-    real :: apr(np+2+nft, n_theta)         ! b poloidal (potential)
-    real :: api(np+2+nft, n_theta)         ! b poloidal (potential)
-    real :: ffc, hh, x1
+    real(dp) :: vc(np+2,nb,2)                 ! eigenvector
+    real(dp) :: apr(np+2+nft, n_theta)         ! b poloidal (potential)
+    real(dp) :: api(np+2+nft, n_theta)         ! b poloidal (potential)
+    real(dp) :: ffc, hh, x1
 
     ! local variables
-    real :: x, xnu, theta, sz1, sz2
+    real(dp) :: x, xnu, theta, sz1, sz2
     integer :: k1, k2, j
-    real :: rj, ry, rjp, ryp
-    real :: rj1, ry1, rjp1, ryp1
+    real(dp) :: rj, ry, rjp, ryp
+    real(dp) :: rj1, ry1, rjp1, ryp1
 
     do k1=1, n_theta   ! theta-loop
       theta = theta1 + k1*dt
@@ -119,16 +119,16 @@ contains
   
     ! arguments
     integer :: nst, net, nf, nft
-    real :: vc(np+2,nb,2)                 ! eigenvector
-    real :: bphi(np+2+nft, n_theta)         ! b poloidal (potential)
-    real :: iphi(np+2+nft, n_theta)         ! b poloidal (potential)
-    real :: ffc, hh, x1
+    real(dp) :: vc(np+2,nb,2)                 ! eigenvector
+    real(dp) :: bphi(np+2+nft, n_theta)         ! b poloidal (potential)
+    real(dp) :: iphi(np+2+nft, n_theta)         ! b poloidal (potential)
+    real(dp) :: ffc, hh, x1
   
     ! local variables
-    real :: x, xnu, theta, sz1, sz2
+    real(dp) :: x, xnu, theta, sz1, sz2
     integer :: k1, k2, j
-    real :: rj, ry, rjp, ryp
-    real :: rj1, ry1, rjp1, ryp1
+    real(dp) :: rj, ry, rjp, ryp
+    real(dp) :: rj1, ry1, rjp1, ryp1
   
     do k1=1, n_theta   ! theta-loop
       theta = theta1 + k1*dt
@@ -176,17 +176,17 @@ contains
     ! -----------------------------------------------------------------
   
     ! arguments
-    real :: vc(np+2,nb,2)                 ! eigenvector
-    real :: aai, aar, bbi, bbr
-    real :: etet, etep, etor, epol
-    real :: ffc, x1, hh
+    real(dp) :: vc(np+2,nb,2)                 ! eigenvector
+    real(dp) :: aai, aar, bbi, bbr
+    real(dp) :: etet, etep, etor, epol
+    real(dp) :: ffc, x1, hh
     integer :: nsp, nep, nst, net, nf, mm
   
     ! local variables
-    real :: x, xnu, theta, rosym, dd1
+    real(dp) :: x, xnu, theta, rosym, dd1
     integer :: k2, j
-    real :: rj, ry, rjp, ryp
-    real :: rj1, ry1, rjp1, ryp1
+    real(dp) :: rj, ry, rjp, ryp
+    real(dp) :: rj1, ry1, rjp1, ryp1
   
     ! load a-vectors
     do k2=nsp, nep, 2
@@ -279,9 +279,9 @@ contains
     character*512 :: bfeld3
     character*2 :: q
     integer :: nf, nj, jj
-    real :: theta, x, x1, xf, tc
-    real :: bphi(np+2+nft, n_theta)        ! toroidal real
-    real :: iphi(np+2+nft, n_theta)        ! toroidal im
+    real(dp) :: theta, x, x1, xf, tc
+    real(dp) :: bphi(np+2+nft, n_theta)        ! toroidal real
+    real(dp) :: iphi(np+2+nft, n_theta)        ! toroidal im
   
     integer :: i, j
   
@@ -306,9 +306,9 @@ contains
     character*512 :: bfeld4
     character*2 :: q
     integer :: nf, nj, jj
-    real :: theta, x, x1, xf, tc
-    real :: apr(np+2+nft, n_theta)         ! b poloidal (potential)
-    real :: api(np+2+nft, n_theta)         ! b poloidal (potential)
+    real(dp) :: theta, x, x1, xf, tc
+    real(dp) :: apr(np+2+nft, n_theta)         ! b poloidal (potential)
+    real(dp) :: api(np+2+nft, n_theta)         ! b poloidal (potential)
   
     integer :: i, j
   
@@ -338,10 +338,10 @@ contains
     !-------------------------------------------------------------
   
     integer :: np, n_theta
-    real :: x1, x2, theta1, theta2
-    real :: ome(np+2,n_theta)             ! omega
-    real :: sfu(np+2,n_theta)             ! stream function 
-    real :: ute(np+2,n_theta)             ! utheta
+    real(dp) :: x1, x2, theta1, theta2
+    real(dp) :: ome(np+2,n_theta)             ! omega
+    real(dp) :: sfu(np+2,n_theta)             ! stream function 
+    real(dp) :: ute(np+2,n_theta)             ! utheta
   
     integer :: i, j
 
@@ -401,24 +401,24 @@ contains
     character*512 :: bfeld1, bfeld6, bfeld7, bfeld8
     character*2 :: q
     integer :: nf, nft
-    real :: x1, x2, hh
-    real :: bphi(np+2+nft,n_theta)        ! toroidal real
-    real :: iphi(np+2+nft,n_theta)        ! toroidal im
-    real :: brr(np+2+nft,n_theta)         ! radial real
-    real :: bri(np+2+nft,n_theta)         ! radial im
-    real :: apr(np+2+nft,n_theta)         ! b poloidal (potential)
-    real :: api(np+2+nft,n_theta)         ! b poloidal (potential)
+    real(dp) :: x1, x2, hh
+    real(dp) :: bphi(np+2+nft,n_theta)        ! toroidal real
+    real(dp) :: iphi(np+2+nft,n_theta)        ! toroidal im
+    real(dp) :: brr(np+2+nft,n_theta)         ! radial real
+    real(dp) :: bri(np+2+nft,n_theta)         ! radial im
+    real(dp) :: apr(np+2+nft,n_theta)         ! b poloidal (potential)
+    real(dp) :: api(np+2+nft,n_theta)         ! b poloidal (potential)
 
 
     ! local arguments
     real, parameter :: t_in = 0.
     real, parameter :: t_fin = 12.
-    real :: time, ratio, theta
-    real :: x, xbt, xbo
-    real :: xr(np+2+nft)                
+    real(dp) :: time, ratio, theta
+    real(dp) :: x, xbt, xbo
+    real(dp) :: xr(np+2+nft)                
     integer :: bin(2), bax(2), rin(2), rax(2)
     integer :: k1, k2, j, jo, jbt, jbo
-    real :: bphi7, brs, apt, bpt, bptkm, aptkm, &
+    real(dp) :: bphi7, brs, apt, bpt, bptkm, aptkm, &
             bptkp, aptkp, bptjm, aptjm, bptjp, &
             aptjp, dbtheta, datheta, dbtheta2, &
             datheta2, dax, dbx, dax2, chel, chel2
@@ -554,25 +554,25 @@ contains
     character*512 :: bfeld9, bfeld10
     character*2 :: q
     integer :: nf, nft
-    real :: x1, x2, hh
-    real :: bphi(np+2+nft,n_theta)        ! toroidal real
-    real :: iphi(np+2+nft,n_theta)        ! toroidal im
-    real :: brr(np+2+nft,n_theta)         ! radial real
-    real :: bri(np+2+nft,n_theta)         ! radial im
-    real :: apr(np+2+nft,n_theta)         ! b poloidal (potential)
-    real :: api(np+2+nft,n_theta)         ! b poloidal (potential)
+    real(dp) :: x1, x2, hh
+    real(dp) :: bphi(np+2+nft,n_theta)        ! toroidal real
+    real(dp) :: iphi(np+2+nft,n_theta)        ! toroidal im
+    real(dp) :: brr(np+2+nft,n_theta)         ! radial real
+    real(dp) :: bri(np+2+nft,n_theta)         ! radial im
+    real(dp) :: apr(np+2+nft,n_theta)         ! b poloidal (potential)
+    real(dp) :: api(np+2+nft,n_theta)         ! b poloidal (potential)
 
 
     ! local arguments
     real, parameter :: t_in = 0.
     real, parameter :: t_fin = 12.
-    real :: ang(n_theta)
-    real :: time, theta, zq1, zq2
-    real :: x, rnor, xbt, xbo, cja
-    real :: xr(np+2+nft)                
+    real(dp) :: ang(n_theta)
+    real(dp) :: time, theta, zq1, zq2
+    real(dp) :: x, rnor, xbt, xbo, cja
+    real(dp) :: xr(np+2+nft)                
     integer :: bin(2), bax(2), rin(2), rax(2)
     integer :: k1, k2, kb, km, j, jo, ko, jbt, jbo
-    real :: bphi7, brs, apt, bpt, bptkm, aptkm, &
+    real(dp) :: bphi7, brs, apt, bpt, bptkm, aptkm, &
             bptkp, aptkp, bptjm, aptjm, aptjm2, bptjp, &
             aptjp, dbtheta, datheta, dbtheta2, &
             datheta2, dax, dbx, dax2, chels, cheln
@@ -710,7 +710,7 @@ contains
     ! problem. 
     !
     !------------------------------------------------------
-    real :: aai, aar, adum, ax, axp, bbi, bbr, bpt, bx, bxp, &
+    real(dp) :: aai, aar, adum, ax, axp, bbi, bbr, bpt, bx, bxp, &
             & dbx, epol, etor, ffc, fx, h2, hh, &
             & om0, om0p, om2, om2p, om4, om4p, &
             & tc, theta, x, x1, x2, xf
@@ -722,17 +722,17 @@ contains
                      bfeld6, bfeld7, bfeld8, bfeld9, bfeld10
   
   
-    real :: bphi(np+2+nft,n_theta)        ! toroidal real
-    real :: iphi(np+2+nft,n_theta)        ! toroidal im
-    real :: brr(np+2+nft,n_theta)         ! radial real
-    real :: bri(np+2+nft,n_theta)         ! radial im
-    real :: apr(np+2+nft,n_theta)         ! b poloidal (potential)
-    real :: api(np+2+nft,n_theta)         ! b poloidal (potential)
-    real :: ome(np+2,n_theta)             ! omega
-    real :: sfu(np+2,n_theta)             ! stream function 
-    real :: ute(np+2,n_theta)             ! utheta
-    real :: vc(np+2,nb,2)                 ! eigenvector
-    real :: xr(np+2+nft)                
+    real(dp) :: bphi(np+2+nft,n_theta)        ! toroidal real
+    real(dp) :: iphi(np+2+nft,n_theta)        ! toroidal im
+    real(dp) :: brr(np+2+nft,n_theta)         ! radial real
+    real(dp) :: bri(np+2+nft,n_theta)         ! radial im
+    real(dp) :: apr(np+2+nft,n_theta)         ! b poloidal (potential)
+    real(dp) :: api(np+2+nft,n_theta)         ! b poloidal (potential)
+    real(dp) :: ome(np+2,n_theta)             ! omega
+    real(dp) :: sfu(np+2,n_theta)             ! stream function 
+    real(dp) :: ute(np+2,n_theta)             ! utheta
+    real(dp) :: vc(np+2,nb,2)                 ! eigenvector
+    real(dp) :: xr(np+2+nft)                
   
     integer :: bin(2), bax(2), rin(2), rax(2)
     

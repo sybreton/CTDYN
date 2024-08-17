@@ -42,11 +42,11 @@ contains
   
     !Curl Curl (s2 P2, 0, 0) = (- 3 fx/x^2 * (3 cos^2 -1 ), -3 fx'/x * sin cos, 0)  
   
-    real :: ur, ut, ax, axp, bx, bxp, fx, sigma, x0
-    real :: rho     
-    real :: xi, xo, xd, y1, y2
-    real :: norm, m1,m2,m3,m4
-    real :: x, me
+    real(dp) :: ur, ut, ax, axp, bx, bxp, fx, sigma, x0
+    real(dp) :: rho     
+    real(dp) :: xi, xo, xd, y1, y2
+    real(dp) :: norm, m1,m2,m3,m4
+    real(dp) :: x, me
   
     if (x .ge. xb) then   
       sigma=s2

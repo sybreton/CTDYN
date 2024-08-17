@@ -57,7 +57,7 @@ contains
     !
     !-------------------------------------------------------------
     
-    real :: turb, rate, a2, alp, alp_p, &
+    real(dp) :: turb, rate, a2, alp, alp_p, &
             & am, apu, apup, ar, arp, bapu, bapup, &
             & btp, ca, ct, &
             & deltami, deltapi, e1, e2, e3, &
@@ -71,7 +71,7 @@ contains
     !      c_alpha = alpha_zero*sr/eta
     !      c_omega = omega_zero*sr**2/eta
     
-    integer :: i, j, k, i2, i3, nabm1, &
+    integer :: i, j, k, nabm1, &
                & k1, ki, kk, nabm3, napb3, &
                & naf, nafm2, nafp2, nai, nas, &
                & nas_count, nbam1, nbam3, nbap1, &
@@ -83,27 +83,27 @@ contains
     
     !------------- temporary variables
     
-    real :: omegaeq
-    real :: nueq, eta, sr0
+    real(dp) :: omegaeq
+    real(dp) :: nueq, eta, sr0
     parameter(sr0=6.955e10,nueq=460.7e-9)
     
-    real :: egr(np,nb), egi(np,nb)
-    real :: agr(np,nb/2), agi(np,nb/2)
-    real :: bgr(np,nb/2), bgi(np,nb/2)
+    real(dp) :: egr(np,nb), egi(np,nb)
+    real(dp) :: agr(np,nb/2), agi(np,nb/2)
+    real(dp) :: bgr(np,nb/2), bgi(np,nb/2)
     
     character*1 :: jobpr    
     character*1 :: balanc    
     character*1 :: sense    
-    real :: rwork(2*nt)
-    complex*16 :: work(lwork)  
+    real(dp) :: rwork(2*nt)
+    complex(qp) :: work(lwork)  
     character*43 :: ver
     integer :: qa, qb
-    complex*16 :: axx(nt,nt)
-    real :: axr(nt,nt)
-    complex*16 :: drb, dra, sigmeno, sigpiu
+    complex(qp) :: axx(nt,nt)
+    real(dp) :: axr(nt,nt)
+    complex(qp) :: drb, dra, sigmeno, sigpiu
     
-    real :: c1(np)                  ! coefficient dyn.  
-    real :: c2(np)
+    real(dp) :: c1(np)                  ! coefficient dyn.  
+    real(dp) :: c2(np)
     
     !------------------------------------------------------
     jobpr = 'n'    ! y = write all pij matrix       !!!!
@@ -1177,28 +1177,27 @@ contains
     rate = wr(nt) 
     imag = wi(int(indeg(nt)))
     
-    do i2 =1,nb
-      k = 1          
+    do i=1, nb
       k = 0          
-      k = -1         
-      do i3 = i2,nt,nb
-        k = k + 1   
-        egr(k+1,i2) = vr(i3,indeg(nt))
-        egi(k+1,i2) = vr(i3,indeg(nt-1)) 
+      do j=i,nt,nb
+        k = k+1   
+        egr(k+1, i) = vr(j, indeg(nt))
+        egi(k+1, i) = vr(j, indeg(nt-1)) 
+        k = k+ 1
       enddo
     enddo
     
-    ki=0            
-    do i=1,na,2 
-      ki=ki+1 
-      do j = 1,np
-        agr(j,ki) = egr(j,i)
-        agi(j,ki) = egi(j,i)
+    ki = 0            
+    do i=1, na, 2 
+      ki = ki+1 
+      do j = 1, np
+        agr(j, ki) = egr(j, i)
+        agi(j, ki) = egi(j, i)
       enddo
     enddo
     
     ki=0
-    do i=2,nb,2 
+    do i=2, nb, 2 
      ki=ki+1
      do j = 1,np
        bgr(j,ki) = egr(j,i)

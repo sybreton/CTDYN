@@ -1,5 +1,7 @@
 module plg
 
+  use cio 
+
   implicit none
 
   private
@@ -11,9 +13,9 @@ contains
   function plgndr(l,m,x)
   
     integer :: l, m
-    real :: plgndr, x
+    real(dp) :: plgndr, x
     integer :: i, ll
-    real :: fact, pll, pmm, pmmp1, somx2
+    real(dp) :: fact, pll, pmm, pmmp1, somx2
   
     if (m.lt.0 .or. m.gt.l .or. abs(x).gt.1.) write (*,*) 'bad arguments in plgndr'
     pmm=1.

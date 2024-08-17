@@ -35,13 +35,13 @@ program main
 
   implicit none   
 
-  real :: astep, beta_f, beta_i, &
+  real(dp) :: astep, beta_f, beta_i, &
           & beta_s, cm_f, cm_i, &
           & critical, rate, rm_f, rm_i 
   
-  real :: ca(10,10,4)
-  real :: accu
-  real :: al_i, al_f
+  real(dp) :: ca(10,10,4)
+  real(dp) :: accu
+  real(dp) :: al_i, al_f
 
   character*30 :: inp
   character*52 :: mach, ddt
@@ -112,8 +112,8 @@ program main
     endif
     c_u=rm_i+rm_f*co**xm
     ii=ii+1    
-    call zbr(al_i,al_f,accu,critical) 
-    write (35,'(i4,16e12.4)') ii, critical,co,c_u,beta,etep,etet,zeta_r,(reg(i),abs(ieg(i)),i=1,1), eep
+    call zbr(al_i, al_f, accu, critical) 
+    write (35,'(i4,16e12.4)') ii, critical, co, c_u, beta, etep, etet, zeta_r, (reg(i), abs(ieg(i)),i=1,1), eep
     if (ans4 .eq. 'v') then
       jobvr='v'
       call dynamo(critical,rate)

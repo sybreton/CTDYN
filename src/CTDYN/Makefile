@@ -30,21 +30,21 @@ cvect.mod: cvect.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
 ccov.mod: ccov.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
-b2func.mod: b2func.f90 
+b2func.mod: b2func.f90 cio.mod 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
-b3func.mod: b3func.f90 
+b3func.mod: b3func.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
-b4func.mod: b4func.f90 
+b4func.mod: b4func.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
-b5func.mod: b5func.f90 
+b5func.mod: b5func.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
-c1s2func.mod: c1s2func.f90 
+c1s2func.mod: c1s2func.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
-c3s2func.mod: c3s2func.f90 
+c3s2func.mod: c3s2func.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
-cdfunc.mod: cdfunc.f90 
+cdfunc.mod: cdfunc.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
-bessel.mod: bessel.f90 
+bessel.mod: bessel.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
 write_outputs.mod: write_outputs.f90 cio.mod ccov.mod cdfunc.mod \
                    bessel.mod hunt.mod func_flow.mod profiles.mod \
@@ -60,13 +60,13 @@ profiles.mod: profiles.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
 func_flow.mod: func_flow.f90 cio.mod  
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
-plg.mod: plg.f90  
+plg.mod: plg.f90  cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
 zbrent.mod: zbrent.f90 cio.mod dyna.mod 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
-hunt.mod: hunt.f90 
+hunt.mod: hunt.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
-sort.mod: sort.f90 
+sort.mod: sort.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< 
 
 cio.o: cio.f90 
@@ -77,15 +77,15 @@ ccov.o: ccov.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 b2func.o: b2func.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
-b3func.o: b3func.f90 
+b3func.o: b3func.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
-b4func.o: b4func.f90 
+b4func.o: b4func.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
-b5func.o: b5func.f90 
+b5func.o: b5func.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
-c1s2func.o: c1s2func.f90 
+c1s2func.o: c1s2func.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
-c3s2func.o: c3s2func.f90 
+c3s2func.o: c3s2func.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 cdfunc.o: cdfunc.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@ 
@@ -107,13 +107,13 @@ profiles.o: profiles.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 func_flow.o: func_flow.f90 cio.mod  
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
-plg.o: plg.f90  
+plg.o: plg.f90  cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 zbrent.o: zbrent.f90 cio.mod dyna.mod 
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
-hunt.o: hunt.f90 
+hunt.o: hunt.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
-sort.o: sort.f90 
+sort.o: sort.f90 cio.mod
 	$(FC) $(FFLAGS) $(INCDIR) -c $< -o $@
 clean:	
 clean:	

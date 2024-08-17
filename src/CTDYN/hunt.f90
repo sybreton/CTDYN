@@ -1,5 +1,7 @@
 module hunt
 
+  use cio 
+
   implicit none
 
   private
@@ -11,7 +13,7 @@ contains
   subroutine hunt_hunt(xx,n,x,jlo)
   
     integer :: jlo, n
-    real :: x, xx(n)
+    real(dp) :: x, xx(n)
     integer :: inc, jhi, jm
     logical :: ascnd
   
@@ -57,9 +59,9 @@ contains
   function factrl(n)
 
     integer :: n
-    real :: factrl
+    real(dp) :: factrl
     integer :: j, ntop
-    real :: a(33),gammln
+    real(dp) :: a(33),gammln
     save ntop,a
     data ntop,a(1)/0,1./
   
@@ -81,9 +83,9 @@ contains
   
   function gammln(xx)
 
-    real :: gammln, xx
+    real(dp) :: gammln, xx
     integer :: j
-    double precision :: ser,stp,tmp,x,y,cof(6)
+    real(dp) :: ser,stp,tmp,x,y,cof(6)
     save cof,stp
     data cof,stp/76.18009172947146d0,-86.50532032941677d0, &
          & 24.01409824083091d0,-1.231739572450155d0,.1208650973866179d-2, &

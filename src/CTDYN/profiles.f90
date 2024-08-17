@@ -12,7 +12,7 @@ contains
 
   subroutine rot(x, om0, om0p, om2, om2p, om4, om4p)
   
-    real :: x, x1, x2, x3, xd ,xd2, xd3, &
+    real(dp) :: x, x1, x2, x3, xd ,xd2, xd3, &
             & om0, om2, om0p, om2p, om4, om4p, a1, a2, xmax, &
             & omc, omeq, hzn, c2, c4, omegac, oms, xbi, omegaeq, &
             & a4, b0, b4, d1, delta, dw, facn, ome0, &
@@ -244,7 +244,7 @@ contains
     !
     !-------------------------------------------------------------------------
   
-    real :: x, a1, a2, d1, d_xi, delta, r1, x_xi, xi
+    real(dp) :: x, a1, a2, d1, d_xi, delta, r1, x_xi, xi
   
     if (ans1.eq.'ns') then
        a1 = (1+derf((x-xa1)/xda1))/2.e0
@@ -368,9 +368,9 @@ contains
     !   edr is the ratio eta_c/eta_top
     !---------------------------------------------------------------------------
   
-    real :: x, x1, x2, xd
-    real :: e1, e2, e3
-    real :: delta, et2, ett
+    real(dp) :: x, x1, x2, xd
+    real(dp) :: e1, e2, e3
+    real(dp) :: delta, et2, ett
   
     x1 = xe1
     xd = xde1 

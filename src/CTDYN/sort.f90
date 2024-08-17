@@ -1,5 +1,7 @@
 module sort 
 
+  use cio 
+
   implicit none 
 
   private
@@ -9,12 +11,14 @@ module sort
 contains
 
   subroutine sort2(n,arr,brr)
+
+    integer :: n
+    real(dp) :: arr(n), brr(n)
   
-    integer :: n, m, nstack
-    real :: arr(n), brr(n)
-    parameter (m=7, nstack=500)
+    integer, parameter :: m=7
+    integer, parameter :: nstack=500
     integer :: i, ir, j, jstack, k, l, istack(nstack)
-    real :: a, b, temp
+    real(dp) :: a, b, temp
   
     jstack=0
     l=1

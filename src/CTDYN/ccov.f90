@@ -5,10 +5,10 @@ module ccov
   implicit none 
 
   integer, dimension (nt) :: indeg     ! index the eigenvalues      
-  real, dimension (nt) :: inde     ! index the eigenvalues      
-  real, dimension (nt, nt) :: vr
-  complex*16, dimension (nt, nt) :: cvr
-  complex*16, dimension (nt)  :: ww
-  real, dimension (nt) :: wr, wi  ! eigenvalues
+  real(dp), dimension (nt) :: inde     ! index the eigenvalues      
+  real(dp), dimension (nt, nt) :: vr
+  complex(qp), dimension (nt, nt) :: cvr
+  complex(qp), dimension (nt)  :: ww
+  real(dp), dimension (nt) :: wr, wi  ! eigenvalues
   
 end module ccov 

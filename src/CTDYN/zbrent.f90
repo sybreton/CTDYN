@@ -13,14 +13,16 @@ module zbrent
 
 contains 
 
-  subroutine zbr(x1,x2,tol,zbrent)
+  subroutine zbr(x1, x2, tol, root)
     
-    integer :: itmax
-    real :: zbrent,tol,x1,x2,func,eps,x3
-    parameter (itmax=100,eps=3.e-8)
+    real(dp) :: root, tol, x1, x2
+
+    real(dp) :: func, x3
     integer :: iter
-    real :: a, b, c, d, e, fa, fb, fc 
-    real :: p, q, r, s, tol1
+    real(dp) :: a, b, c, d, e, fa, fb, fc 
+    real(dp) :: p, q, r, s, tol1
+    integer, parameter :: itmax=100
+    real(dp), parameter :: eps=3.e-8 
     
     a=x1
     b=x2
@@ -56,7 +58,7 @@ contains
       xm=.5*(c-b)
       if(abs(xm).le.tol1 .or. fb.eq.0.)then
         write(*,*) 'tolerance threshold met at iteration', it
-        zbrent=b
+        root=b
         return
       endif
       if(abs(e).ge.tol1 .and. abs(fa).gt.abs(fb)) then
@@ -92,7 +94,7 @@ contains
       endif
       call dynamo(b,fb)
       if (abs(fb) .le. 1.0e-4) then
-        zbrent=b
+        root=b
         write(*,*) 'fb below 1e-4 at iteration number', iter
         write(*,*)
         return
@@ -101,7 +103,7 @@ contains
     
     ! Case where the loop terminated without finishing
     write(*,*) 'zbrent exceeding maximum iterations'
-    zbrent=b
+    root=b
   
     return
   end

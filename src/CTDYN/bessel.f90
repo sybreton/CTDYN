@@ -6,11 +6,12 @@ module bessel
 
 contains
   
-  real function chebev(a,b,c,m,x)
+  real(dp) function chebev(a,b,c,m,x)
     integer :: m
-    real :: a,b,x,c(m)
+    real(dp) :: a,b,x,c(m)
+
     integer :: j
-    real :: d,dd,sv,y,y2
+    real(dp) :: d,dd,sv,y,y2
   
     if ((x-a)*(x-b) .gt. 0.) write (*,*) 'x not in range in chebev'
     d=0.
@@ -30,7 +31,7 @@ contains
   
     ! enter beta (=x) and j,  and output the correction at r/R=1
   
-    real x, corr, cord, corn, rj, &
+    real(dp) :: x, corr, cord, corn, rj, &
          & rj1, rjm1, rjp, rjp1, rjpm1, rjpz, &
          & rjpz1, rjz, rjz1, ry, ry1, rym1, &
          & ryp, ryp1, rypm, rypm1, rypz, rypz1, ryz, &
@@ -87,12 +88,11 @@ contains
   
   subroutine bessjy(x,xnu,rj,ry,rjp,ryp)
   
-    real :: rj,rjp,ry,ryp,x,xnu
+    real(dp) :: rj,rjp,ry,ryp,x,xnu
     integer, parameter :: maxit=10000
-    real, parameter :: eps=1.e-10, fpmin=1.e-30, xmin=2., &
-                       pi=3.141592653589793d0
+    real(dp), parameter :: eps=1.e-10, fpmin=1.e-30, xmin=2.
     integer :: i,isign,l,nl
-    double precision :: a,b,br,bi,c,cr,ci,d,del,del1,den,di,dlr,dli,dr,e, &
+    real(dp) :: a,b,br,bi,c,cr,ci,d,del,del1,den,di,dlr,dli,dr,e, &
        &f,fact,fact2,fact3,ff,gam,gam1,gam2,gammi,gampl,h,p,pimu,pimu2,q, &
        &r,rjl,rjl1,rjmu,rjp1,rjpl,rjtemp,ry1,rymu,rymup,rytemp,sum,sum1, &
        &temp,w,x2,xi,xi2,xmu,xmu2
@@ -257,9 +257,9 @@ contains
   end
   
   subroutine beschb(x,gam1,gam2,gampl,gammi)
-    double precision :: gam1,gam2,gammi,gampl,x
+    real(dp) :: gam1,gam2,gammi,gampl,x
     integer, parameter :: nuse1=5, nuse2=5
-    real :: xx,c1(7),c2(8) 
+    real(dp) :: xx,c1(7),c2(8) 
     save c1,c2
     data c1/-1.142022680371168d0,6.5165112670737d-3,3.087090173086d-4, &
          &-3.4706269649d-6,6.9437664d-9,3.67795d-11,-1.356d-13/ 
