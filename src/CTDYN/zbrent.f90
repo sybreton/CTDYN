@@ -2,6 +2,7 @@
 
 module zbrent
 
+  use kind_parameters
   use cio
   use dyna
 

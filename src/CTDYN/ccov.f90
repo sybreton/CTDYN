@@ -1,5 +1,6 @@
 module ccov
 
+  use kind_parameters 
   use cio 
 
   implicit none 

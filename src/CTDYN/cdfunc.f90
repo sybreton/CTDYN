@@ -1,5 +1,6 @@
 module cdfunc
   
+  use kind_parameters 
   use cio 
 
   implicit none

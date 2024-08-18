@@ -1,6 +1,6 @@
 module plg
 
-  use cio 
+  use kind_parameters 
 
   implicit none
 
@@ -10,10 +10,11 @@ module plg
 
 contains
 
-  function plgndr(l,m,x)
+  real (dp) function plgndr(l,m,x)
   
     integer :: l, m
-    real(dp) :: plgndr, x
+    real(dp) :: x
+
     integer :: i, ll
     real(dp) :: fact, pll, pmm, pmmp1, somx2
   

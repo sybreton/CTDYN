@@ -1,6 +1,6 @@
 module hunt
 
-  use cio 
+  use kind_parameters 
 
   implicit none
 

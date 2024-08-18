@@ -28,6 +28,7 @@
 !     
 module write_outputs 
 
+  use kind_parameters
   use cio
   use ccov
   use cdfunc
@@ -748,7 +749,7 @@ contains
     h2 = hh/2.e0
   
     if (mod(mm,2).eq.0) then 
-      if (ans2.eq.'d') then
+      if (degree.eq.'d') then
         q='.a'
         nst=2
         net=nb
@@ -762,7 +763,7 @@ contains
         nep=nb
       endif
     else if (mod(mm,2).eq.1) then
-      if (ans2.eq.'d') then
+      if (degree.eq.'d') then
         q='.s'
         nst=2
         net=nb
@@ -853,7 +854,7 @@ contains
   
         call rot(x, om0, om0p, om2, om2p, om4, om4p)
         call stream(x, ax, axp, bx, bxp, fx)
-        if (ans1.eq.'h4' .or. ans1.eq.'h6' .or. ans1.eq.'h5') then 
+        if (regime.eq.'h4' .or. regime.eq.'h6' .or. regime.eq.'h5') then 
           ome(j,k1) = om0 + om2*cos(theta)**2 + om4*cos(theta)**4
         else
           ome(j,k1) = om0 + om2 *( -(1-3*cos(theta)**2)/2.0 )

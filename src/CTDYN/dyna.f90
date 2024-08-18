@@ -1,5 +1,6 @@
 module dyna
 
+    use kind_parameters
     use cio
     use cvect
     use ccov
@@ -79,8 +80,6 @@ contains
                & nbi, nc                
     integer :: info
     
-    external version
-    
     !------------- temporary variables
     
     real(dp) :: omegaeq
@@ -146,10 +145,10 @@ contains
       stop
     endif 
     
-    if (ans2.eq.'d' .and. mmm.eq.0) write(*,*) '********** a0-mode *********'
-    if (ans2.eq.'d' .and. mmm.ne.0) write(*,*) '********** s1-mode *********'
-    if (ans2.eq.'q' .and. mmm.eq.0) write(*,*) '********** s0-mode *********'
-    if (ans2.eq.'q' .and. mmm.ne.0) write(*,*) '********** a1-mode *********'
+    if (degree.eq.'d' .and. mmm.eq.0) write(*,*) '********** a0-mode *********'
+    if (degree.eq.'d' .and. mmm.ne.0) write(*,*) '********** s1-mode *********'
+    if (degree.eq.'q' .and. mmm.eq.0) write(*,*) '********** s0-mode *********'
+    if (degree.eq.'q' .and. mmm.ne.0) write(*,*) '********** a1-mode *********'
     
     write(*,'(a,i4.1,3x,a,i4.1,3x,a,i4.1)') 'it =', it,'na =', nb, 'np =', np
     write(*,'(a,e12.5,a,e12.5)' ) ' c_alpha =', turb, ' c_omega =', co 
@@ -308,7 +307,7 @@ contains
         
         ! --------------- omega arrays ---------------------------------------
         
-        if(ans1.eq.'h4')then
+        if(regime.eq.'h4')then
           omep1(i,j) = co*hh**2* (b0m1(j+1)*om0p+b2m1(j+1)*om2p &
              &+b4m1(j+1)*om4p+2*c1s2m1(j+1)*om2/x+4*c3s2m1(j+1)*om4/x)
         
@@ -485,7 +484,7 @@ contains
     
     ! -------------------------------------------
     
-    if (ans2 .eq. 'd') then       ! vector is a1 b2 a3 b4 ...
+    if (degree .eq. 'd') then       ! vector is a1 b2 a3 b4 ...
     
       naf    = na
       nai    = 0
@@ -508,7 +507,7 @@ contains
       nbfm2 =  4
       nbfp2 =  nb-2
     
-    else if ( ans2.eq.'q') then ! vector is b1 a2 b3 a4 ...
+    else if ( degree.eq.'q') then ! vector is b1 a2 b3 a4 ...
     
       naf    =  nb
       nai    =  1 
@@ -532,7 +531,7 @@ contains
       nbfp2 =  na-2
     
     else
-      write(*,*) 'not allowed', ans2
+      write(*,*) 'Required field angular degree is not allowed:', degree
       stop
     endif
     

@@ -1,5 +1,6 @@
 module b2func 
 
+  use kind_parameters
   use cio 
 
   implicit none

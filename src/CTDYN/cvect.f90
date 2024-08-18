@@ -1,5 +1,6 @@
 module cvect
 
+  use kind_parameters
   use cio
   implicit none
 

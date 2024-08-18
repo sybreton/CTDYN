@@ -1,6 +1,6 @@
 module b3func
 
-  use cio
+  use kind_parameters
 
   implicit none
 

@@ -1,6 +1,6 @@
 module b5func
 
-  use cio 
+  use kind_parameters 
 
   implicit none
 

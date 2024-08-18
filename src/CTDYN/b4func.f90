@@ -1,6 +1,6 @@
 module b4func
 
-  use cio 
+  use kind_parameters 
 
   implicit none
 

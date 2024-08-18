@@ -1,6 +1,6 @@
 module c3s2func
 
-  use cio 
+  use kind_parameters 
 
   implicit none
 
