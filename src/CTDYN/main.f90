@@ -70,8 +70,9 @@ program main
   beta = beta_i
   eep = -99
 
+  !setting global variables
   ii = 0
-  
+  jobvr = 'n'
   char_cm=trim(trim(dir)//'/crtal'//qq)
   char_cf=trim(trim(dir)//'/crtaf'//qq)
   open(35,status='unknown',file=char_cm)
@@ -89,60 +90,11 @@ program main
     write (35,'(i4,16e12.4)') ii, critical, co, c_u, beta, etep, etet, zeta_r, (reg(i), abs(ieg(i)),i=1,1), eep
     if (write_vectors) then
       jobvr='v'
-      call dynamo(critical,rate)
+      call dynamo (critical,rate)
       jobvr='n'
     endif
   enddo
   close(35)
-
-contains 
-
-  subroutine read_namelist (inlist) 
-    !> Read namelists variables provided in input file.
-    !> Namelist variables are declared in cio.f90 and
-    !> are therefore accessible to any module that import
-    !> it.
-    character(len=128) :: inlist
-
-    integer :: fu 
-
-    namelist /global/ sr, rotp
-
-    namelist /profiles/ regime, s0, s2, s4, s6, &
-                        a2p, a4p
-
-    namelist /brent/ al_i, al_f, accu
-
-    namelist /outputs/ dir, write_vectors
-    
-    namelist /fields/ degree, mmm 
-
-    namelist /physics/ hd, ffree, xm
-    
-    namelist /boundaries/ x_in
-    
-    namelist /other/ xa1, xa2, xa3,  &
-                     xb, xda1, xda2, rm_i, rm_f, &
-                     cm_i, cm_f, nso, edr,  &
-                     xe1, xde1, c3, bct, gd, aqu, &
-                     flg, dd1, rc1, rc2, oco,  &
-                     beta_i, beta_f, beta_s, zeta_r, & 
-                     xbt, xbo
-
-    call initialise_namelist_values
-    call getarg(1, inlist)
-    open(newunit=fu, file=inlist, status="old", action="read")
-    read(unit=fu, nml=global)
-    read(unit=fu, nml=profiles)
-    read(unit=fu, nml=brent)
-    read(unit=fu, nml=outputs)
-    read(unit=fu, nml=fields)
-    read(unit=fu, nml=physics)
-    read(unit=fu, nml=boundaries)
-    read(unit=fu, nml=other)
-    close(fu)
-
-  end subroutine
 
 end program main
 

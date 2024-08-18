@@ -24,7 +24,7 @@
   x_in = 0.58
 /
 
-&field
+&fields
   degree = 'd' 
   mmm = 0
 /
@@ -35,22 +35,20 @@
   xm = -0.45
 /
 
-%output
-  dir  = 'tests/test_ref'
+&outputs
+  dir  = "tests/test_ref"
   write_vectors = .true. 
 /
 
 &other
-  nsa    =   0  
   xa1     =  0.64  
   xa2     =  0.72   
-  xa3     =  2.0000000 
+  xa3     =  2.0 
   xb      =  0.65
   xda1    =  0.025
   xda2    =  0.025
   rm_i    =  400.0       
   rm_f    =  400.0    
-  nsr     =  0    ,
   cm_i    =  40000.0       
   cm_f    =  40000.0       
   nso     =  0    
@@ -73,3 +71,4 @@
   xbt     =  0.75
   xbo     =  1.5
 /
+

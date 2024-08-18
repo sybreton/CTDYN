@@ -68,7 +68,6 @@ module cio
   !> other 
   !-------------------------------------------
   integer :: nso
-  character(len=2) :: jobvr, jobvl
   real(dp) :: zeta_r
   real(dp) :: xbt, xbo
   real(dp) :: xa1, xa2, xa3, xb, xda1, xda2
@@ -86,6 +85,7 @@ module cio
   real(dp) :: rt, imag, co, c_u, beta, betb
   real(dp) :: reg(10),ieg(10)
   real(dp) :: gam
+  character(len=1) :: jobvr
 
 contains
 
@@ -147,7 +147,7 @@ contains
     !-------------------------------------------
     xa1     =  0.64   
     xa2     =  0.72   
-    xa3     =  2.0000000   
+    xa3     =  2.0  
     xb      =  0.65
     xda1    =  0.025
     xda2    =  0.025
@@ -176,6 +176,68 @@ contains
     xbo     =  1.5
 
   end subroutine 
+
+  subroutine read_namelist (inlist)
+    !> Read namelists variables provided in input file.
+    !> Namelist variables are declared in cio.f90 and
+    !> are therefore accessible to any module that import
+    !> it.
+    character(len=128) :: inlist
+
+    integer :: fu
+
+    namelist /global/ sr, rotp
+
+    namelist /profiles/ regime, s0, s2, s4, s6, &
+                        a2p, a4p
+
+    namelist /brent/ al_i, al_f, accu
+
+    namelist /outputs/ dir, write_vectors
+
+    namelist /fields/ degree, mmm
+
+    namelist /physics/ hd, ffree, xm
+
+    namelist /boundaries/ x_in
+
+    namelist /other/ xa1, xa2, xa3,  &
+                     xb, xda1, xda2, rm_i, rm_f, &
+                     cm_i, cm_f, nso, edr,  &
+                     xe1, xde1, c3, bct, gd, aqu, &
+                     flg, dd1, rc1, rc2, oco,  &
+                     beta_i, beta_f, beta_s, zeta_r, &
+                     xbt, xbo
+
+    call initialise_namelist_values
+    call getarg(1, inlist)
+    ! Open and close to read in any order
+    open(newunit=fu, file=inlist, status="old", action="read")
+    read(unit=fu, nml=global)
+    close(fu)
+    open(newunit=fu, file=inlist, status="old", action="read")
+    read(unit=fu, nml=profiles)
+    close(fu)
+    open(newunit=fu, file=inlist, status="old", action="read")
+    read(unit=fu, nml=brent)
+    close(fu)
+    open(newunit=fu, file=inlist, status="old", action="read")
+    read(unit=fu, nml=boundaries)
+    close(fu)
+    open(newunit=fu, file=inlist, status="old", action="read")
+    read(unit=fu, nml=fields)
+    close(fu)
+    open(newunit=fu, file=inlist, status="old", action="read")
+    read(unit=fu, nml=physics)
+    close(fu)
+    open(newunit=fu, file=inlist, status="old", action="read")
+    read(unit=fu, nml=outputs)
+    close(fu)
+    open(newunit=fu, file=inlist, status="old", action="read")
+    read(unit=fu, nml=other)
+    close(fu)
+
+  end subroutine
   
 end module cio
 

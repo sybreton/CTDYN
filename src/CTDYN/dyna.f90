@@ -90,9 +90,9 @@ contains
     real(dp) :: agr(np,nb/2), agi(np,nb/2)
     real(dp) :: bgr(np,nb/2), bgi(np,nb/2)
     
-    character*1 :: jobpr    
-    character*1 :: balanc    
-    character*1 :: sense    
+    character(len=1) :: jobvl, jobpr    
+    character(len=1) :: balanc    
+    character(len=1) :: sense    
     real(dp) :: rwork(2*nt)
     complex(qp) :: work(lwork)  
     character*43 :: ver
@@ -105,7 +105,7 @@ contains
     real(dp) :: c2(np)
     
     !------------------------------------------------------
-    jobpr = 'n'    ! y = write all pij matrix       !!!!
+    jobpr = 'n'    ! y = write all pij matrix      
     jobvl = 'n'    ! v = calculate r and l eig.
     !----------------  boundaries ------------------------------
     

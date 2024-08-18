@@ -12,10 +12,10 @@ CTDYN: the Catania dynamo code
 
    usage/installation/installation
    usage/quickstart/quickstart
+   usage/namelist/namelist_description
 
 .. toctree::
    :maxdepth: 1
    :caption: Detailed API:
 
-   usage/api/namelist_description
 
