@@ -1,0 +1,25 @@
+! Empty inlist for default test case
+&global
+/
+
+&profiles
+/
+
+&brent
+/
+
+&boundaries
+/
+
+&fields
+/
+
+&physics
+/
+
+&outputs
+/
+
+&other
+/
+
