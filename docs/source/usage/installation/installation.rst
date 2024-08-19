@@ -4,15 +4,15 @@ Installation
 Fortran CTDYN executable
 -------------------------
 
-The first thing is to compile the source code.
-At the root of the repository, simply do
-
-``cd src/CTDYN``
+The first thing is to compile the Fortran source code.
 
 ``make``
 
-An executable should be created at the root of the repository under the name
-``ctdyn``.
+An executable should be created in the ``bin`` repository under the name
+``ctdyn``. It is recommended to set a ``CTDYN_DIR`` environment variable
+in your local profile
+
+``export CTDYN_DIR="CTDYN_repository"``  
 
 Python module
 --------------
