@@ -277,8 +277,8 @@ contains
   subroutine write_toroidal (bfeld3, nf, nj, jj, q, &
                              theta, x, x1, xf, tc, bphi, iphi)
   
-    character*512 :: bfeld3
-    character*2 :: q
+    character(len=512) :: bfeld3
+    character(len=2) :: q
     integer :: nf, nj, jj
     real(dp) :: theta, x, x1, xf, tc
     real(dp) :: bphi(np+2+nft, n_theta)        ! toroidal real
@@ -304,8 +304,8 @@ contains
   subroutine write_poloidal (bfeld4, nf, nj, jj, q, &
                              theta, x, x1, xf, tc, apr, api) 
   
-    character*512 :: bfeld4
-    character*2 :: q
+    character(len=512) :: bfeld4
+    character(len=2) :: q
     integer :: nf, nj, jj
     real(dp) :: theta, x, x1, xf, tc
     real(dp) :: apr(np+2+nft, n_theta)         ! b poloidal (potential)
@@ -378,11 +378,11 @@ contains
 
   subroutine write_vect (bfeld2, q) 
     !-------------------------------------------------------------
-    !
+    ! TODO
     !-------------------------------------------------------------
 
-    character*512 :: bfeld2
-    character*2 :: q
+    character(len=512) :: bfeld2
+    character(len=2) :: q
 
     write(bfeld2, fmt_2010) trim(dir)//'/vect.', ii, q, mm 
     open(13, status='unknown', file=adjustl(bfeld2))
@@ -399,8 +399,8 @@ contains
     !  time evolution butterfly diagram 
     !-------------------------------------------------------------
 
-    character*512 :: bfeld1, bfeld6, bfeld7, bfeld8
-    character*2 :: q
+    character(len=512) :: bfeld1, bfeld6, bfeld7, bfeld8
+    character(len=2) :: q
     integer :: nf, nft
     real(dp) :: x1, x2, hh
     real(dp) :: bphi(np+2+nft,n_theta)        ! toroidal real
@@ -552,8 +552,8 @@ contains
     !----------------------------------------------------------
     ! radial butterfly diagram n and s 
     !----------------------------------------------------------
-    character*512 :: bfeld9, bfeld10
-    character*2 :: q
+    character(len=512) :: bfeld9, bfeld10
+    character(len=2) :: q
     integer :: nf, nft
     real(dp) :: x1, x2, hh
     real(dp) :: bphi(np+2+nft,n_theta)        ! toroidal real
@@ -719,9 +719,9 @@ contains
     integer :: i, i2, i3, j, jj, k, k1, k2, &
                & nep, net, nf, nj, nsp, nst
   
-    character*2 :: q
-    character*512 :: bfeld1, bfeld2, bfeld3, bfeld4, bfeld5, &
-                     bfeld6, bfeld7, bfeld8, bfeld9, bfeld10
+    character(len=2) :: q
+    character(len=512) :: bfeld1, bfeld2, bfeld3, bfeld4, bfeld5, &
+                          bfeld6, bfeld7, bfeld8, bfeld9, bfeld10
   
   
     real(dp) :: bphi(np+2+nft,n_theta)        ! toroidal real

@@ -95,7 +95,6 @@ contains
     character(len=1) :: sense    
     real(dp) :: rwork(2*nt)
     complex(qp) :: work(lwork)  
-    character*43 :: ver
     integer :: qa, qb
     complex(qp) :: axx(nt,nt)
     real(dp) :: axr(nt,nt)
