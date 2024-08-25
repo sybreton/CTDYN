@@ -18,4 +18,7 @@ CTDYN: the Catania dynamo code
    :maxdepth: 1
    :caption: Detailed API:
 
+   usage/api/interface.rst
+   usage/api/visualisation.rst
+
 
