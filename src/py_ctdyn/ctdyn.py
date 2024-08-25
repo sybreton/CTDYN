@@ -1,6 +1,6 @@
 import py_ctdyn
 import os, re, subprocess
-import importlib
+import importlib.resources
 
 def get_ctdyn_dir () :
   """
@@ -41,7 +41,8 @@ def run_ctdyn (ctdyn_param=None, verbose=True) :
   ----------
   ctdyn_param : dict
     Dictionary of CTDYN namelists, each namelist being
-    formatted as a dictionary with pairs ``name :  value ``.
+    formatted itself as a dictionary with pairs 
+    ``name:value``.
 
   Returns
   -------

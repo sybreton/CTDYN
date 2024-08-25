@@ -3,14 +3,14 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import re
 
-def read_field (filename, return_meshgrid=True,
-                output_format="txt") :
+def read_field_map (filename, return_meshgrid=True,
+                    output_format="txt") :
     """
     Read field output produced by CTDYN. 
     """
     if output_format=="txt" :
-      r, theta, mesh = read_field_text_file (filename, 
-                                             return_meshgrid=return_meshgrid) 
+      r, theta, mesh = read_field_map_text_file (filename, 
+                                                 return_meshgrid=return_meshgrid) 
     elif output_format=="hdf5" :
       raise Exception ("hdf5 format is not implemented yet.")
     else :
@@ -18,7 +18,7 @@ def read_field (filename, return_meshgrid=True,
     return r, theta, mesh
     
 
-def read_field_text_file (filename, return_meshgrid=True) :
+def read_field_map_text_file (filename, return_meshgrid=True) :
     """
     Read field from file saved under a text format.
     """
@@ -45,10 +45,10 @@ def read_field_text_file (filename, return_meshgrid=True) :
     mesh = mesh.reshape (n_theta, n_r)
     return r, theta, mesh
 
-def plot_meridional_mesh (r, theta, mesh,
-                          figsize=(4,6), cmap="Blues_r",
-                          mode="contourf", contour=True,
-                          colorbar=True, label=None) :
+def plot_meridional_map (r, theta, mesh,
+                         figsize=(4,6), cmap="Blues_r",
+                         mode="contourf", contour=True,
+                         colorbar=True, label=None) :
     """
     Plot a meridional mesh.
     """
