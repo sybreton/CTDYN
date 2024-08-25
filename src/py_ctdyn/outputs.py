@@ -7,6 +7,26 @@ def read_field_map (filename, return_meshgrid=True,
                     output_format="txt") :
     """
     Read field output produced by CTDYN. 
+
+    Parameters
+    ----------
+    filename : str or Path object
+      Name of the CTDYN output file to read.
+
+    return_meshgrid : bool
+      Whether to return 2d meshgrid (``True``) or 
+      1d array (``False``) for radius and colatitude. 
+      Optional, default ``True``.
+ 
+    output_format : str
+      Format of the output files created by CTDYN.
+      Optional, default ``"txt"``.
+
+    Returns 
+    -------
+    tuple of arrays
+      Tuple with, in this order, radius (1d array or 2d meshgrid), colatitude 
+      meshgrid (1d array or 2d meshgrid), and field meshgrid.
     """
     if output_format=="txt" :
       r, theta, mesh = read_field_map_text_file (filename, 
@@ -20,7 +40,23 @@ def read_field_map (filename, return_meshgrid=True,
 
 def read_field_map_text_file (filename, return_meshgrid=True) :
     """
-    Read field from file saved under a text format.
+    Read field from CTDYN output file saved under a text format.
+
+    Parameters
+    ----------
+    filename : str or Path object
+      Name of the CTDYN output file to read.
+
+    return_meshgrid : bool
+      Whether to return 2d meshgrid (``True``) or 
+      1d array (``False``) for radius and colatitude. 
+      Optional, default ``True``.
+ 
+    Returns 
+    -------
+    tuple of arrays
+      Tuple with, in this order, radius (1d array or 2d meshgrid), colatitude 
+      meshgrid (1d array or 2d meshgrid), and field meshgrid.
     """
     # Reading the header
     with open (Path (filename), "r") as f :
@@ -50,7 +86,43 @@ def plot_meridional_map (r, theta, mesh,
                          mode="contourf", contour=True,
                          colorbar=True, label=None) :
     """
-    Plot a meridional mesh.
+    Plot a meridional map computed by CTDYN.
+
+    Parameters
+    ----------
+    r : ndarray
+      2d meshgrid with radius. 
+
+    theta : ndarray
+      2d meshgrid with colatitude. 
+
+    mesh : ndarray
+      2d meshgrid of the quantity to plot on the map.
+
+    figsize : tuple
+      Figure size. Optional, default ``(4,6)``.
+
+    cmap : str or Colormap
+      Color map. Optional, default ``Blues_r``.
+
+    mode : str
+      Map representation mode, either ``contourf``
+      or ``pcolormesh``. Optional, default ``contourf``.
+
+    contour : bool
+      Set to ``True`` to represent additional contours
+      on the map. Optional, default ``True``.
+
+    colorbar : bool
+      Set to ``True`` to include the colorbar in the figure.
+      Optional, default ``True``.
+
+    label : str
+      Colorbar label. Optional, default ``None``.
+
+    Returns :
+    matplotlib.Figure
+      The created figure.
     """
     x = r * np.sin (theta)
     y = r * np.cos (theta)
@@ -81,7 +153,27 @@ def plot_meridional_map (r, theta, mesh,
 def read_butterfly_diagram (filename, return_meshgrid=True,
                             output_format="txt") :
     """
-    Read field output produced by CTDYN. 
+    Read butterfly diagram output produced by CTDYN. 
+
+    Parameters
+    ----------
+    filename : str or Path object
+      Name of the CTDYN output file to read.
+
+    return_meshgrid : bool
+      Whether to return 2d meshgrid (``True``) or 
+      1d array (``False``) for radius and colatitude. 
+      Optional, default ``True``.
+ 
+    output_format : str
+      Format of the output files created by CTDYN.
+      Optional, default ``"txt"``.
+
+    Returns 
+    -------
+    tuple of arrays
+      Tuple with, in this order, time (1d array or 2d meshgrid), colatitude 
+      meshgrid (1d array or 2d meshgrid), and field meshgrid.
     """
     if output_format=="txt" :
       t, theta, mesh = read_butterfly_diagram_text_file (filename, 
@@ -95,6 +187,22 @@ def read_butterfly_diagram (filename, return_meshgrid=True,
 def read_butterfly_diagram_text_file (filename, return_meshgrid=True) :
     """
     Read butterfly diagram from file saved under a text format.
+
+    Parameters
+    ----------
+    filename : str or Path object
+      Name of the CTDYN output file to read.
+
+    return_meshgrid : bool
+      Whether to return 2d meshgrid (``True``) or 
+      1d array (``False``) for radius and colatitude. 
+      Optional, default ``True``.
+ 
+    Returns 
+    -------
+    tuple of arrays
+      Tuple with, in this order, time (1d array or 2d meshgrid), colatitude 
+      meshgrid (1d array or 2d meshgrid), and field meshgrid.
     """
     # Reading the header
     with open (Path (filename), "r") as f :
@@ -119,6 +227,42 @@ def plot_butterfly_diagram (t, theta, mesh,
                             colorbar=True, label=None) :
     """
     Plot a butterfly diagram.
+
+    Parameters
+    ----------
+    t : ndarray
+      2d meshgrid with time coordinate. 
+
+    theta : ndarray
+      2d meshgrid with colatitude. 
+
+    mesh : ndarray
+      2d meshgrid of the quantity to plot on the map.
+
+    figsize : tuple
+      Figure size. Optional, default ``(7,4)``.
+
+    cmap : str or Colormap
+      Color map. Optional, default ``Blues_r``.
+
+    mode : str
+      Map representation mode, either ``contourf``
+      or ``pcolormesh``. Optional, default ``contourf``.
+
+    contour : bool
+      Set to ``True`` to represent additional contours
+      on the map. Optional, default ``True``.
+
+    colorbar : bool
+      Set to ``True`` to include the colorbar in the figure.
+      Optional, default ``True``.
+
+    label : str
+      Colorbar label. Optional, default ``None``.
+
+    Returns :
+    matplotlib.Figure
+      The created figure.
     """
     lat = 90 - theta/np.pi*180 
     

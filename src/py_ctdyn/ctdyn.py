@@ -23,8 +23,20 @@ def _get_dir_out (ctdyn_param) :
   """
   Get output directory and modify input inlist
   so the inlist can be created inside it.
+
+  Parameters
+  ----------
+  ctdyn_param : dict
+    Dictionary of CTDYN namelists, each namelist being
+    formatted itself as a dictionary with pairs 
+    ``name:value``. Optional, default ``None``.
+
+  Returns
+  -------
+  str
+    The CTDYN output directory.
   """
-  # After set_default_inlist is calleed, this key has 
+  # After set_default_inlist is called, this key has 
   # to exist.
   dir_out = ctdyn_param["outputs"]["dir"]
   # Remove (possible) additional quote characters 
@@ -42,7 +54,11 @@ def run_ctdyn (ctdyn_param=None, verbose=True) :
   ctdyn_param : dict
     Dictionary of CTDYN namelists, each namelist being
     formatted itself as a dictionary with pairs 
-    ``name:value``.
+    ``name:value``. Optional, default ``None``.
+
+  verbose : bool
+    Output verbosity.
+    Optional, default ``True``.
 
   Returns
   -------
@@ -68,6 +84,24 @@ def make_inlist (parameters=None, filename=None) :
   Make the inlist file for the model using a default
   parameter dictionary or the parameter dictionary 
   provided by the user.
+
+  Parameters
+  ----------
+  parameters : dict
+    Dictionary of CTDYN namelists, each namelist being
+    formatted itself as a dictionary with pairs 
+    ``name:value``. Optional, default ``None``.
+
+  filename : str or Path object
+    Filename to use in order to write the inlist file.
+    If ``None``, no file will be written.
+    Optional, default ``None``.
+
+  Returns 
+  -------
+  list
+    List of strings, each corresponding to a line of the
+    output file. 
   """
   parameters = set_default_inlist (parameters)
 
@@ -84,6 +118,12 @@ def load_inlist_template () :
   Load inlist empty template and return
   it as a list of strings (one element for 
   each line).
+
+  Returns 
+  -------
+  list
+    List of strings, each corresponding to a line of the
+    read template. 
   """
   f = importlib.resources.open_text (py_ctdyn.templates, 
                                      "empty_inlist")
@@ -96,6 +136,16 @@ def save_template (filename, template) :
   """
   Save a template provided as a list of string
   into a text file.
+
+  Parameters
+  ----------
+
+  filename : str or Path object
+    Filename to use in order to write the file.
+
+  template : list 
+    List of strings, each corresponding to a line of the
+    file to write. 
   """
   with open (filename, "w") as f:
     for line in template :
@@ -105,9 +155,25 @@ def save_template (filename, template) :
 def insert_namelist (template, namelist, 
                      namelist_dict) :
   """
-  Insert all parameter line 
-  related to one type of parameters 
+  Insert all parameter line related to one type of parameters 
   into the inlist template.
+
+  Parameters
+  ----------
+  namelist : str
+    Name of the namelist to consider.
+
+  template : list 
+    List of strings, each corresponding to a line of the
+    file to write. 
+
+  namelist_dict : dict
+    Dictionary with parameters to insert in the template.
+
+  Returns
+  -------
+  list
+    The updated template as a list of strings.
   """ 
   ii, jj = 0, 0 
   while not "&"+namelist in template[ii] :
