@@ -8,6 +8,12 @@ def tmp_dir (tmp_path_factory) :
 
 class TestUnitary :
 
+  @pytest.fixture(scope="class")
+  def namelists (self) :
+    return ["&global", "&profiles", "&brent",
+            "&boundaries", "&fields", "&physics",
+            "&outputs", "&other"]
+
   def testGetDir (self) :
     ctdyn_dir = dyn.get_ctdyn_dir ()
     assert type(ctdyn_dir)==str
@@ -16,18 +22,38 @@ class TestUnitary :
     parameters = dyn.set_default_inlist ()
     assert type(parameters)==dict
 
-  def testLoadInlist (self) :
-    template = dyn.make_inlist ()
+  def check_template (self, template,
+                      namelists) :
+    for namelist in namelists :
+      missing = True
+      ii = 0
+      while missing and ii<len(template) :
+        if namelist in template[ii] :
+          missing = False
+        else :
+          ii += 1
+      assert not missing 
 
-  def testMakeInlist (self) :
+  def testLoadInlist (self, namelists) :
     template = dyn.make_inlist ()
+    self.check_template (template, namelists)
 
-  def testInlistTuned (self) :
-    dir_out = "ctdyn_output"
-    parameters = {"outputs" : {"dir":"'{}'".format (dir_out)},
+  def testMakeInlistFilenameNone (self, namelists) :
+    template = dyn.make_inlist (filename=None)
+    self.check_template (template, namelists)
+  
+  def testMakeInlistWithFilename (self, tmp_dir,
+                                  namelists) :
+    filename = os.path.join (tmp_dir, "inlist")
+    template = dyn.make_inlist (filename=filename)
+    self.check_template (template, namelists)
+    assert os.path.exists (filename)
+
+  def testInlistTuned (self, tmp_dir) :
+    parameters = {"outputs" : {"dir":"'{}'".format (tmp_dir)},
                    }
     parameters = dyn.set_default_inlist (parameters=parameters)
-    assert parameters["outputs"]["dir"] == "'{}'".format (dir_out)
+    assert parameters["outputs"]["dir"] == "'{}'".format (tmp_dir)
 
 class TestExecutionVisualisation :
 
