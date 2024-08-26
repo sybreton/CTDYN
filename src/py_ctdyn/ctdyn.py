@@ -210,7 +210,7 @@ def set_default_inlist (parameters=None) :
   parameters.setdefault ("fields", {})
   parameters.setdefault ("physics", {})
   parameters.setdefault ("outputs", {})
-  parameters.setdefault ("other", {})
+  parameters.setdefault ("controls", {})
   # Creating variable for dictionaries
   global_dict = parameters["global"]
   profiles = parameters["profiles"]
@@ -219,7 +219,7 @@ def set_default_inlist (parameters=None) :
   fields = parameters["fields"]
   physics = parameters["fields"]
   outputs = parameters["outputs"]
-  other = parameters["other"]
+  controls = parameters["controls"]
 
   # TODO
   outputs.setdefault ("dir", "'.'") 

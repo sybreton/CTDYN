@@ -30,9 +30,10 @@
 /
 
 &physics
-  hd = 1
+  hd    = 1
   ffree = 0
-  xm = -0.45
+  xm    = -0.45
+  aqu   =  1
 /
 
 &outputs
@@ -40,7 +41,7 @@
   write_vectors = .true. 
 /
 
-&other
+&controls
   xa1     =  0.64  
   xa2     =  0.72   
   xa3     =  2.0 
@@ -58,7 +59,6 @@
   c3      =  0
   bct     =  1.
   gd      =  1.2
-  aqu     =  1
   flg     =  0.
   dd1     =  0.05
   rc1     =  0.70

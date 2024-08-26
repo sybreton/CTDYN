@@ -65,7 +65,7 @@ module cio
   real(dp) :: hd, ffree, xm
 
   !-------------------------------------------
-  !> other 
+  !> controls 
   !-------------------------------------------
   integer :: nso
   real(dp) :: zeta_r
@@ -138,12 +138,13 @@ contains
     !-------------------------------------------
     !> physics
     !-------------------------------------------
-    hd = 1
+    hd    = 1
     ffree = 0
-    xm = -0.45
+    xm    = -0.45
+    aqu   =  1
   
     !-------------------------------------------
-    !> other 
+    !> controls 
     !-------------------------------------------
     xa1     =  0.64   
     xa2     =  0.72   
@@ -162,7 +163,6 @@ contains
     c3      =  0
     bct     =  1.
     gd      =  1.2 
-    aqu     =  1
     flg     =  0.
     dd1     =  0.05
     rc1     =  0.70
@@ -197,14 +197,14 @@ contains
 
     namelist /fields/ degree, mmm
 
-    namelist /physics/ hd, ffree, xm
+    namelist /physics/ hd, ffree, xm, aqu
 
     namelist /boundaries/ x_in
 
-    namelist /other/ xa1, xa2, xa3,  &
+    namelist /controls/ xa1, xa2, xa3,  &
                      xb, xda1, xda2, rm_i, rm_f, &
                      cm_i, cm_f, nso, edr,  &
-                     xe1, xde1, c3, bct, gd, aqu, &
+                     xe1, xde1, c3, bct, gd, &
                      flg, dd1, rc1, rc2, oco,  &
                      beta_i, beta_f, beta_s, zeta_r, &
                      xbt, xbo
@@ -234,7 +234,7 @@ contains
     read(unit=fu, nml=outputs)
     close(fu)
     open(newunit=fu, file=inlist, status="old", action="read")
-    read(unit=fu, nml=other)
+    read(unit=fu, nml=controls)
     close(fu)
 
   end subroutine

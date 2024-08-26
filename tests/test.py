@@ -12,7 +12,7 @@ class TestUnitary :
   def namelists (self) :
     return ["&global", "&profiles", "&brent",
             "&boundaries", "&fields", "&physics",
-            "&outputs", "&other"]
+            "&outputs", "&controls"]
 
   def testGetDir (self) :
     ctdyn_dir = dyn.get_ctdyn_dir ()
