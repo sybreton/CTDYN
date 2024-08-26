@@ -83,13 +83,20 @@ x_in : float
 physics
 --------
 
+aqu : float     
+  Set to ``1`` to include the ``alpha**2`` term in the equation, or
+  to ``0`` to ignore it. 
+
+hd : float      
+  Whether to include turbulent pumping, ``1`` or not, ``0``.
+
+ffree : float 
+  ???
+
 xm : float     
   Exponent to use in the power law ``R_M \propto Omega**xm``,
   where ``R_M`` is the Reynolds number of the meridian circulation
   and ``Omega`` is the angular velocity of the star.
-
-hd : float      
-  Whether to include turbulent pumping, ``1`` or not, ``0``.
 
 fields
 -------
@@ -103,6 +110,15 @@ mmm : float
 
 other
 ------
+
+flg : float     
+  If set to ``1``, lapack solver for complex matrixes will be used, if
+  set to ``0``, the solver for real matrixes will be used. 
+  If ``mmm`` is different from ``0``, ``flg`` is automatically set to
+  ``1``.
+
+nso : float      
+  ???
 
 xa1 : float
   ???
@@ -134,9 +150,6 @@ cm_i : float
 cm_f : float 
   ???
 
-nso : float      
-  ???
-
 edr : float        
   ???
 
@@ -154,16 +167,6 @@ bct : float
 
 gd : float      
   ???
-
-aqu : float     
-  Set to ``1`` to include the ``alpha**2`` term in the equation, or
-  to ``0`` to ignore it. 
-
-flg : float     
-  If set to ``1``, lapack solver for complex matrixes will be used, if
-  set to ``0``, the solver for real matrixes will be used. 
-  If ``mmm`` is different from ``0``, ``flg`` is automatically set to
-  ``1``.
 
 dd1 : float     
   ???
@@ -189,9 +192,6 @@ beta_s : float
 zeta_r : float  
   ???
 
-ffree : float 
-  ???
-  
 xbt : float   
   ???
   
