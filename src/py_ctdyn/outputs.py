@@ -1,5 +1,6 @@
 import numpy as np
 from pathlib import Path
+import matplotlib
 import matplotlib.pyplot as plt
 import re
 
@@ -84,7 +85,8 @@ def read_field_map_text_file (filename, return_meshgrid=True) :
 def plot_meridional_map (r, theta, mesh,
                          figsize=(4,6), cmap="Blues_r",
                          mode="contourf", contour=True,
-                         colorbar=True, label=None) :
+                         contour_ls="-", colorbar=True, label=None,
+                         fill_outside=False, show_up_bounds=False) :
     """
     Plot a meridional map computed by CTDYN.
 
@@ -113,6 +115,9 @@ def plot_meridional_map (r, theta, mesh,
       Set to ``True`` to represent additional contours
       on the map. Optional, default ``True``.
 
+    contour_ls : str
+      Contour linestyle. Optional, default ``"-"``.
+
     colorbar : bool
       Set to ``True`` to include the colorbar in the figure.
       Optional, default ``True``.
@@ -120,7 +125,17 @@ def plot_meridional_map (r, theta, mesh,
     label : str
       Colorbar label. Optional, default ``None``.
 
-    Returns :
+    fill_outside : bool
+      If set to ``True``, the colormap will be applied also
+      for region above surface radius. Optional, default,
+     ``False``.
+
+    show_up_bounds : bool
+      If ``True``, show the upper limit of the plotted mesh.
+      Optional, default ``False``.
+
+    Returns
+    -------
     matplotlib.Figure
       The created figure.
     """
@@ -130,18 +145,35 @@ def plot_meridional_map (r, theta, mesh,
     fig, ax = plt.subplots (1, 1, figsize=figsize)
     
     # Drawing boundaries of the slice
-    ax.plot (x[:,0], y[:,0], color="black")
-    ax.plot (x[:,-1], y[:,-1], color="black")
+    ax.plot (x[:,0], y[:,0], color="black", lw=1, 
+             zorder=10)
+    if show_up_bounds :
+      ax.plot (x[:,-1], y[:,-1], color="black", lw=1,
+               zorder=10)
+
+    # Drawing surface boundary
+    arc = matplotlib.patches.Arc ((0,0), 2, 2, theta1=270, theta2=90,
+                                  linewidth=1, color="black", zorder=10)
+    ax.add_patch (arc)
+
+    if fill_outside :
+      x_m, y_m, mesh_m = x, y, mesh
+    else :
+      mask = x**2+y**2 >= 1
+      x_m, y_m, mesh_m = x.copy(), y.copy(), mesh.copy()
+      x_m[mask] = np.nan
+      y_m[mask] = np.nan
+      mesh_m[mask] = np.nan
     
     if mode=="pcolormesh" :
-        im = ax.pcolormesh (x, y, mesh, cmap=cmap)
+        im = ax.pcolormesh (x_m, y_m, mesh_m, cmap=cmap)
     elif mode=="contourf" :
-        im = ax.contourf (x, y, mesh, cmap=cmap)
+        im = ax.contourf (x_m, y_m, mesh_m, cmap=cmap)
     else :
         raise Exception ("Accepted arguments for mode are 'pcolormesh' or 'contourf'")
     if contour :
         ax.contour (x, y, mesh, colors="darkgrey", 
-                    linestyles="--")
+                    linestyles=contour_ls)
     if colorbar :
         cbar = plt.colorbar (im, shrink=0.5)
         if label is not None :
