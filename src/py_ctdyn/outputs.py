@@ -157,18 +157,16 @@ def plot_meridional_map (r, theta, mesh,
     ax.add_patch (arc)
 
     if fill_outside :
-      x_m, y_m, mesh_m = x, y, mesh
+      mesh_m = mesh
     else :
-      mask = x**2+y**2 >= 1
-      x_m, y_m, mesh_m = x.copy(), y.copy(), mesh.copy()
-      x_m[mask] = np.nan
-      y_m[mask] = np.nan
+      mask = x**2+y**2 > 1
+      mesh_m = mesh.copy()
       mesh_m[mask] = np.nan
     
     if mode=="pcolormesh" :
-        im = ax.pcolormesh (x_m, y_m, mesh_m, cmap=cmap)
+        im = ax.pcolormesh (x, y, mesh_m, cmap=cmap)
     elif mode=="contourf" :
-        im = ax.contourf (x_m, y_m, mesh_m, cmap=cmap)
+        im = ax.contourf (x, y, mesh_m, cmap=cmap)
     else :
         raise Exception ("Accepted arguments for mode are 'pcolormesh' or 'contourf'")
     if contour :
