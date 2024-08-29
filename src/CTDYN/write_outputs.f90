@@ -412,8 +412,8 @@ contains
 
 
     ! local arguments
-    real, parameter :: t_in = 0.
-    real, parameter :: t_fin = 12.
+    real(dp), parameter :: t_in = 0.
+    real(dp), parameter :: t_fin = 12.
     real(dp) :: time, ratio, theta
     real(dp) :: x
     real(dp) :: xr(np+2+nft)                
