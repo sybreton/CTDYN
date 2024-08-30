@@ -10,7 +10,8 @@ module util
 
 contains
 
-  subroutine hunt(xx, n, x, jlo)
+  subroutine hunt_old(xx, n, x, jlo)
+    !> Determine jlo such as xx(jl0) <= x < x(jl0+1).
   
     ! Arguments
     integer :: jlo, n
@@ -58,6 +59,55 @@ contains
     endif
     goto 3
   end subroutine
+
+  integer function hunt (xx, n, x) result (jlo)
+    !> Determine jlo such as xx(jl0) <= x < x(jl0+1).
+  
+    ! Arguments
+    integer :: n
+    real(dp) :: x, xx(n)
+
+    ! Local variables
+    integer :: inc, jhi, jm
+    logical :: ascnd
+  
+    ascnd = xx(n).gt.xx(1)
+    if (jlo .le. 0 .or. jlo .gt. n) then
+      jlo=0
+      jhi=n+1
+    else 
+      inc=1
+      if (x.ge.xx(jlo).eqv.ascnd) then
+        do while ((x.ge.xx(jhi).eqv.ascnd) .and. (jhi.lt.n+1))
+          jhi = jlo+inc
+          jlo = jhi
+          inc = inc+inc
+        enddo
+        if (jhi.gt.n) then
+          jhi = n+1
+        endif
+      else
+        jhi=jlo
+        do while ((x.lt.xx(jlo).eqv.ascnd) .and. (jlo.gt.0))
+          jlo = jhi-inc
+          jhi = jlo
+          inc = inc+inc
+        enddo
+        if (jlo.lt.1) then
+          jlo = 0
+        endif
+      endif
+    endif
+    do while (.not.jhi-jlo.eq.1)
+      jm = (jhi+jlo)/2
+      if (x.gt.xx(jm).eqv.ascnd) then
+        jlo = jm
+      else
+        jhi = jm
+      endif
+    enddo 
+    return 
+  end function
 
   subroutine sort2(n,arr,brr)
 

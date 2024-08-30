@@ -448,7 +448,7 @@ contains
     ratio= (sqrt(bphi(bax(1), bax(2))**2 + iphi(bax(1), bax(2))**2) &
            & /sqrt(apr(rax(1), rax(2))**2 + api(rax(1), rax(2))**2) )**(-1)
   
-    write(*, '(a,f10.4)') 'max poloidal / max toroidal  ',  ratio
+    write(*,'(a,f10.4)') 'max poloidal / max toroidal  ',  ratio
     write(*,'(a,f10.4)') 'Bphi max location', bax(1)*(x2-x1)/(np+1) + x1
     write(*,'(a,f10.4)') 'a max location', rax(1)*(x2-x1)/(np+1) + x1
   
@@ -465,8 +465,8 @@ contains
       xr(j) = x
     enddo
   
-    call hunt (xr, np+2+nf, xbt, jbt)
-    call hunt (xr, np+2+nf, xbo, jbo)
+    jbt = hunt (xr, np+2+nf, xbt)
+    jbo = hunt (xr, np+2+nf, xbo)
   
     time = -t_fin/n_time
     do k1=1, n_time
@@ -608,8 +608,8 @@ contains
       ang(k2) = theta
     enddo
   
-    call hunt (ang,n_theta, abt, kb)
-    call hunt (ang,n_theta, abm, km)
+    kb = hunt (ang,n_theta, abt)
+    km = hunt (ang,n_theta, abm)
   
     time = -t_fin/n_time
     do k1=1, n_time
