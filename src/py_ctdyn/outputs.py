@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from pathlib import Path
 import matplotlib
 import matplotlib.pyplot as plt
@@ -128,7 +129,7 @@ def plot_meridional_map (r, theta, mesh,
     fill_outside : bool
       If set to ``True``, the colormap will be applied also
       for region above surface radius. Optional, default,
-     ``False``.
+      ``False``.
 
     show_up_bounds : bool
       If ``True``, show the upper limit of the plotted mesh.
@@ -316,4 +317,115 @@ def plot_butterfly_diagram (t, theta, mesh,
     ax.set_xlabel ("Time (year)")
     ax.set_ylabel (r"Latitude ($\rm ^o$)")
     
+    return fig
+
+def read_radial_profiles (filename) :
+    """
+    Read radial profiles such as alpha 
+    and eta turbulent coefficients.
+    
+    Parameters
+    ----------
+    filename : str or Path object
+      Filename 
+    
+    Returns
+    -------
+    pandas.DataFrame
+      A dataframe with the radial profiles.
+    """
+    data = np.loadtxt (filename)
+    columns = ["alpha", "alpha_p", 
+               "eta_1", "eta_2", "eta_3", "psi", 
+               "ar", "arp", "bt", "btp", 
+               "om0", "om0p", "om2", "om2p"]
+    df = pd.DataFrame (data=data[:,1:], 
+                       index=data[:,0],
+                       columns=columns)
+    return df
+
+def plot_alpha (df, figsize=(5,5), 
+                xlabel=None, ylabel=None,
+                lw=1) :
+    """
+    Plot alpha profile. 
+    
+    Parameters
+    ----------
+    df : pandas.DataFrame
+      Dataframe read from ``read_radial_profiles``.
+      
+    figsize : tuple
+      Figure size. Optional, default ``(5,5)``.
+      
+    xlabel : str
+      X-axis label. Optional, default ``None``.
+      
+    ylabel : str
+      Y-axis label. Optional, default ``None``.
+      
+    lw : float
+      Line width.
+      
+    Returns
+    -------
+    matplotlib.Figure
+      The created figure.
+    """
+    if xlabel is None :
+        xlabel = r"$r$ ($R_\star$)"
+    if ylabel is None :
+        ylabel = r"$\alpha$"
+    fig, ax = plt.subplots (1, 1, figsize=figsize)
+    ax.set_xlabel (xlabel)
+    ax.set_ylabel (ylabel)
+    ax.plot (df.index, df["alpha"], color="blue", lw=lw, 
+             label=r"$\alpha$")
+    ax.plot (df.index, df["alpha_p"], color="darkorange", lw=lw,
+             label=r"$\alpha_p$")
+    ax.legend ()
+    return fig
+
+def plot_eta (df, figsize=(5,5), 
+              xlabel=None, ylabel=None,
+              lw=1) :
+    """
+    Plot eta profile. 
+    
+    Parameters
+    ----------
+    df : pandas.DataFrame
+      Dataframe read from ``read_radial_profiles``.
+      
+    figsize : tuple
+      Figure size. Optional, default ``(5,5)``.
+      
+    xlabel : str
+      X-axis label. Optional, default ``None``.
+      
+    ylabel : str
+      Y-axis label. Optional, default ``None``.
+      
+    lw : float
+      Line width.
+      
+    Returns
+    -------
+    matplotlib.Figure
+      The created figure.
+    """
+    if xlabel is None :
+        xlabel = r"$r$ ($R_\star$)"
+    if ylabel is None :
+        ylabel = r"$\alpha$"
+    fig, ax = plt.subplots (1, 1, figsize=figsize)
+    ax.set_xlabel (xlabel)
+    ax.set_ylabel (ylabel)
+    ax.plot (df.index, df["eta_1"], color="blue", lw=lw, 
+             label=r"$\eta_1$")
+    ax.plot (df.index, df["eta_2"], color="darkorange", lw=lw,
+             label=r"$\eta_2$")
+    ax.plot (df.index, df["eta_3"], color="gold", lw=lw,
+             label=r"$\eta_3$")
+    ax.legend ()
     return fig

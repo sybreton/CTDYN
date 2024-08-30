@@ -14,6 +14,8 @@ from .outputs import (read_field_map,
                       read_field_map_text_file,
                       read_butterfly_diagram,
                       read_butterfly_diagram_text_file,
+                      read_radial_profiles,
                       plot_meridional_map,
-                      plot_butterfly_diagram)
+                      plot_butterfly_diagram,
+                      plot_alpha, plot_eta)
 

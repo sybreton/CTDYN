@@ -68,6 +68,12 @@ class TestExecutionVisualisation :
     dyn.run_ctdyn (ctdyn_param=ctdyn_param, verbose=False,
                    rerun=False)
 
+  def testRadialProfiles (self, tmp_dir) :
+    filename = os.path.join (tmp_dir, "alpha.dat")
+    df = dyn.read_radial_profiles (filename) 
+    fig = dyn.plot_alpha (df)
+    fig = dyn.plot_eta (df)
+
   def testPlotMeridionalMap (self, tmp_dir) : 
     ii, time = 1, 1
     filename = "{}/pfld.{}.t{}.A00".format (tmp_dir, str (ii).zfill (6), 
