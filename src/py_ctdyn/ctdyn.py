@@ -44,7 +44,8 @@ def _get_dir_out (ctdyn_param) :
   return dir_out
   
 
-def run_ctdyn (ctdyn_param=None, verbose=True) :
+def run_ctdyn (ctdyn_param=None, verbose=True,
+               rerun=True) :
   """
   Run CTDYN for a selected set of inputs provided in 
   ``ctdyn_param``.
@@ -60,6 +61,11 @@ def run_ctdyn (ctdyn_param=None, verbose=True) :
     Output verbosity.
     Optional, default ``True``.
 
+  rerun : bool
+    If set to ``False``, CTDYN will not be run if
+    the inlist file exists in the output directory. 
+    Optional, default ``True``. 
+
   Returns
   -------
   dict
@@ -71,12 +77,16 @@ def run_ctdyn (ctdyn_param=None, verbose=True) :
   if dir_out is not None and not os.path.exists (dir_out) :
     os.mkdir (dir_out)
   ctdyn_in = os.path.join (dir_out, "inlist_ctdyn")
-  make_inlist (parameters=ctdyn_param, filename=ctdyn_in)
-  if verbose :
-    print ("Running CTDYN with input file '{}'.".format (ctdyn_in))
-  with open (os.path.join (dir_out, "ctdyn.out"), "w") as stdout :
-    subprocess.run ("{}/bin/ctdyn {}".format (ctdyn_dir, ctdyn_in), 
-                    stdout=stdout, shell=True)
+  if not rerun and os.path.exists (ctdyn_in) :
+    if verbose :
+      print ("Inlist file already exists and rerun=False, CTDYN was not executed.")
+  else :
+    make_inlist (parameters=ctdyn_param, filename=ctdyn_in)
+    if verbose :
+      print ("Running CTDYN with input file '{}'.".format (ctdyn_in))
+    with open (os.path.join (dir_out, "ctdyn.out"), "w") as stdout :
+      subprocess.run ("{}/bin/ctdyn {}".format (ctdyn_dir, ctdyn_in), 
+                      stdout=stdout, shell=True)
   return ctdyn_param
 
 def make_inlist (parameters=None, filename=None) :

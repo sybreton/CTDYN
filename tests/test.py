@@ -62,6 +62,12 @@ class TestExecutionVisualisation :
                }
     dyn.run_ctdyn (ctdyn_param=ctdyn_param, verbose=False)
 
+  def testRerun (self, tmp_dir) :
+    ctdyn_param = {"outputs" : {"dir":"'{}'".format (tmp_dir)},
+               }
+    dyn.run_ctdyn (ctdyn_param=ctdyn_param, verbose=False,
+                   rerun=False)
+
   def testPlotMeridionalMap (self, tmp_dir) : 
     ii, time = 1, 1
     filename = "{}/pfld.{}.t{}.A00".format (tmp_dir, str (ii).zfill (6), 
