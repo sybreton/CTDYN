@@ -167,7 +167,7 @@ contains
   end subroutine
 
   subroutine compute_ab_vector (vc, aai, aar, bbi, bbr, &
-                                epol, etor, ffc, x1, hh, nsp, nep, &
+                                ffc, x1, hh, nsp, nep, &
                                 nst, net, nf)
     ! -----------------------------------------------------------------
     ! Compute a and b vectors and surface energy
@@ -179,11 +179,11 @@ contains
     ! arguments
     real(dp) :: vc(np+2,nb,2)                 ! eigenvector
     real(dp) :: aai, aar, bbi, bbr
-    real(dp) :: etor, epol
     real(dp) :: ffc, x1, hh
     integer :: nsp, nep, nst, net, nf, mm
   
     ! local variables
+    real(dp) :: etor, epol
     real(dp) :: x, xnu, theta, rosym, dd1
     integer :: k2, j
     real(dp) :: rj, ry, rjp, ryp
@@ -269,8 +269,8 @@ contains
     etep = etor/epol
     etet = etor/(epol+etor)
   
-    write (*,*) 'et/ep', etep
-    write (*,*) 'et/etot', etet
+    write (*,*) 'Et/Ep', etep
+    write (*,*) 'Et/Etot', etet
   
   end subroutine
 
@@ -713,7 +713,7 @@ contains
     !------------------------------------------------------
     ! local variables
     real(dp) :: aai, aar, adum, ax, axp, bbi, bbr, bpt, bx, bxp, &
-            & dbx, epol, etor, ffc, fx, h2, hh, &
+            & dbx, ffc, fx, h2, hh, &
             & om0, om0p, om2, om2p, om4, om4p, &
             & tc, theta, x, x1, x2, xf
     integer :: i, i2, i3, j, jj, k, k1, k2, &
@@ -884,7 +884,7 @@ contains
     call compute_tor (nst, net, nf, nft, vc, bphi, iphi, ffc, &
                       hh, x1)
     call compute_ab_vector (vc, aai, aar, bbi, bbr, &
-                            epol, etor, ffc, x1, hh, nsp, nep, &
+                            ffc, x1, hh, nsp, nep, &
                             nst, net, nf)
   
     ! nj is the number of time slices

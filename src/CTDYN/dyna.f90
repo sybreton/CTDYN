@@ -150,7 +150,7 @@ contains
     if (degree.eq.'q' .and. mmm.ne.0) write(*,*) '********** a1-mode *********'
     
     write(*,'(a,i4.1,3x,a,i4.1,3x,a,i4.1)') 'it =', it,'na =', nb, 'np =', np
-    write(*,'(a,e12.5,a,e12.5)' ) ' c_alpha =', turb, ' c_omega =', co 
+    write(*,'(a,e12.5,a,e12.5)' ) ' C_alpha =', turb, ' C_omega =', co 
     write(*,'(a,e12.5,a,e12.5)' ) ' r_flow  =', c_u,  ' f-f =    ', beta 
     
     
@@ -161,13 +161,13 @@ contains
     !
     
     if(ii.eq.1)then     
-      open(22,status='unknown',file=trim(trim(dir)//'/alpha.dat'))
+      open(22, status='unknown', file=trim(trim(dir)//'/alpha.dat'))
       do i=1, np
         x = x1+i*hh
-        call rot(x, om0, om0p, om2, om2p, om4, om4p) 
-        call alt(x, alp, alp_p)     
-        call eta_turb(x, e1, e2, e3)
-        call stream(x,ar,arp,bt,btp, psi)
+        call rot (x, om0, om0p, om2, om2p, om4, om4p) 
+        call alt (x, alp, alp_p)     
+        call eta_turb (x, e1, e2, e3)
+        call stream (x, ar, arp, bt, btp, psi)
         write(22,'(15f14.6)') x,alp,alp_p,e1,e2,e3,psi,ar,arp,bt,btp,om0,om0p,om2,om2p
       enddo
       close(22)

@@ -40,11 +40,9 @@ program main
   real(dp) :: ca(10,10,4)
 
   character(len=128) :: inlist
-  character(len=5)   :: char_m  ! convert m in char
-  character(len=128) :: char_cm ! file crtal_am
-  character(len=128) :: char_cf ! file crtaf_am
-  character(len=128) :: fom     ! crea un format dinamico 
-  character(len=5)   :: qq      ! _am
+  character(len=5)   :: char_m         ! convert m in char
+  character(len=128) :: fileout        ! file crtal_am
+  character(len=5)   :: qq             ! _am
 
   integer :: mm, i, iome
   
@@ -73,10 +71,9 @@ program main
   !setting global variables
   ii = 0
   jobvr = 'n'
-  char_cm=trim(trim(dir)//'/crtal'//qq)
-  char_cf=trim(trim(dir)//'/crtaf'//qq)
-  open(35,status='unknown',file=char_cm)
-  write(35,'(a,2i4)')  '#n c_alpha, c_omega, r, beta, etor, epol, z=', np, na+1 
+  fileout = trim(trim(dir)//'/critical'//qq)
+  open(35, status='unknown', file=fileout)
+  write(35, '(a,i4,a,i4,a)') '#  n, C_alpha, C_omega, r, beta, Etor, Epol, z = (', np, ',', na+1, ')'  
   do iome=0, nso
     if ( cm_i.ne.0 ) then
       astep=(abs(cm_f/cm_i))**(1./nso) 
@@ -90,7 +87,7 @@ program main
     write (35,'(i4,16e12.4)') ii, critical, co, c_u, beta, etep, etet, zeta_r, (reg(i), abs(ieg(i)),i=1,1), eep
     if (write_vectors) then
       jobvr='v'
-      call dynamo (critical,rate)
+      call dynamo (critical, rate)
       jobvr='n'
     endif
   enddo
