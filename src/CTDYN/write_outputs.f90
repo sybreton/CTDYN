@@ -33,7 +33,7 @@ module write_outputs
   use ccov
   use cdfunc
   use bessel
-  use hunt
+  use util
   use func_flow
   use profiles
   use plg
@@ -465,8 +465,8 @@ contains
       xr(j) = x
     enddo
   
-    call hunt_hunt(xr, np+2+nf, xbt, jbt)
-    call hunt_hunt(xr, np+2+nf, xbo, jbo)
+    call hunt (xr, np+2+nf, xbt, jbt)
+    call hunt (xr, np+2+nf, xbo, jbo)
   
     time = -t_fin/n_time
     do k1=1, n_time
@@ -608,8 +608,8 @@ contains
       ang(k2) = theta
     enddo
   
-    call hunt_hunt(ang,n_theta, abt, kb)
-    call hunt_hunt(ang,n_theta, abm, km)
+    call hunt (ang,n_theta, abt, kb)
+    call hunt (ang,n_theta, abm, km)
   
     time = -t_fin/n_time
     do k1=1, n_time

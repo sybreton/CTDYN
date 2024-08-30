@@ -7,8 +7,14 @@ BINDIR = bin/
 OBJDIR = obj/
 TARGET = ctdyn
 
-# Retrieve list of the source files
-SRC = $(wildcard $(addsuffix *.f90,$(SRCDIR)))
+# List of the source files
+SRC_BASE = kind_parameters 
+SRC_BASE += util cio 
+SRC_BASE += b2func b3func b4func b5func c1s2func c3s2func plg 
+SRC_BASE += bessel ccov cdfunc cvect profiles 
+SRC_BASE += func_flow write_outputs dyna zbrent main
+SRC = $(foreach item,$(SRC_BASE), $(SRCDIR)$(item).f90)
+
 # Generate list of the object files
 OBJ = $(addprefix $(OBJDIR), $(patsubst %.f90, %.o, $(notdir $(SRC))))
 # Set directory where module will be written
@@ -18,6 +24,8 @@ FFLAGS += -J $(MODDIR)
 VPATH = $(SRCDIR)
 
 $(TARGET) : $(OBJ)
+	@echo $(SRC_BASE)
+	@echo $(SRC)
 	@echo Linking...
 	@mkdir -p $(BINDIR)
 	@$(FC) $(FFLAGS) -o $(BINDIR)$@ $(OBJ) $(LIB)

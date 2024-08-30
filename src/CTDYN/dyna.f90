@@ -15,7 +15,7 @@ module dyna
     use write_outputs
     use func_flow
     use profiles
-    use sort
+    use util
   
     implicit none
 
