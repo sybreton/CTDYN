@@ -84,9 +84,11 @@ def run_ctdyn (ctdyn_param=None, verbose=True,
     make_inlist (parameters=ctdyn_param, filename=ctdyn_in)
     if verbose :
       print ("Running CTDYN with input file '{}'.".format (ctdyn_in))
-    with open (os.path.join (dir_out, "ctdyn.out"), "w") as stdout :
+    with (open (os.path.join (dir_out, "ctdyn.out"), "w") as stdout,
+          open (os.path.join (dir_out, "ctdyn.err"), "w") as stderr) :
       subprocess.run ("{}/bin/ctdyn {}".format (ctdyn_dir, ctdyn_in), 
-                      stdout=stdout, shell=True)
+                      stdout=stdout, stderr=stderr, shell=True,
+                      check=True)
   return ctdyn_param
 
 def make_inlist (parameters=None, filename=None) :
