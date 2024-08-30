@@ -16,12 +16,13 @@ Get started with CTDYN
 
 .. code:: ipython3
 
-    dyn.run_ctdyn (ctdyn_param=ctdyn_param, verbose=True)
+    dyn.run_ctdyn (ctdyn_param=ctdyn_param, verbose=True,
+                  rerun=False)
 
 
 .. parsed-literal::
 
-    Running CTDYN with input file 'ctdyn_output/inlist_ctdyn'.
+    Inlist file already exists and rerun=False, CTDYN was not executed.
 
 
 
@@ -41,14 +42,12 @@ Get started with CTDYN
 
 .. code:: ipython3
 
-    ii, time = 1, 2
+    filename = "{}/alpha.dat".format (dir_out)
+    df = dyn.read_radial_profiles (filename) 
 
 .. code:: ipython3
 
-    filename = "{}/pfld.{}.t{}.A00".format (dir_out, str (ii).zfill (6), 
-                                                               str (time).zfill (2))
-    r, theta, mesh = dyn.read_field_map (filename)
-    fig = dyn.plot_meridional_map (r, theta, mesh, label=r"$B_r$")
+    fig = dyn.plot_alpha (df)
 
 
 
@@ -57,10 +56,7 @@ Get started with CTDYN
 
 .. code:: ipython3
 
-    filename = "{}/tfld.{}.t{}.A00".format (dir_out, str (ii).zfill (6), 
-                                                               str (time).zfill (2))
-    r, theta, mesh = dyn.read_field_map (filename)
-    fig = dyn.plot_meridional_map (r, theta, mesh, label=r"$B_\phi$")
+    fig = dyn.plot_eta (df)
 
 
 
@@ -69,15 +65,91 @@ Get started with CTDYN
 
 .. code:: ipython3
 
-    filename = "{}/butf.000001.a00".format (dir_out)
+    filename = "ctdyn_output/omega.dat"
+    r, theta, mesh = dyn.read_field_map (filename)
+    fig = dyn.plot_meridional_map (r, theta, mesh, 
+                                   label=r"$\Omega$", 
+                                   cmap="cividis")
+
+
+
+.. image:: quickstart_files/quickstart_8_0.png
+
 
 .. code:: ipython3
 
-    t, theta, mesh = dyn.read_butterfly_diagram_text_file (filename)
-    fig = dyn.plot_butterfly_diagram (t, theta, mesh)
+    filename = "ctdyn_output/utheta.dat"
+    r, theta, mesh = dyn.read_field_map (filename)
+    fig = dyn.plot_meridional_map (r, theta, mesh, 
+                                   label=r"$u_\theta$", 
+                                   cmap="bwr")
 
 
 
 .. image:: quickstart_files/quickstart_9_0.png
+
+
+.. code:: ipython3
+
+    filename = "ctdyn_output/stream.dat"
+    r, theta, mesh = dyn.read_field_map (filename)
+    fig = dyn.plot_meridional_map (r, theta, mesh, 
+                                   label=r"Circulation", 
+                                   cmap="bwr")
+
+
+
+.. image:: quickstart_files/quickstart_10_0.png
+
+
+.. code:: ipython3
+
+    ii, time = 1, 2
+
+.. code:: ipython3
+
+    filename = "{}/pfld.{}.t{}.A00".format (dir_out, str (ii).zfill (6), 
+                                            str (time).zfill (2))
+    r, theta, mesh = dyn.read_field_map (filename)
+    fig = dyn.plot_meridional_map (r, theta, mesh, label=r"$B_r$",
+                                   mode="contourf")
+
+
+
+.. image:: quickstart_files/quickstart_12_0.png
+
+
+.. code:: ipython3
+
+    filename = "{}/tfld.{}.t{}.A00".format (dir_out, str (ii).zfill (6), 
+                                            str (time).zfill (2))
+    r, theta, mesh = dyn.read_field_map (filename)
+    fig = dyn.plot_meridional_map (r, theta, mesh, label=r"$B_\phi$")
+
+
+
+.. image:: quickstart_files/quickstart_13_0.png
+
+
+.. code:: ipython3
+
+    filename = "{}/butf.000001.a00".format (dir_out)
+    t, theta, mesh = dyn.read_butterfly_diagram (filename)
+    fig = dyn.plot_butterfly_diagram (t, theta, mesh)
+
+
+
+.. image:: quickstart_files/quickstart_14_0.png
+
+
+.. code:: ipython3
+
+    filename = "{}/brbp.000001.a00".format (dir_out)
+    t, theta, mesh = dyn.read_butterfly_diagram (filename)
+    fig = dyn.plot_butterfly_diagram (t, theta, mesh)
+
+
+
+.. image:: quickstart_files/quickstart_15_0.png
 
 

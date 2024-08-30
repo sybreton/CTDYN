@@ -16,7 +16,8 @@ except DistributionNotFound:
     __version__ = "unknown version"
 sys.path.insert(0, os.path.abspath('.'))
 
-autodoc_mock_imports = ['numpy', 'scipy', 'matplotlib']
+autodoc_mock_imports = ['numpy', 'scipy', 'matplotlib',
+                        'pandas']
 
 
 project = 'CTDYN'
