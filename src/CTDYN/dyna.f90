@@ -633,9 +633,9 @@ contains
         nas_count = nas_count+1
         nas = nas_count-1
         nas=2*nas+qb
-        if(j/nb.eq.0)axx(k1+1,j+k1) =-beb(1,nas) &
-         & -bct*4*x1*alb(1,nas)/(2*hh-3*x1)           ! bct=1 perf con         
-        if(j/nb.eq.1)axx(k1+1,j+k1) = gab(1,nas) &    ! bct =0 effect. perf.
+        if (j/nb.eq.0) axx(k1+1,j+k1) = -beb(1,nas) &
+         & -bct*4*x1*alb(1,nas)/(2*hh-3*x1)             ! bct=1 perf con         
+        if (j/nb.eq.1) axx(k1+1,j+k1) = gab(1,nas) &    ! bct =0 effect. perf.
          & +bct*x1*alb(1,nas)/(2*hh-3*x1)      
     
         !an-1     !alpha-omega + alpha^2

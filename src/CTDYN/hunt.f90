@@ -10,14 +10,17 @@ module hunt
 
 contains
 
-  subroutine hunt_hunt(xx,n,x,jlo)
+  subroutine hunt_hunt(xx, n, x, jlo)
   
+    ! Arguments
     integer :: jlo, n
     real(dp) :: x, xx(n)
+
+    ! Local variables
     integer :: inc, jhi, jm
     logical :: ascnd
   
-    ascnd=xx(n).gt.xx(1)
+    ascnd = xx(n).gt.xx(1)
     if (jlo .le. 0 .or. jlo .gt. n) then
       jlo=0
       jhi=n+1

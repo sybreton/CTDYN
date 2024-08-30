@@ -40,7 +40,7 @@ contains
   
     if (regime.eq.'r86') then
     ! eq (9) pag 91, rad86 an paper, appendix tables
-    !-----------  if regime = r86  then we test radler '86  an paper --------
+    !-----------  if regime = r86  then we test Radler '86  an paper --------
       dw = xda2
       xw = xa2 
       xi = (x-xw)/dw
@@ -69,7 +69,7 @@ contains
       om4p = 0.0e+00
   
     else if (regime .eq. 'dj') then
-      ! dudley and james
+      ! Dudley and James
       om0  = x*sin(x*pi)
       om0p = sin(pi*x) + cos(pi*x)*pi*x
   
@@ -78,7 +78,7 @@ contains
       om0p = 1.
   
     else if(regime.eq.'rp72'.or.regime.eq.'rm72'.or.regime.eq.'ekeri') then
-      ! roberts 72 alpha omega model 1 eq.4.3
+      ! Roberts 72 alpha omega model 1 eq.4.3
       om0 = (x-x_in)
       om0p = 1.
   
@@ -92,29 +92,29 @@ contains
          & (2*(1 - erf((x - xx2)/xxd2)))/(exp((x - xx1)**2/xxd1**2)*sqrt(pi)*xxd1)
   
     else if (regime .eq. 'r72' .or. regime .eq. 'r72m' ) then
-      ! roberts 72 alpha omega model 2 eq.4.5  and model 5.6
+      ! Roberts 72 alpha omega model 2 eq.4.5  and model 5.6
       om0 = -19683.*(1-x**2)**5/40960.
       om0p = -19683.0*5*(1-x**2)**4*(-2*x)/40960.
   
     else if (regime .eq. 'r72b') then
-      ! roberts 72 alpha omega model eq.4.5
+      ! Roberts 72 alpha omega model eq.4.5
       om0 = -3.*sqrt(3.)*(1-x**2)**2/8.
       om0p = 3.*sqrt(3.)*(1-x**2)*4*x/8.
   
     else if(regime.eq.'br') then
-      !  roberts 72 alpha omega model 5.2  (bragisnki)
+      !  Roberts 72 alpha omega model 5.2  (bragisnki)
       om0 = -(3.*sqrt(3.)/8)*((1-x**2)**2)
       om0p = (3.*sqrt(3.)/8)*(+2*x*(1-x**2)*2)
   
     else if(regime.eq.'sk69'.or.regime.eq.'stm') then
-      ! model 1 steenbeck-krause sk69 paper, alpha omega
+      ! model 1 Steenbeck-Krause sk69 paper, alpha omega
       d1 = 0.075
-      r1 = rc1
+      r1 = xc1
       om0 = (1-derf((x-r1)/d1))/2.
       om0p =-exp(-((x-r1)/d1)**2)/sqrt(pi)/d1
   
     else if(regime.eq.'st74') then
-      !  stix 74 paper, alpha omega
+      !  Stix 74 paper, alpha omega
       d1 = 0.075
       r1 = 0.7
       om0 = (1-derf((x-r1)/d1))/2.
@@ -125,16 +125,16 @@ contains
       c4 =0
       omegaeq = 1.
       omegac  = oco
-      c2 =   rc2 
-      delta   = (1.e0 + derf( (x-rc1)/dd1  ) )/ 2.e0
+      delta   = (1.e0 + derf( (x-xc1)/dd1  ) )/ 2.e0
+      c2 = c2_h2 
       ! c2= -coefficient of cos(theta) ^2 at the surface dr:   omega_surface=omega_eq-c2*cos(theta)^2
       om2  = -2*delta*c2/3.d0 
-      om2p = (-2*c2/3.d0)*(exp(-((x-rc1)/dd1)**2)/sqrt(pi)/dd1) 
+      om2p = (-2*c2/3.d0)*(exp(-((x-xc1)/dd1)**2)/sqrt(pi)/dd1) 
       om0 = delta*(-c2/3.0+1-omegac) +omegac   
-      om0p = (-c2/3.0+1-omegac)*(exp(-((x-rc1)/dd1)**2)/sqrt(pi)/dd1)
+      om0p = (-c2/3.0+1-omegac)*(exp(-((x-xc1)/dd1)**2)/sqrt(pi)/dd1)
   
     else if(regime.eq.'k2')then
-      ! k giant model
+      ! K giant model
       ! arcturus !!!!! 
       ! mimic the leonid omega
       om2=0.01/x-0.25
@@ -147,13 +147,13 @@ contains
       ! omega = omegac + delta*(omegaeq-omegac) - delta*c2*cos(theta)^2 -delta*c4*cos(theta)^4 
       !       = omega0 + omega2 * cos(theta)^2 + omega4 *cos(theta)^4
       !       = om0    + om2*cos(theta)^2  + om4*cos(theta)^4
-      delta   = (1.e0 + derf( (x-rc1)/dd1  ) )/ 2.e0
+      delta   = (1.e0 + derf( (x-xc1)/dd1  ) )/ 2.e0
       om0  =  (omegac + delta * ( omegaeq - omegac))/omegaeq
-      om0p =  (exp(-((x-rc1)/dd1)**2)/sqrt(pi)/dd1)*(omegaeq - omegac)/omegaeq
+      om0p =  (exp(-((x-xc1)/dd1)**2)/sqrt(pi)/dd1)*(omegaeq - omegac)/omegaeq
       om2  = -delta*c2/omegaeq
-      om2p = -(exp(-((x-rc1)/dd1)**2)/sqrt(pi)/dd1)*c2/omegaeq
+      om2p = -(exp(-((x-xc1)/dd1)**2)/sqrt(pi)/dd1)*c2/omegaeq
       om4  = -delta*c4/omegaeq
-      om4p =  -(exp(-((x-rc1)/dd1)**2)/sqrt(pi)/dd1)*c4/omegaeq
+      om4p =  -(exp(-((x-xc1)/dd1)**2)/sqrt(pi)/dd1)*c4/omegaeq
   
     else if(regime.eq.'h5')then !pure latitudinal dependence
       om0  =  2.78

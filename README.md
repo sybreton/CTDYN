@@ -42,7 +42,7 @@ running the following command at the root of the repository.
 The executable can be run by selecting any correctly formatted input file, e.g.
 by doing
 
-`$CTDYN_DIR/bin/ctdyn test/inputs/test_ref`
+`$CTDYN_DIR/bin/ctdyn test/inputs/inlist_default`
 
 CTDYN can also be run directly within a Python session using the API provided
 by *py_ctdyn*, an example is provided in the `quickstart.ipynb` notebook.

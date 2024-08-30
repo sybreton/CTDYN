@@ -869,9 +869,8 @@ contains
                       ome, sfu, ute)
   
     ! determine the outer mesh point equal to zeta_r+1
-    xf=zeta_r+0.5
-    xf=zeta_r+0.3
-    nf=int((xf-1.0)/hh)
+    xf = zeta_r+0.3
+    nf = int((xf-1.0)/hh)
     if(nf .ge. nft) then
       write (*, *) 'too small nft'
       stop

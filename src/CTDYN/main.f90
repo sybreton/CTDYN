@@ -75,14 +75,9 @@ program main
   open(35, status='unknown', file=fileout)
   write(35, '(a,i4,a,i4,a)') '#  n, C_alpha, C_omega, r, beta, Etor, Epol, z = (', np, ',', na+1, ')'  
   do iome=0, nso
-    if ( cm_i.ne.0 ) then
-      astep=(abs(cm_f/cm_i))**(1./nso) 
-      co = astep**iome*cm_i
-    else
-      co = cm_i + iome*(cm_f-cm_i)/(nso+1) 
-    endif
-    c_u=rm_i+rm_f*co**xm
-    ii=ii+1    
+    co = cm_i + iome*(cm_f-cm_i)/(nso+1) 
+    c_u = rm_i+rm_f*co**xm
+    ii = ii+1    
     call zbr(al_i, al_f, accu, critical) 
     write (35,'(i4,16e12.4)') ii, critical, co, c_u, beta, etep, etet, zeta_r, (reg(i), abs(ieg(i)),i=1,1), eep
     if (write_vectors) then

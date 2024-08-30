@@ -36,6 +36,10 @@ module cio
   !-------------------------------------------
   character(len=8) :: regime
   real(dp) :: s0, s2, s4, s6, a2p, a4p
+  real(dp) :: edr, xe1, xde1
+  real(dp) :: xa1, xa2, xda1, xda2
+  real(dp) :: xb, gd
+  real(dp) :: dd1, xc1, c2_h2, oco
 
   !-------------------------------------------
   !> brent 
@@ -47,6 +51,8 @@ module cio
   !-------------------------------------------
   character(len=128) :: dir
   logical :: write_vectors
+  real(dp) :: zeta_r
+  real(dp) :: xbt, xbo
 
   !-------------------------------------------
   !> boundaries
@@ -62,19 +68,15 @@ module cio
   !-------------------------------------------
   !> physics
   !-------------------------------------------
-  real(dp) :: hd, ffree, xm
+  real(dp) :: hd, ffree, xm, c3, bct
+  real(dp) :: aqu 
 
   !-------------------------------------------
   !> controls 
   !-------------------------------------------
   integer :: nso
-  real(dp) :: zeta_r
-  real(dp) :: xbt, xbo
-  real(dp) :: xa1, xa2, xa3, xb, xda1, xda2
-  real(dp) :: bct, c3, aqu, flg, gd
-  real(dp) :: edr, xe1, xde1
-  real(dp) :: dd1, rc1, rc2, oco
-  real(dp) :: beta_f, beta_i, beta_s 
+  real(dp) :: flg
+  real(dp) :: beta_i
   real(dp) :: cm_f, cm_i, rm_f, rm_i
 
   ! Additional variables that are used by several 
@@ -110,6 +112,19 @@ contains
     s6      =  0.
     a2p     =  1.
     a4p     =  0.
+    xa1     =  0.64   
+    xa2     =  0.72   
+    xda1    =  0.025
+    xda2    =  0.025
+    xb      =  0.65
+    gd      =  1.2 
+    edr     =  0.1     
+    xe1     =  0.70     
+    xde1    =  0.025   
+    dd1     =  0.05
+    xc1     =  0.70
+    c2_h2   =  0.2
+    oco     =  0.9
   
     !-------------------------------------------
     !> brent 
@@ -123,6 +138,9 @@ contains
     !-------------------------------------------
     dir  = 'tests/test_default'
     write_vectors = .true.
+    zeta_r  = 1.0
+    xbt     = 0.75
+    xbo     = 1.5
   
     !-------------------------------------------
     !> boundaries
@@ -133,47 +151,28 @@ contains
     !> fields
     !-------------------------------------------
     degree = 'd'   
-    mmm = 0
+    mmm    = 0
   
     !-------------------------------------------
     !> physics
     !-------------------------------------------
-    hd    = 1
-    ffree = 0
-    xm    = -0.45
-    aqu   =  1
+    hd      = 1
+    ffree   = 0
+    xm      = -0.45
+    aqu     =  1
+    c3      =  0
+    bct     =  1.
   
     !-------------------------------------------
     !> controls 
     !-------------------------------------------
-    xa1     =  0.64   
-    xa2     =  0.72   
-    xa3     =  2.0  
-    xb      =  0.65
-    xda1    =  0.025
-    xda2    =  0.025
     rm_i    =  400.0       
     rm_f    =  400.0     
     cm_i    =  40000.0       
     cm_f    =  40000.0        
     nso     =  0    
-    edr     =  0.1     
-    xe1     =  0.70     
-    xde1    =  0.025   
-    c3      =  0
-    bct     =  1.
-    gd      =  1.2 
     flg     =  0.
-    dd1     =  0.05
-    rc1     =  0.70
-    rc2     =  0.2
-    oco     =  0.9
     beta_i  =  0
-    beta_f  =  0
-    beta_s  =  0.1
-    zeta_r  = 1.0
-    xbt     =  0.75
-    xbo     =  1.5
 
   end subroutine 
 
@@ -189,25 +188,23 @@ contains
     namelist /global/ sr, rotp
 
     namelist /profiles/ regime, s0, s2, s4, s6, &
-                        a2p, a4p
+                        a2p, a4p, xa1, xa2, xda1, &
+                        xda2, xb, gd, edr, xe1, xde1, &
+                        dd1, xc1, c2_h2, oco
 
     namelist /brent/ al_i, al_f, accu
 
-    namelist /outputs/ dir, write_vectors
+    namelist /outputs/ dir, write_vectors, zeta_r, &
+                       xbt, xbo
 
     namelist /fields/ degree, mmm
 
-    namelist /physics/ hd, ffree, xm, aqu
+    namelist /physics/ hd, ffree, xm, aqu, c3, bct
 
     namelist /boundaries/ x_in
 
-    namelist /controls/ xa1, xa2, xa3,  &
-                     xb, xda1, xda2, rm_i, rm_f, &
-                     cm_i, cm_f, nso, edr,  &
-                     xe1, xde1, c3, bct, gd, &
-                     flg, dd1, rc1, rc2, oco,  &
-                     beta_i, beta_f, beta_s, zeta_r, &
-                     xbt, xbo
+    namelist /controls/ rm_i, rm_f, cm_i, cm_f, nso, flg, &
+                        beta_i
 
     call initialise_namelist_values
     call getarg(1, inlist)
