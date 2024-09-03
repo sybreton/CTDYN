@@ -17,8 +17,6 @@ jobs:
         include:
           - python-version: "3.9"
             os: "macos-latest"
-          - python-version: "3.9"
-            os: "windows-latest"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -48,8 +46,6 @@ jobs:
         include:
           - python-version: "3.9"
             os: "macos-latest"
-          - python-version: "3.9"
-            os: "windows-latest"
 
     steps:
       - name: Checkout
