@@ -16,7 +16,7 @@ def get_ctdyn_dir () :
   try :
     ctdyn_dir = os.environ["CTDYN_DIR"]
   except KeyError :
-    raise Exception ("MESA_DIR environment variable not found. Check that CTDYN is properly installed.")
+    raise Exception ("CTDYN_DIR environment variable not found. Check that CTDYN is properly installed.")
   return ctdyn_dir
 
 def _get_dir_out (ctdyn_param) :

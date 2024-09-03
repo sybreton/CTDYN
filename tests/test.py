@@ -14,10 +14,6 @@ class TestUnitary :
             "&boundaries", "&fields", "&physics",
             "&outputs", "&controls"]
 
-  def testGetDir (self) :
-    ctdyn_dir = dyn.get_ctdyn_dir ()
-    assert type(ctdyn_dir)==str
-
   def testInlistDefault (self) :
     parameters = dyn.set_default_inlist ()
     assert type(parameters)==dict
@@ -56,6 +52,10 @@ class TestUnitary :
     assert parameters["outputs"]["dir"] == "'{}'".format (tmp_dir)
 
 class TestExecutionVisualisation :
+
+  def testGetDir (self) :
+    ctdyn_dir = dyn.get_ctdyn_dir ()
+    assert type(ctdyn_dir)==str
 
   def testExecution (self, tmp_dir) :
     ctdyn_param = {"outputs" : {"dir":"'{}'".format (tmp_dir)},
