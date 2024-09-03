@@ -56,6 +56,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install sphinx sphinx-book-theme myst_parser
+          pip install ipython
       - name: Sphinx build 
         run: |
           sphinx-build -b html docs/source _build
