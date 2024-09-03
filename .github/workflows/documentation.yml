@@ -15,13 +15,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.10"]
         os: ["ubuntu-latest"]
-        include:
-          - python-version: "3.9"
-            os: "macos-latest"
-          - python-version: "3.9"
-            os: "windows-latest"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,6 +37,12 @@ jobs:
   deploy:
    
     needs: build
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+        os: ["ubuntu-latest"]
 
     steps:
       - uses: actions/checkout@v4
