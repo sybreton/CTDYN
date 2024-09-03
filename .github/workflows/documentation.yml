@@ -49,10 +49,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Install dependencies
         run: |
           pip install sphinx sphinx-book-theme myst_parser
@@ -60,11 +62,12 @@ jobs:
       - name: Sphinx build 
         run: |
           sphinx-build -b html docs/source _build
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-        with:
-          publish_branch: gh-pages
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: _build/
-          force_orphan: true
+
+      - name: Deploy to Netlify
+        id: netlify_deploy
+        run: |
+          netlify deploy \
+            --dir _build \
+            --site ${{ secrets.NETLIFY_SITE_ID }} \
+            --auth ${{ secrets.NETLIFY_API_TOKEN }}
+
