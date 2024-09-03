@@ -3,12 +3,7 @@ name: Tests
 on:
   push:
     branches:
-      - main
-      - dev 
-      - workflow
-  pull_request:
-      - main
-      - dev
+    pull_request:
 
 jobs:
 
