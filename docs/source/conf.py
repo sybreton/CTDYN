@@ -9,7 +9,6 @@
 import os
 import sys
 from pkg_resources import DistributionNotFound, get_distribution
-import py_ctdyn
 
 try:
     __version__ = get_distribution("py_ctdyn").version
