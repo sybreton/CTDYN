@@ -19,14 +19,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Sphinx build 
         uses: ammaraskar/sphinx-action@master
         with:
           docs-folder: "docs/source"
-          build-command: "sphinx-build -b html . _build"
+          build-command: "sphinx-build -b html . ../_build"
 
       - name: Install Netlify
         run: npm install netlify-cli@17.10.1 -g
@@ -35,7 +33,7 @@ jobs:
         id: netlify_deploy
         run: |
           netlify deploy \
-            --dir _build \
+            --dir docs/_build \
             --site ${{ secrets.NETLIFY_SITE_ID }} \
             --auth ${{ secrets.NETLIFY_API_TOKEN }}
 
