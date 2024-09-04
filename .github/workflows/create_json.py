@@ -1,4 +1,3 @@
-from git import Repo
 import sys, os, json
 import argparse
 
@@ -12,20 +11,15 @@ def create_json (filename,
   ``url_template`` should be such as 
   ``https://mysite.org/``
   """
-  repo = Repo( search_parent_directories=True )
-  versions = [branch.name for branch in repo.branches]
-  print ("Found following branches on repo: {}".format (versions))
   json_list = []
-  
-  for version in versions:
-    if version in include :
-      if version==latest_version :
-        version = "latest"
-      version_dict = {
-                      "version":version,
-                      "url":os.path.join (url_template, version),
+  for version in include:
+    if version==latest_version :
+      version = "latest"
+    version_dict = {
+                   "version":version,
+                   "url":os.path.join (url_template, version),
                       }
-      json_list.append (version_dict)
+    json_list.append (version_dict)
 
   with open(filename, 'w') as fp:
     json.dump(json_list, fp)
