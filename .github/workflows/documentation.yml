@@ -58,11 +58,11 @@ jobs:
         env: 
           INDEX_FILE: _build/index.html
         run: |
-          echo <html> >> ${{ env.INDEX_FILE}}
-          echo  <head> >> ${{ env.INDEX_FILE}}
-          echo    <meta http-equiv="refresh" content="0; url=stable/" /> >> ${{ env.INDEX_FILE}}
-          echo  <head> >> ${{ env.INDEX_FILE}}
-          echo </html> >> ${{ env.INDEX_FILE}}
+          echo "<html>" >> ${{ env.INDEX_FILE}}
+          echo " <head>" >> ${{ env.INDEX_FILE}}
+          echo "   <meta http-equiv=\"refresh\" content=\"0; url=stable/\" />" >> ${{ env.INDEX_FILE}}
+          echo " <head>" >> ${{ env.INDEX_FILE}}
+          echo "</html>" >> ${{ env.INDEX_FILE}}
 
       - name: Install Netlify
         run: npm install netlify-cli@17.10.1 -g
