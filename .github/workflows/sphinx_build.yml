@@ -1,0 +1,61 @@
+name: "Sphinx build"
+description: """Sphinx build with update of conf.py file 
+              in order to display version on the lower left""" 
+inputs:
+  file: #path of the conf.py file
+    default: "doc/source/conf.py"
+  ref: #branch on which to check out
+    default: main
+  outdir: #output directory for documentation
+    default: "stable"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ inputs.ref }}
+        clean: false
+
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install .
+        pip install -r ./docs/source/requirements.txt
+        pip install GitPython
+
+    - name: Update conf file 
+      run: |
+        cat >> ${{ inputs.file  }} <<'EOF'
+
+        """
+        try:
+           html_context
+        except NameError:
+           html_context = dict()
+        html_context['display_lower_left'] = True
+        
+        # set version
+        from git import Repo
+        repo = Repo( search_parent_directories=True )
+        if repo.active_branch.name==\"dev\" :
+          current_version = \"latest\"
+        elif repo.active_branch.name==\"main\" :
+          current_version = \"stable\"
+        else :
+          current_version = repo.active_branch.name
+        
+        html_context['current_version'] = current_version
+        html_context['version'] = current_version
+        
+        versions = [branch.name for branch in repo.branches]
+        for version in versions:
+           html_context['versions'].append( \"_build/{}\".format (version))
+        """
+      shell: bash
+
+      - name: Sphinx build 
+        run: |
+          sphinx-build -b html docs/source _build/${{ inputs.outdir }}
+

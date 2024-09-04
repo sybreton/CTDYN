@@ -18,48 +18,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-      - name: Checkout dev
-        uses: actions/checkout@v4
-        with:
-          ref: dev
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
-      - name: Install dependencies dev 
-        run: |
-          pip install --upgrade pip
-          pip install .
-          pip install -r ./docs/source/requirements.txt
-          pip install GitPython
-
       - name: Sphinx build latest 
-        run: |
-          "update_conf.sh"
-          sphinx-build -b html docs/source _build/latest
-        shell: bash
-
-      - name: Checkout main
-        uses: actions/checkout@v4
+        uses: sphinx_build.yml
         with:
-          ref: main
-          clean: false
-
-      - name: Install dependencies main 
-        run: |
-          pip install --upgrade pip
-          pip install .
-          pip install -r ./docs/source/requirements.txt
-          pip install GitPython
+          ref: dev
+          outdir: latest
 
       - name: Sphinx build stable 
-        run: |
-          "update_conf.sh"
-          sphinx-build -b html docs/source _build/stable
-        shell: bash
+        uses: sphinx_build.yml
+        with:
+          ref: dev
+          outdir: stable
 
       - name: Create HTML index
         env: 
