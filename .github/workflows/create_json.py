@@ -2,7 +2,7 @@ from git import Repo
 import sys, os, json
 
 def create_json (filename,
-                 url_template
+                 url_template,
                  include=[]) :
   """
   Create json file.
