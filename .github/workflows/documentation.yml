@@ -17,23 +17,47 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
-      - name: Install dependencies 
+      - name: Install dependencies dev 
+        uses: actions/checkout@v4
+        with:
+          ref: dev
         run: |
           pip install --upgrade pip
           pip install .
           pip install -r ./docs/source/requirements.txt
 
-      - name: Sphinx build 
+      - name: Sphinx build latest 
         run: |
-          sphinx-build -b html docs/source docs/_build
+          sphinx-build -b html docs/source _build/latest
+
+      - name: Install dependencies main 
+        uses: actions/checkout@v4
+        with:
+          ref: main
+        run: |
+          pip install --upgrade pip
+          pip install .
+          pip install -r ./docs/source/requirements.txt
+
+      - name: Sphinx build stable 
+        run: |
+          sphinx-build -b html docs/source _build/stable
+
+      - name: Create HTML index
+        env: 
+          INDEX_FILE: _build/index.html
+        run: |
+          echo <html> >> ${{ env.INDEX_FILE}}
+          echo  <head> >> ${{ env.INDEX_FILE}}
+          echo    <meta http-equiv="refresh" content="0; url=stable/" /> >> ${{ env.INDEX_FILE}}
+          echo  <head> >> ${{ env.INDEX_FILE}}
+          echo </html> >> ${{ env.INDEX_FILE}}
 
       - name: Install Netlify
         run: npm install netlify-cli@17.10.1 -g
@@ -42,7 +66,7 @@ jobs:
         id: netlify_deploy
         run: |
           netlify deploy \
-            --dir docs/_build \
+            --dir _build \
             --site ${{ secrets.NETLIFY_SITE_ID }} \
             --auth ${{ secrets.NETLIFY_API_TOKEN }}
 
