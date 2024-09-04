@@ -1,9 +1,11 @@
 from git import Repo
 import sys, os, json
+import argparse
 
 def create_json (filename,
                  url_template,
-                 include=[]) :
+                 include=[],
+                 latest_version="dev") :
   """
   Create json file.
    
@@ -18,6 +20,8 @@ def create_json (filename,
   
   for version in versions:
     if version in include :
+      if version==latest_version :
+        version =  "latest"
       version_dict = {
                       "version":version,
                       "url":os.path.join (url_template, version),
@@ -28,4 +32,25 @@ def create_json (filename,
     json.dump(json_list, fp)
 
 if __name__ == "__main__" :
-  create_json (sys.argv[0], sys.argv[1], sys.argv[2])
+
+  CLI = argparse.ArgumentParser()
+  CLI.add_argument(
+    "--filename",  
+    nargs=1, 
+    type=str,
+    default="switcher.json", 
+    )
+  CLI.add_argument(
+    "--url",  
+    nargs=1, 
+    type=str,
+    default="url_not_specified", 
+    )
+  CLI.add_argument(
+    "--branches",  
+    nargs="*", 
+    type=str,
+    default=["main", "dev"], 
+    )
+  args = CLI.parse_args()
+  create_json (*vars(args).values())
