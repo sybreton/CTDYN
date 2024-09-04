@@ -36,7 +36,7 @@ jobs:
       - name: Create json file
         run: >-
           python ./.github/workflows/create_json.py --filename "_build/latest/_static/switcher.json"
-          --url "https://ctdyn.netlify.app" --branches ["main", "dev"]
+          --url "https://ctdyn.netlify.app" --branches main dev 
 
       - name: Show json file
         run: |
