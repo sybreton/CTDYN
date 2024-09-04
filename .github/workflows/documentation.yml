@@ -26,9 +26,8 @@ jobs:
 
       - name: Create fetched branch
         run: |
-          branches = `git branch -a` 
-          for branch in $branches; do
-            git fetch origin branch:branch 
+          git fetch origin main:main      
+          git fetch origin dev:dev      
 
       - name: Set up Python
         uses: actions/setup-python@v5
