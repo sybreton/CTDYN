@@ -29,7 +29,7 @@ runs:
       run: |
         cat >> ${{ inputs.file  }} <<'EOF'
 
-        """
+        "
         try:
            html_context
         except NameError:
@@ -52,7 +52,7 @@ runs:
         versions = [branch.name for branch in repo.branches]
         for version in versions:
            html_context['versions'].append( \"_build/{}\".format (version))
-        """
+        "
       shell: bash
 
       - name: Sphinx build 
