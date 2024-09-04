@@ -1,6 +1,6 @@
 name: "Sphinx build"
-description: """Sphinx build with update of conf.py file 
-              in order to display version on the lower left""" 
+description: "Sphinx build with update of conf.py file 
+              in order to display version on the lower left"
 inputs:
   file: #path of the conf.py file
     default: "doc/source/conf.py"
