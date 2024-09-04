@@ -28,4 +28,4 @@ def create_json (filename,
     json.dump(json_list, fp)
 
 if __name__ == "__main__" :
-  create_json (sys.argv[0], sys.argv[1])
+  create_json (sys.argv[0], sys.argv[1], sys.argv[2])
