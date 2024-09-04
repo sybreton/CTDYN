@@ -27,7 +27,7 @@ runs:
 
     - name: Update conf file 
       run: |
-        cat >> ${{ inputs.file  }} <<'EOF'
+        cat >> ${{ inputs.file  }} << "EOF"
 
         "
         try:
@@ -52,7 +52,10 @@ runs:
         versions = [branch.name for branch in repo.branches]
         for version in versions:
            html_context['versions'].append( \"_build/{}\".format (version))
+
+        EOF
         "
+        
       shell: bash
 
       - name: Sphinx build 
