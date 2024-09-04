@@ -34,10 +34,13 @@ jobs:
           pip install --upgrade pip
           pip install .
           pip install -r ./docs/source/requirements.txt
+          pip install GitPython
 
       - name: Sphinx build latest 
         run: |
+          "update_conf.sh"
           sphinx-build -b html docs/source _build/latest
+        shell: bash
 
       - name: Checkout main
         uses: actions/checkout@v4
@@ -50,10 +53,13 @@ jobs:
           pip install --upgrade pip
           pip install .
           pip install -r ./docs/source/requirements.txt
+          pip install GitPython
 
       - name: Sphinx build stable 
         run: |
+          "update_conf.sh"
           sphinx-build -b html docs/source _build/stable
+        shell: bash
 
       - name: Create HTML index
         env: 
