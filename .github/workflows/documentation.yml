@@ -18,25 +18,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          clean: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Create json file
+        run: >-
+          python create_json.py "_build/latest/_static/switcher.json"
+          "https://ctdyn.netlify.app" ["main", "dev"]
+
       - name: Sphinx build latest 
         uses: sybreton/version_sphinx_build@main
         with:
           ref: dev
           outdir: latest
+          json_url: "https://ctdyn.netlify.app/latest/_static/switcher.json"
 
-      - name: Sphinx build stable 
+      - name: Sphinx build main 
         uses: sybreton/version_sphinx_build@main
         with:
-          ref: dev
-          outdir: stable
+          ref: main
+          outdir: main
+          json_url: "https://ctdyn.netlify.app/latest/_static/switcher.json"
 
-      - name: Create global HTML index
+      - name: Create root HTML index
         env: 
           INDEX_FILE: _build/index.html
         run: |
           echo "<html>" >> ${{ env.INDEX_FILE}}
           echo " <head>" >> ${{ env.INDEX_FILE}}
-          echo "   <meta http-equiv=\"refresh\" content=\"0; url=stable/\" />" >> ${{ env.INDEX_FILE}}
+          echo "   <meta http-equiv=\"refresh\" content=\"0; url=latest/\" />" >> ${{ env.INDEX_FILE}}
           echo " <head>" >> ${{ env.INDEX_FILE}}
           echo "</html>" >> ${{ env.INDEX_FILE}}
 
