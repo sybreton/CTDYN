@@ -13,15 +13,14 @@ def create_json (filename,
   ``https://mysite.org/``
   """
   repo = Repo( search_parent_directories=True )
-  
   versions = [branch.name for branch in repo.branches]
-  
+  print ("Found corresponding branches on repo: {}".format (versions))
   json_list = []
   
   for version in versions:
     if version in include :
       if version==latest_version :
-        version =  "latest"
+        version = "latest"
       version_dict = {
                       "version":version,
                       "url":os.path.join (url_template, version),
