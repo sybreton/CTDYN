@@ -29,7 +29,7 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Create json file
+      - name: Install GitPython
         run: |
           pip install GitPython
 
@@ -37,6 +37,10 @@ jobs:
         run: >-
           python ./.github/workflows/create_json.py "_build/latest/_static/switcher.json"
           "https://ctdyn.netlify.app" ["main", "dev"]
+
+      - name: Show json file
+        run: |
+          cat _build/latest/_static/switcher.json
 
       - name: Sphinx build latest 
         uses: sybreton/version_sphinx_build@main
