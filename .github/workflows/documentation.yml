@@ -44,6 +44,7 @@ jobs:
           ref: dev
           outdir: latest
           json_url: "https://ctdyn.netlify.app/latest/_static/switcher.json"
+          github_repo: "https://github.com/sybreton/CTDYN"
 
       - name: Sphinx build main 
         uses: sybreton/version_sphinx_build@main
@@ -51,6 +52,7 @@ jobs:
           ref: main
           outdir: main
           json_url: "https://ctdyn.netlify.app/latest/_static/switcher.json"
+          github_repo: "https://github.com/sybreton/CTDYN"
 
       - name: Create root HTML index
         env: 
