@@ -19,15 +19,17 @@ jobs:
 
     steps:
 
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
       - name: Install dependencies dev 
-        uses: actions/checkout@v4
-        with:
-          ref: dev
         run: |
           pip install --upgrade pip
           pip install .
@@ -37,10 +39,12 @@ jobs:
         run: |
           sphinx-build -b html docs/source _build/latest
 
-      - name: Install dependencies main 
+      - name: Checkout main
         uses: actions/checkout@v4
         with:
           ref: main
+
+      - name: Install dependencies main 
         run: |
           pip install --upgrade pip
           pip install .
