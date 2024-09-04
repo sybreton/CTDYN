@@ -36,13 +36,13 @@ if __name__ == "__main__" :
   CLI = argparse.ArgumentParser()
   CLI.add_argument(
     "--filename",  
-    nargs=1, 
+    nargs="?", 
     type=str,
     default="switcher.json", 
     )
   CLI.add_argument(
     "--url",  
-    nargs=1, 
+    nargs="?", 
     type=str,
     default="url_not_specified", 
     )
@@ -52,5 +52,12 @@ if __name__ == "__main__" :
     type=str,
     default=["main", "dev"], 
     )
+  CLI.add_argument(
+    "--latest",  
+    nargs="?", 
+    type=str,
+    default="dev", 
+    )
   args = CLI.parse_args()
+  print (vars(args).values())
   create_json (*vars(args).values())

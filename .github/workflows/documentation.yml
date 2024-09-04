@@ -29,19 +29,6 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Install GitPython
-        run: |
-          pip install GitPython
-
-      - name: Create json file
-        run: >-
-          python ./.github/workflows/create_json.py --filename "_build/latest/_static/switcher.json"
-          --url "https://ctdyn.netlify.app" --branches main dev 
-
-      - name: Show json file
-        run: |
-          cat _build/latest/_static/switcher.json
-
       - name: Sphinx build latest 
         uses: sybreton/version_sphinx_build@main
         with:
@@ -57,6 +44,19 @@ jobs:
           outdir: main
           json_url: "https://ctdyn.netlify.app/latest/_static/switcher.json"
           github_repo: "https://github.com/sybreton/CTDYN"
+
+      - name: Install GitPython
+        run: |
+          pip install GitPython
+
+      - name: Create new json file
+        run: >-
+          python ./.github/workflows/create_json.py --filename "_build/latest/_static/switcher.json"
+          --url "https://ctdyn.netlify.app" --branches main dev 
+
+      - name: Show json file
+        run: |
+          cat _build/latest/_static/switcher.json
 
       - name: Create root HTML index
         env: 
