@@ -14,7 +14,7 @@ def create_json (filename,
   """
   repo = Repo( search_parent_directories=True )
   versions = [branch.name for branch in repo.branches]
-  print ("Found corresponding branches on repo: {}".format (versions))
+  print ("Found following branches on repo: {}".format (versions))
   json_list = []
   
   for version in versions:

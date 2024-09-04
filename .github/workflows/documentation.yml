@@ -24,6 +24,12 @@ jobs:
           ref: ${{ inputs.ref }}
           fetch-depth: 0
 
+      - name: Create fetched branch
+        run: |
+          branches = `git branch -a` 
+          for branch in $branches; do
+            git fetch origin branch:branch 
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
