@@ -18,17 +18,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.ref }}
-          clean: false
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-
       - name: Sphinx build latest 
         uses: sybreton/version_sphinx_build@main
         with:
@@ -44,6 +33,17 @@ jobs:
           outdir: main
           json_url: "https://ctdyn.netlify.app/latest/_static/switcher.json"
           github_repo: "https://github.com/sybreton/CTDYN"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          clean: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
 
       - name: Install GitPython
         run: |
