@@ -1,0 +1,90 @@
+name: Documentation 
+
+on:
+  push:
+    branches:
+      - main
+      - dev 
+  pull_request:
+
+env: 
+  JSON_URL: "https://ctdyn.netlify.app/latest/_static/switcher.json"
+  GITHUB_REPO: "https://github.com/sybreton/CTDYN"
+
+permissions:
+  contents: write
+
+jobs:
+
+  deploy:
+   
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          fetch-depth: 0
+
+      - name: Create fetched branch
+        run: |
+          git fetch origin main:main      
+          git fetch origin dev:dev      
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install GitPython
+        run: |
+          pip install GitPython
+
+      - name: Create new json file
+        run: >-
+          python ./.github/workflows/create_json.py --filename "switcher.json"
+          --url "https://ctdyn.netlify.app" --branches main dev 
+
+      - name: Sphinx build latest 
+        uses: sybreton/version_sphinx_build@v0.2.0
+        with:
+          ref: dev
+          outdir: latest
+          json_url: ${{ env.JSON_URL }}
+          github_repo: ${{ env.GITHUB_REPO }}
+
+      - name: Move json file
+        run: |
+          mv switcher.json _build/latest/_static/switcher.json
+          cat _build/latest/_static/switcher.json
+
+      - name: Sphinx build main 
+        uses: sybreton/version_sphinx_build@v0.2.0
+        with:
+          ref: main
+          outdir: main
+          json_url: ${{ env.JSON_URL }}
+          github_repo: ${{ env.GITHUB_REPO }}
+
+      - name: Create root HTML index
+        env: 
+          INDEX_FILE: _build/index.html
+        run: |
+          echo "<html>" >> ${{ env.INDEX_FILE}}
+          echo " <head>" >> ${{ env.INDEX_FILE}}
+          echo "   <meta http-equiv=\"refresh\" content=\"0; url=latest/\" />" >> ${{ env.INDEX_FILE}}
+          echo " <head>" >> ${{ env.INDEX_FILE}}
+          echo "</html>" >> ${{ env.INDEX_FILE}}
+
+      - name: Install Netlify
+        run: npm install netlify-cli@17.10.1 -g
+
+      - name: Deploy to Netlify
+        id: netlify_deploy
+        run: |
+          netlify deploy \
+            --dir _build \
+            --site ${{ secrets.NETLIFY_SITE_ID }} \
+            --auth ${{ secrets.NETLIFY_API_TOKEN }}
+
