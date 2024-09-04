@@ -5,8 +5,7 @@ on:
     branches:
       - main
       - dev 
-      - workflow
-      - version
+  pull_request:
 
 permissions:
   contents: write
