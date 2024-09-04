@@ -7,6 +7,10 @@ on:
       - dev 
   pull_request:
 
+env: 
+  JSON_URL: "https://ctdyn.netlify.app/latest/_static/switcher.json"
+  GITHUB_REPO: "https://github.com/sybreton/CTDYN"
+
 permissions:
   contents: write
 
@@ -43,12 +47,12 @@ jobs:
           --url "https://ctdyn.netlify.app" --branches main dev 
 
       - name: Sphinx build latest 
-        uses: sybreton/version_sphinx_build@main
+        uses: sybreton/version_sphinx_build@v0.2.0
         with:
           ref: dev
           outdir: latest
-          json_url: "https://ctdyn.netlify.app/latest/_static/switcher.json"
-          github_repo: "https://github.com/sybreton/CTDYN"
+          json_url: ${{ env.JSON_URL }}
+          github_repo: ${{ env.GITHUB_REPO }}
 
       - name: Move json file
         run: |
@@ -56,12 +60,12 @@ jobs:
           cat _build/latest/_static/switcher.json
 
       - name: Sphinx build main 
-        uses: sybreton/version_sphinx_build@main
+        uses: sybreton/version_sphinx_build@v0.2.0
         with:
           ref: main
           outdir: main
-          json_url: "https://ctdyn.netlify.app/latest/_static/switcher.json"
-          github_repo: "https://github.com/sybreton/CTDYN"
+          json_url: ${{ env.JSON_URL }}
+          github_repo: ${{ env.GITHUB_REPO }}
 
       - name: Create root HTML index
         env: 
