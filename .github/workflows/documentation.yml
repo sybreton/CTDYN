@@ -24,13 +24,13 @@ jobs:
           python-version: "3.10"
 
       - name: Sphinx build latest 
-        uses: sybreton/version_sphinx_build.yml@v0.1.0
+        uses: sybreton/version_sphinx_build@v0.1.0
         with:
           ref: dev
           outdir: latest
 
       - name: Sphinx build stable 
-        uses: sybreton/version_sphinx_build.yml@v0.1.0
+        uses: sybreton/version_sphinx_build@v0.1.0
         with:
           ref: dev
           outdir: stable
