@@ -344,8 +344,8 @@ def read_radial_profiles (filename) :
                        columns=columns)
     return df
 
-def plot_alpha (df, figsize=(5,5), 
-                xlabel=None, ylabel=None,
+def plot_alpha (df, figsize=(5,8), 
+                xlabel=None, ylabels=None,
                 lw=1) :
     """
     Plot alpha profile. 
@@ -356,12 +356,12 @@ def plot_alpha (df, figsize=(5,5),
       Dataframe read from ``read_radial_profiles``.
       
     figsize : tuple
-      Figure size. Optional, default ``(5,5)``.
+      Figure size. Optional, default ``(5,8)``.
       
     xlabel : str
       X-axis label. Optional, default ``None``.
       
-    ylabel : str
+    ylabels : tuple of str
       Y-axis label. Optional, default ``None``.
       
     lw : float
@@ -374,20 +374,20 @@ def plot_alpha (df, figsize=(5,5),
     """
     if xlabel is None :
         xlabel = r"$r$ ($R_\star$)"
-    if ylabel is None :
-        ylabel = r"$\alpha$"
-    fig, ax = plt.subplots (1, 1, figsize=figsize)
-    ax.set_xlabel (xlabel)
-    ax.set_ylabel (ylabel)
-    ax.plot (df.index, df["alpha"], color="blue", lw=lw, 
-             label=r"$\alpha$")
-    ax.plot (df.index, df["alpha_p"], color="darkorange", lw=lw,
-             label=r"$\alpha_p$")
-    ax.legend ()
+    if ylabels is None :
+        ylabels = (r"$\alpha$", r"$\alpha_p$")
+    fig, (ax1, ax2) = plt.subplots (2, 1, figsize=figsize)
+    ax2.set_xlabel (xlabel)
+    ax1.set_ylabel (ylabels[0])
+    ax2.set_ylabel (ylabels[1])
+    ax1.plot (df.index, df["alpha"], color="blue", lw=lw, 
+              label=r"$\alpha$")
+    ax2.plot (df.index, df["alpha_p"], color="darkorange", lw=lw,
+              label=r"$\alpha_p$")
     return fig
 
-def plot_eta (df, figsize=(5,5), 
-              xlabel=None, ylabel=None,
+def plot_eta (df, figsize=(5,10), 
+              xlabel=None, ylabels=None,
               lw=1) :
     """
     Plot eta profile. 
@@ -403,7 +403,7 @@ def plot_eta (df, figsize=(5,5),
     xlabel : str
       X-axis label. Optional, default ``None``.
       
-    ylabel : str
+    ylabels : tuple of str
       Y-axis label. Optional, default ``None``.
       
     lw : float
@@ -416,16 +416,16 @@ def plot_eta (df, figsize=(5,5),
     """
     if xlabel is None :
         xlabel = r"$r$ ($R_\star$)"
-    if ylabel is None :
-        ylabel = r"$\alpha$"
-    fig, ax = plt.subplots (1, 1, figsize=figsize)
-    ax.set_xlabel (xlabel)
-    ax.set_ylabel (ylabel)
-    ax.plot (df.index, df["eta_1"], color="blue", lw=lw, 
-             label=r"$\eta_1$")
-    ax.plot (df.index, df["eta_2"], color="darkorange", lw=lw,
-             label=r"$\eta_2$")
-    ax.plot (df.index, df["eta_3"], color="gold", lw=lw,
-             label=r"$\eta_3$")
-    ax.legend ()
+    if ylabels is None :
+        ylabels = (r"$\eta$", 
+                   r"$\mathrm{d} \eta / \mathrm{d}x$", 
+                   r"$\mathrm{d}^2 \eta / \mathrm{d}^2 x$")
+    fig, (ax1, ax2, ax3) = plt.subplots (3, 1, figsize=figsize)
+    ax3.set_xlabel (xlabel)
+    ax1.set_ylabel (ylabels[0])
+    ax2.set_ylabel (ylabels[1])
+    ax3.set_ylabel (ylabels[2])
+    ax1.plot (df.index, df["eta_1"], color="blue", lw=lw) 
+    ax2.plot (df.index, df["eta_2"], color="darkorange", lw=lw)
+    ax3.plot (df.index, df["eta_3"], color="gold", lw=lw)
     return fig
