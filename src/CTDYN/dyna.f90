@@ -94,11 +94,11 @@ contains
     character(len=1) :: balanc    
     character(len=1) :: sense    
     real(dp) :: rwork(2*nt)
-    complex(qp) :: work(lwork)  
+    complex(dp) :: work(lwork)  
     integer :: qa, qb
-    complex(qp) :: axx(nt,nt)
+    complex(dp) :: axx(nt,nt)
     real(dp) :: axr(nt,nt)
-    complex(qp) :: drb, dra, sigmeno, sigpiu
+    complex(dp) :: drb, dra, sigmeno, sigpiu
     
     real(dp) :: c1(np)                  ! coefficient dyn.  
     real(dp) :: c2(np)
