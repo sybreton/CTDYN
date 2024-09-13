@@ -141,25 +141,29 @@ aqu : real
   Set to ``1`` to include the ``alpha**2`` term in the equation, or
   to ``0`` to ignore it. 
 
-hd : real      
-  Whether to include turbulent pumping, ``1`` or not, ``0``.
+bct : real    
+  If ``0``, the equations are solved assuming perfect conductor
+  hypothesis. Set to ``1`` otherwise (default value).
 
-ffree : real 
+beta_i : real 
   ???
-
-xm : real     
-  Exponent to use in the power law ``R_M \propto Omega**xm``,
-  where ``R_M`` is the Reynolds number of the meridian circulation
-  and ``Omega`` is the angular velocity of the star.
 
 c3 : real      
   If set to ``1``, the ``cos^3`` term will be included in the 
   ``alpha B`` quantity. This is only valid if ``m = 0``. Default
   value is ``0``.
 
-bct : real    
-  If ``0``, the equations are solved assuming perfect conductor
-  hypothesis. Set to ``1`` otherwise (default value).
+ffree : real 
+  ???
+
+hd : real      
+  Whether to include turbulent pumping, ``1`` or not, ``0``.
+
+xm : real     
+  Exponent to use in the power law ``R_M \propto Omega**xm``,
+  where ``R_M`` is the Reynolds number of the meridian circulation
+  and ``Omega`` is the angular velocity of the star.
+
 
 fields
 -------
@@ -200,6 +204,3 @@ cm_i : real
 
 cm_f : real 
   Final rotation coefficient in the exploration loop.
-
-beta_i : real 
-  ???

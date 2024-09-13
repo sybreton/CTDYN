@@ -70,13 +70,13 @@ module cio
   !-------------------------------------------
   real(dp) :: hd, ffree, xm, c3, bct
   real(dp) :: aqu 
+  real(dp) :: beta_i
 
   !-------------------------------------------
   !> controls 
   !-------------------------------------------
   integer :: nso
   real(dp) :: flg
-  real(dp) :: beta_i
   real(dp) :: cm_f, cm_i, rm_f, rm_i
 
   ! Additional variables that are used by several 
@@ -162,6 +162,7 @@ contains
     aqu     =  1
     c3      =  0
     bct     =  1.
+    beta_i  =  0
   
     !-------------------------------------------
     !> controls 
@@ -172,7 +173,6 @@ contains
     cm_f    =  40000.0        
     nso     =  0    
     flg     =  0.
-    beta_i  =  0
 
   end subroutine 
 
@@ -199,12 +199,12 @@ contains
 
     namelist /fields/ degree, mmm
 
-    namelist /physics/ hd, ffree, xm, aqu, c3, bct
+    namelist /physics/ hd, ffree, xm, aqu, c3, bct, &
+                       beta_i
 
     namelist /boundaries/ x_in
 
-    namelist /controls/ rm_i, rm_f, cm_i, cm_f, nso, flg, &
-                        beta_i
+    namelist /controls/ rm_i, rm_f, cm_i, cm_f, nso, flg
 
     call initialise_namelist_values
     call getarg(1, inlist)
