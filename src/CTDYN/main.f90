@@ -39,15 +39,24 @@ program main
   real(dp) :: astep, critical, rate 
   real(dp) :: ca(10,10,4)
 
-  character(len=128) :: inlist
+  character(len=128) :: inlist, inlist_full
   character(len=5)   :: char_m         ! convert m in char
   character(len=128) :: fileout        ! file crtal_am
   character(len=5)   :: qq             ! _am
 
   integer :: mm, i, iome
+  integer :: fu 
+
+
   
+  ! Read input namelist
   call read_namelist (inlist) 
-  !convert mm in char and create a string _am or _sm
+
+  ! Write the full namelist for reference
+  inlist_full = trim(trim(dir)//'/inlist_full')
+  call write_namelist (inlist_full) 
+
+  ! Convert mm in char and create a string _am or _sm
   mm=int(mmm)
   write(char_m,'(i2)')  mm
   if (mod(mm,2) .eq. 0) then 
@@ -64,29 +73,33 @@ program main
      endif
   endif
   
-  !main ff-beta parameter
+  ! Main ff-beta parameter
   beta = beta_i
   eep = -99
 
-  !setting global variables
+  ! Setting global variables
   ii = 0
   jobvr = 'n'
   fileout = trim(trim(dir)//'/critical'//qq)
-  open(35, status='unknown', file=fileout)
-  write(35, '(a,i4,a,i4,a)') '#  n, C_alpha, C_omega, r, beta, Etor, Epol, z = (', np, ',', na+1, ')'  
+
+  ! Entering the main loop calling the bisection
+  ! for different set of rotation/circulation
+  ! regimes
+  open(newunit=fu, status='unknown', file=fileout)
+  write(fu, '(a,i4,a,i4,a)') '#  n, C_alpha, C_omega, r, beta, Etor, Epol, z = (', np, ',', na+1, ')'  
   do iome=0, nso
     co = cm_i + iome*(cm_f-cm_i)/(nso+1) 
     c_u = rm_i+rm_f*co**xm
     ii = ii+1    
     call zbr(al_i, al_f, accu, critical) 
-    write (35,'(i4,16e12.4)') ii, critical, co, c_u, beta, etep, etet, zeta_r, (reg(i), abs(ieg(i)),i=1,1), eep
+    write (fu,'(i4,16e12.4)') ii, critical, co, c_u, beta, etep, etet, zeta_r, (reg(i), abs(ieg(i)),i=1,1), eep
     if (write_vectors) then
       jobvr='v'
       call dynamo (critical, rate)
       jobvr='n'
     endif
   enddo
-  close(35)
+  close(fu)
 
 end program main
 

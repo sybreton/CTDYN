@@ -236,6 +236,51 @@ contains
 
   end subroutine
   
+  subroutine write_namelist (inlist)
+    !> Write full set of namelists variables.
+    !> Namelist variables are declared in cio.f90 and
+    !> are therefore accessible to any module that import
+    !> it.
+    character(len=128) :: inlist
+
+    integer :: fu
+
+    namelist /global/ sr, rotp
+
+    namelist /profiles/ regime, s0, s2, s4, s6, &
+                        a2p, a4p, xa1, xa2, xda1, &
+                        xda2, xb, gd, edr, xe1, xde1, &
+                        dd1, xc1, c2_h2, oco
+
+    namelist /brent/ al_i, al_f, accu
+
+    namelist /outputs/ dir, write_vectors, zeta_r, &
+                       xbt, xbo
+
+    namelist /fields/ degree, mmm
+
+    namelist /physics/ hd, ffree, xm, aqu, c3, bct, &
+                       beta_i
+
+    namelist /boundaries/ x_in
+
+    namelist /controls/ rm_i, rm_f, cm_i, cm_f, nso, flg
+
+    ! Open and close to read in any order
+    open(newunit=fu, file=inlist, status="replace", & 
+         action="write")
+    write(unit=fu, nml=global, delim="quote")
+    write(unit=fu, nml=profiles, delim="quote")
+    write(unit=fu, nml=brent, delim="quote")
+    write(unit=fu, nml=boundaries, delim="quote")
+    write(unit=fu, nml=fields, delim="quote")
+    write(unit=fu, nml=physics, delim="quote")
+    write(unit=fu, nml=outputs, delim="quote")
+    write(unit=fu, nml=controls, delim="quote")
+    close(fu)
+
+  end subroutine
+
 end module cio
 
 
