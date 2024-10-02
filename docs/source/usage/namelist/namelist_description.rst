@@ -128,7 +128,9 @@ xbo : real
   ???
 
 zeta_r : real  
-  ???
+  External radius at which the base of the corona is located and
+  the field lines open. Any value lower than ``1.1 Rstar`` will be 
+  replaced by ``1.1 Rstar``. Default value is ``1.3 Rstar``.   
 
 
 boundaries
@@ -158,7 +160,9 @@ c3 : real
   value is ``0``.
 
 ffree : real 
-  ???
+  Force-free external boundary condition. Currently this option
+  is not implemented and changing the value of ``ffree`` has no
+  effect. 
 
 hd : real      
   Whether to include turbulent pumping, ``1`` or not, ``0``.
