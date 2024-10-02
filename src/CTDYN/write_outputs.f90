@@ -157,8 +157,8 @@ contains
             sz1=0
             sz2=0
           endif
-          bphi(j,k1)  = bphi(j,k1)+sz1
-          iphi(j,k1)  = iphi(j,k1)+sz2
+          bphi(j,k1) = bphi(j,k1)+sz1
+          iphi(j,k1) = iphi(j,k1)+sz2
   
         enddo ! plm
       enddo ! radial   
@@ -170,7 +170,7 @@ contains
                                 ffc, x1, hh, nsp, nep, &
                                 nst, net, nf)
     ! -----------------------------------------------------------------
-    ! Compute a and b vectors and surface energy
+    ! Compute A and B vectors and surface energy
   
     ! The presence of aai and aar would make sense only if they were
     ! vectors with the same size as vc.
@@ -275,12 +275,16 @@ contains
   end subroutine
 
   subroutine write_toroidal (bfeld3, nf, nj, jj, q, &
-                             theta, x, x1, xf, tc, bphi, iphi)
+                             theta, x1, xf, tc, bphi, iphi)
+
+    ! -----------------------------------------------------------------
+    !> Write toroidal field to output file. 
+    ! -----------------------------------------------------------------
   
     character(len=512) :: bfeld3
     character(len=2) :: q
     integer :: nf, nj, jj
-    real(dp) :: theta, x, x1, xf, tc
+    real(dp) :: theta, x1, xf, tc
     real(dp) :: bphi(np+2+nft, n_theta)        ! toroidal real
     real(dp) :: iphi(np+2+nft, n_theta)        ! toroidal im
   
@@ -302,16 +306,23 @@ contains
   end subroutine
   
   subroutine write_poloidal (bfeld4, nf, nj, jj, q, &
-                             theta, x, x1, xf, tc, apr, api) 
+                             theta, hh, x1, xf, tc, apr, api) 
+ 
+    ! -----------------------------------------------------------------
+    !> Write poloidal field to output file. 
+    ! -----------------------------------------------------------------
   
+    ! Arguments
     character(len=512) :: bfeld4
     character(len=2) :: q
     integer :: nf, nj, jj
-    real(dp) :: theta, x, x1, xf, tc
+    real(dp) :: theta, hh, x1, xf, tc
     real(dp) :: apr(np+2+nft, n_theta)         ! b poloidal (potential)
     real(dp) :: api(np+2+nft, n_theta)         ! b poloidal (potential)
   
+    ! Local variables
     integer :: i, j
+    real(dp) :: x
   
     write(bfeld4, fmt_2011) trim(dir)//'/pfld.', ii, '.t', jj, q, mm
     open(61,status='unknown', file=adjustl(bfeld4))
@@ -321,9 +332,11 @@ contains
     write(61,'(3x,f9.5,2x,f9.5,2x,f9.5,2x,f9.5)') x1, xf, theta1, theta2
   
     do j=1, n_theta
+      theta = theta1 + j*dt
       do i=1, np+2+nf
         tc = jj*pi/nj
-        write(61,'(e15.6)')(apr(i,j)*cos(abg(imag)*tc)+api(i,j)*sin(abg(imag)*tc))*x*sin(theta)
+        x = x1+(i-1)*hh
+        write(61,'(e15.6)') (apr(i,j)*cos(abg(imag)*tc)+api(i,j)*sin(abg(imag)*tc))*x*sin(theta)
       enddo
     enddo
   
@@ -703,26 +716,120 @@ contains
     close(34)
 
   end subroutine 
+
+  subroutine compute_interior_solution (nst, net, nsp, nep, hh, x1, &
+                                        bphi, iphi, brr, bri, apr, api, ffc, &
+                                        sfu, ute, vc, ax, axp, bx, bxp, fx, & 
+                                        om0, om0p, om2, om2p, om4, om4p, ome) 
+
+    !------------------------------------------------------
+    ! > Compute interior solution 
+    !------------------------------------------------------
+
+    ! Arguments
+    integer :: nst, net, nsp, nep 
+    real(dp) :: hh, x1, ffc
+    real(dp) :: om0, om0p, om2, om2p, om4, om4p
+    real(dp) :: ax, axp, bx, bxp, fx
+
+    real(dp) :: bphi(np+2+nft,n_theta)        ! toroidal real
+    real(dp) :: iphi(np+2+nft,n_theta)        ! toroidal im
+    real(dp) :: brr(np+2+nft,n_theta)         ! radial real
+    real(dp) :: bri(np+2+nft,n_theta)         ! radial im
+    real(dp) :: apr(np+2+nft,n_theta)         ! b poloidal (potential)
+    real(dp) :: api(np+2+nft,n_theta)         ! b poloidal (potential)
+    real(dp) :: sfu(np+2,n_theta)             ! stream function 
+    real(dp) :: ome(np+2,n_theta)             ! omega
+    real(dp) :: ute(np+2,n_theta)             ! utheta
+    real(dp) :: vc(np+2,nb,2)                 ! eigenvector
+
+    ! Local variables
+    real(dp) :: theta, x
+    integer :: j, k1, k2 
+
+    bphi=0
+    iphi=0
+    brr=0
+    bri=0
+    apr=0
+    api=0
+    ! imp: interior solution
+    ! imp: initialize to zero all the other quantities
+    do k1=1, n_theta    ! theta loop
+      theta = theta1 + k1*dt
+      do j=1, np+2         ! radial loop
+        x = x1+(j-1)*hh
+        !  load the bphi_n  vectors in b_n p1(cos(theta))_n
+        do k2=nst, net, 2    ! legendre polynomial  l-loop
+          if (mm.eq.0) then
+            !Note: in spherical  symmetry Btoroidal = - \partial_\theta
+            !T(r,theta)  where  T=\sum_n P^0_n(cos(theta))  and P^0_n are the associate
+            !Legendre functions of the first kind (see maple and mathematical definition
+            !with the correct branch cut.) 
+            !Therefore we can use the (Ruediger corrected) fundamental identity:  
+            !\partial_\theta P^0_n(cos(theta)), theta) = (plus) P^1_n(cos(theta))
+            bphi(j,k1)=bphi(j,k1)+vc(j,k2,1)*(-plgndr(k2,1,cos(theta)))
+            iphi(j,k1)=iphi(j,k1)+vc(j,k2,2)*(-plgndr(k2,1,cos(theta)))
+          else
+            ! mm not zero, but should be checked! 
+            write (*,*) 'check please m not zero'
+            stop 
+            bphi(j,k1)=bphi(j,k1)+vc(j,k2,1)*(- plgndr(k2,1,cos(theta))*(-cos(theta)/sin(theta))+k2*(k2+1)*plgndr(k2,0,cos(theta)))
+            iphi(j,k1)=iphi(j,k1)+vc(j,k2,2)*(- plgndr(k2,1,cos(theta))*(-cos(theta)/sin(theta))+k2*(k2+1)*plgndr(k2,0,cos(theta)))
+          endif 
+        enddo
+        ! load the a_n vectors at the boundary...
+        do k2=nsp, nep, 2   ! Legendre polynomial even l-loop         
+          !
+          !  obtain B_r in the interior !!!
+          !  to get B_r  use second fundamental identity: (see mathematica notebook notation.nb)
+          !
+          ! B_r = -(1/sintheta) \partial_\theta (sintheta\partial_\theta p0n) = 
+          !     = -(1/sintheta) \partia_\theta [ p1n sintheta ] = +n*(n+1) p0n
+          ! 
+          !  so that  (note a minus sign in the definition of Br and Bphi) 
+          !   
+          !  B_r = (sum over n) + n(n+1) P^0_n / x
+          vc(np+2,k2,1) = (4*vc(np+1,k2,1)-vc(np,k2,1))/(2*hh*(k2+1+ffc)+3)  
+          vc(np+2,k2,2) = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)    
+          brr(j,k1) = brr(j,k1)+(k2*(k2+1)/x)*vc(j,k2,1)*(+plgndr(k2,0, cos(theta)))
+          bri(j,k1) = bri(j,k1)+(k2*(k2+1)/x)*vc(j,k2,2)*(+plgndr(k2,0, cos(theta)))
+  
+        enddo ! legendre polynomial even l-loop  k2
+  
+        call rot(x, om0, om0p, om2, om2p, om4, om4p)
+        call stream(x, ax, axp, bx, bxp, fx)
+        if (regime.eq.'h4' .or. regime.eq.'h6' .or. regime.eq.'h5') then 
+          ome(j,k1) = om0 + om2*cos(theta)**2 + om4*cos(theta)**4
+        else
+          ome(j,k1) = om0 + om2 *( -(1-3*cos(theta)**2)/2.0 )
+        endif
+        sfu(j,k1) = fx*sin(theta)*cos(theta)
+        ute(j,k1) = bx*sin(theta)*cos(theta) 
+  
+      enddo   ! close radial  
+    enddo   ! close theta
+
+  end subroutine compute_interior_solution
   
   subroutine writefield
+
     !------------------------------------------------------
-    !
-    ! Write the fields computed when solving the eigenvalue
+    ! > Write the fields computed when solving the eigenvalue
     ! problem. 
-    !
     !------------------------------------------------------
+
     ! local variables
-    real(dp) :: aai, aar, adum, ax, axp, bbi, bbr, bpt, bx, bxp, &
+    real(dp) :: aai, aar, ax, axp, bbi, bbr, bpt, bx, bxp, &
             & dbx, ffc, fx, h2, hh, &
             & om0, om0p, om2, om2p, om4, om4p, &
             & tc, theta, x, x1, x2, xf
-    integer :: i, i2, i3, j, jj, k, k1, k2, &
+    integer :: i, i2, i3, jj, k, &
                & nep, net, nf, nsp, nst
   
     character(len=2) :: q
     character(len=512) :: bfeld1, bfeld2, bfeld3, bfeld4, bfeld5, &
                           bfeld6, bfeld7, bfeld8, bfeld9, bfeld10
-  
   
     real(dp) :: bphi(np+2+nft,n_theta)        ! toroidal real
     real(dp) :: iphi(np+2+nft,n_theta)        ! toroidal im
@@ -800,71 +907,10 @@ contains
     endif   ! flg mode
 
     call write_vect (bfeld2, q)
-  
-    bphi=0
-    iphi=0
-    brr=0
-    bri=0
-    apr=0
-    api=0
-    adum=0
-    ! imp: interior solution
-    ! imp: initialize to zero all the other quantities
-    do k1=1, n_theta    ! theta loop
-      theta = theta1 + k1*dt
-      do j=1, np+2         ! radial loop
-        x = x1+(j-1)*hh
-        !  load the bphi_n  vectors in b_n p1(cos(theta))_n
-        do k2=nst, net, 2    ! legendre polynomial  l-loop
-          if (mm.eq.0) then
-            !note: in spherical  symmetry btoroidal = - \partial_\theta
-            !t(r,theta)  where  t=\sum_n p^0_n(cos(theta))  and p^0_n are the associate
-            !legendre functions of the first kind (see maple and mathematical definition
-            !with the correct branch cut.) 
-            !Therefore we can use the (ruediger corrected) fundamental identity:  
-            !\partial_\theta p^0_n(cos(theta)), theta) = (plus) p^1_n(cos(theta))
-            bphi(j,k1)=bphi(j,k1)+vc(j,k2,1)*(-plgndr(k2,1,cos(theta)))
-            iphi(j,k1)=iphi(j,k1)+vc(j,k2,2)*(-plgndr(k2,1,cos(theta)))
-          else
-            ! mm not zero, but should be checked! 
-            write (*,*) 'check please m not zero'
-            stop 
-            bphi(j,k1)=bphi(j,k1)+vc(j,k2,1)*(- plgndr(k2,1,cos(theta))*(-cos(theta)/sin(theta))+k2*(k2+1)*plgndr(k2,0,cos(theta)))
-            iphi(j,k1)=iphi(j,k1)+vc(j,k2,2)*(- plgndr(k2,1,cos(theta))*(-cos(theta)/sin(theta))+k2*(k2+1)*plgndr(k2,0,cos(theta)))
-          endif 
-        enddo
-        ! load the a_n vectors at the boundary...
-        do k2=nsp, nep, 2   ! legendre polynomial even l-loop         
-          !
-          !  obtain B_r in the interior !!!
-          !  to get B_r  use second fundamental identity: (see mathematica notebook notation.nb)
-          !
-          ! B_r = -(1/sintheta) \partial_\theta (sintheta\partial_\theta p0n) = 
-          !     = -(1/sintheta) \partia_\theta [ p1n sintheta ] = +n*(n+1) p0n
-          ! 
-          !  so that  (note a minus sign in the definition of br and bphi) 
-          !   
-          !  B_r = (sum over n) + n(n+1) p0n / x
-          vc(np+2,k2,1) = (4*vc(np+1,k2,1)-vc(np,k2,1))/(2*hh*(k2+1+ffc)+3)  
-          vc(np+2,k2,2) = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)    
-          brr(j,k1) = brr(j,k1)+(k2*(k2+1)/x)*vc(j,k2,1)*(+plgndr(k2,0, cos(theta)))
-          bri(j,k1) = bri(j,k1)+(k2*(k2+1)/x)*vc(j,k2,2)*(+plgndr(k2,0, cos(theta)))
-  
-        enddo ! legendre polynomial even l-loop  k2
-  
-        call rot(x, om0, om0p, om2, om2p, om4, om4p)
-        call stream(x, ax, axp, bx, bxp, fx)
-        if (regime.eq.'h4' .or. regime.eq.'h6' .or. regime.eq.'h5') then 
-          ome(j,k1) = om0 + om2*cos(theta)**2 + om4*cos(theta)**4
-        else
-          ome(j,k1) = om0 + om2 *( -(1-3*cos(theta)**2)/2.0 )
-        endif
-        sfu(j,k1) = fx*sin(theta)*cos(theta)
-        ute(j,k1) = bx*sin(theta)*cos(theta) 
-  
-      enddo   ! close radial  
-    enddo   ! close theta
-  
+    call compute_interior_solution (nst, net, nsp, nep, hh, x1, &
+                                    bphi, iphi, brr, bri, apr, api, ffc, &
+                                    sfu, ute, vc, ax, axp, bx, bxp, fx, &
+                                    om0, om0p, om2, om2p, om4, om4p, ome)  
     call write_omega (np, n_theta, x1, x2, theta1, theta2, &
                       ome, sfu, ute)
   
@@ -889,9 +935,9 @@ contains
     ! nj is the number of time slices
     do jj=1, nj
       call write_toroidal (bfeld3, nf, nj, jj, q, &
-                           theta, x, x1, xf, tc, bphi, iphi)
+                           theta, x1, xf, tc, bphi, iphi)
       call write_poloidal (bfeld4, nf, nj, jj, q, &
-                           theta, x, x1, xf, tc, apr, api) 
+                           theta, hh, x1, xf, tc, apr, api) 
     enddo
 
     call time_butterfly (bfeld2, bfeld6, bfeld7, bfeld8, &
@@ -900,6 +946,6 @@ contains
     call radial_butterfly (bfeld9, bfeld10, nf, nft, x1, x2, &
                            hh, bphi, iphi, brr, bri, apr, api, q) 
   
-  end subroutine
+  end subroutine writefield
 
 end module write_outputs
