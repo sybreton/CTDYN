@@ -113,19 +113,23 @@ outputs
 dir : character
   directory where the output files will be written.
 
+nj : integer
+  Number of time slices.
+
 write_vectors : logical   
   If set to ``.false.``, the code will only compute eigenvalues.
   If set to ``.true.``, the code will compute both eigenvalues and 
   eigenvectors.
-
-zeta_r : real  
-  ???
 
 xbt : real   
   ???
   
 xbo : real     
   ???
+
+zeta_r : real  
+  ???
+
 
 boundaries
 -----------

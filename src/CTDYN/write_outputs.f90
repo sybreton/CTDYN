@@ -35,7 +35,7 @@ module write_outputs
   use bessel
   use util
   use func_flow
-  use profiles
+  use stellar_profiles
   use plg
 
   implicit none 
@@ -717,7 +717,7 @@ contains
             & om0, om0p, om2, om2p, om4, om4p, &
             & tc, theta, x, x1, x2, xf
     integer :: i, i2, i3, j, jj, k, k1, k2, &
-               & nep, net, nf, nj, nsp, nst
+               & nep, net, nf, nsp, nst
   
     character(len=2) :: q
     character(len=512) :: bfeld1, bfeld2, bfeld3, bfeld4, bfeld5, &
@@ -790,7 +790,7 @@ contains
     else   ! flg = 0 (real matrix inversion)
       do i2=1, nb
         k = 1          
-        do i3 = i2, nt, nb
+        do i3=i2, nt, nb
           k = k + 1   
           vc(k,i2,1) = vr(i3,indeg(nt))
           ! it should be -  (after long check with lapack libraries)
@@ -887,7 +887,6 @@ contains
                             nst, net, nf)
   
     ! nj is the number of time slices
-    nj = 8
     do jj=1, nj
       call write_toroidal (bfeld3, nf, nj, jj, q, &
                            theta, x, x1, xf, tc, bphi, iphi)

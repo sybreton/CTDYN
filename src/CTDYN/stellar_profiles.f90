@@ -1,4 +1,4 @@
-module profiles
+module stellar_profiles
 
   use kind_parameters
   use cio
@@ -398,4 +398,4 @@ contains
     return
   end subroutine
   
-end module profiles 
+end module stellar_profiles 

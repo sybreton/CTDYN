@@ -50,6 +50,7 @@ module cio
   !> outputs
   !-------------------------------------------
   character(len=128) :: dir
+  integer :: nj
   logical :: write_vectors
   real(dp) :: zeta_r
   real(dp) :: xbt, xbo
@@ -88,6 +89,27 @@ module cio
   real(dp) :: reg(10),ieg(10)
   real(dp) :: gam
   character(len=1) :: jobvr
+
+  namelist /global/ sr, rotp
+
+  namelist /profiles/ regime, s0, s2, s4, s6, &
+                      a2p, a4p, xa1, xa2, xda1, &
+                      xda2, xb, gd, edr, xe1, xde1, &
+                      dd1, xc1, c2_h2, oco
+
+  namelist /brent/ al_i, al_f, accu
+
+  namelist /outputs/ dir, nj, write_vectors, zeta_r, &
+                     xbt, xbo
+
+  namelist /fields/ degree, mmm
+
+  namelist /physics/ hd, ffree, xm, aqu, c3, bct, &
+                     beta_i
+
+  namelist /boundaries/ x_in
+
+  namelist /controls/ rm_i, rm_f, cm_i, cm_f, nso, flg
 
 contains
 
@@ -141,6 +163,7 @@ contains
     zeta_r  = 1.0
     xbt     = 0.75
     xbo     = 1.5
+    nj      = 8
   
     !-------------------------------------------
     !> boundaries
@@ -158,21 +181,21 @@ contains
     !-------------------------------------------
     hd      = 1
     ffree   = 0
-    xm      = -0.45
+    xm      = -0.45d0
     aqu     =  1
     c3      =  0
-    bct     =  1.
+    bct     =  1.d0
     beta_i  =  0
   
     !-------------------------------------------
     !> controls 
     !-------------------------------------------
-    rm_i    =  400.0       
-    rm_f    =  400.0     
-    cm_i    =  40000.0       
-    cm_f    =  40000.0        
+    rm_i    =  400.d0      
+    rm_f    =  400.d0     
+    cm_i    =  40000.d0      
+    cm_f    =  40000.d0        
     nso     =  0    
-    flg     =  0.
+    flg     =  0.d0 
 
   end subroutine 
 
@@ -184,27 +207,6 @@ contains
     character(len=128) :: inlist
 
     integer :: fu
-
-    namelist /global/ sr, rotp
-
-    namelist /profiles/ regime, s0, s2, s4, s6, &
-                        a2p, a4p, xa1, xa2, xda1, &
-                        xda2, xb, gd, edr, xe1, xde1, &
-                        dd1, xc1, c2_h2, oco
-
-    namelist /brent/ al_i, al_f, accu
-
-    namelist /outputs/ dir, write_vectors, zeta_r, &
-                       xbt, xbo
-
-    namelist /fields/ degree, mmm
-
-    namelist /physics/ hd, ffree, xm, aqu, c3, bct, &
-                       beta_i
-
-    namelist /boundaries/ x_in
-
-    namelist /controls/ rm_i, rm_f, cm_i, cm_f, nso, flg
 
     call initialise_namelist_values
     call getarg(1, inlist)
@@ -244,27 +246,6 @@ contains
     character(len=128) :: inlist
 
     integer :: fu
-
-    namelist /global/ sr, rotp
-
-    namelist /profiles/ regime, s0, s2, s4, s6, &
-                        a2p, a4p, xa1, xa2, xda1, &
-                        xda2, xb, gd, edr, xe1, xde1, &
-                        dd1, xc1, c2_h2, oco
-
-    namelist /brent/ al_i, al_f, accu
-
-    namelist /outputs/ dir, write_vectors, zeta_r, &
-                       xbt, xbo
-
-    namelist /fields/ degree, mmm
-
-    namelist /physics/ hd, ffree, xm, aqu, c3, bct, &
-                       beta_i
-
-    namelist /boundaries/ x_in
-
-    namelist /controls/ rm_i, rm_f, cm_i, cm_f, nso, flg
 
     ! Open and close to read in any order
     open(newunit=fu, file=inlist, status="replace", & 

@@ -14,7 +14,7 @@ module dyna
     use bessel
     use write_outputs
     use func_flow
-    use profiles
+    use stellar_profiles
     use util
   
     implicit none
