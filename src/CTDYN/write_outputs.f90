@@ -58,8 +58,7 @@ contains
   subroutine compute_pol (nsp, nep, nf, nft, vc, apr, api, &
                           ffc, hh, x1)
     ! -----------------------------------------------------------------------    
-    ! Compute the a_n vectors for dipoles: 
-    ! this defines the poloidal (potential)
+    ! > Compute the external extrapolation for the poloidal field.   
     ! -----------------------------------------------------------------------    
 
     ! arguments
@@ -115,7 +114,7 @@ contains
   subroutine compute_tor (nst, net, nf, nft, vc, bphi, iphi, ffc, &
                           hh, x1)
     ! -----------------------------------------------------------------
-    ! Compute the toroidal field
+    ! > Compute the external extrapolation for the toroidal field.
     ! -----------------------------------------------------------------
   
     ! arguments
@@ -347,7 +346,7 @@ contains
                           ome, sfu, ute)
     !-------------------------------------------------------------
     !
-    !   write omega(r,theta)/omega_equator and stream function
+    ! > Write omega(r,theta)/omega_equator and stream function
     !
     !-------------------------------------------------------------
   
@@ -408,8 +407,8 @@ contains
                              nf, nft, x1, x2, hh, bphi, iphi, &
                              brr, bri, apr, api, q) 
     !-------------------------------------------------------------
-    !  butterfly diagram block      
-    !  time evolution butterfly diagram 
+    !  > Butterfly diagram block      
+    !  Time evolution butterfly diagram 
     !-------------------------------------------------------------
 
     character(len=512) :: bfeld1, bfeld6, bfeld7, bfeld8
@@ -562,9 +561,11 @@ contains
 
   subroutine radial_butterfly (bfeld9, bfeld10, nf, nft, x1, x2, &
                                hh, bphi, iphi, brr, bri, apr, api, q) 
+
     !----------------------------------------------------------
-    ! radial butterfly diagram n and s 
+    ! > Radial butterfly diagram n and s 
     !----------------------------------------------------------
+
     character(len=512) :: bfeld9, bfeld10
     character(len=2) :: q
     integer :: nf, nft
@@ -722,9 +723,10 @@ contains
                                         sfu, ute, vc, ax, axp, bx, bxp, fx, & 
                                         om0, om0p, om2, om2p, om4, om4p, ome) 
 
-    !------------------------------------------------------
-    ! > Compute interior solution 
-    !------------------------------------------------------
+    !--------------------------------------------------------
+    ! > Compute interior solution for toroidal and poloidal 
+    ! fields.
+    !--------------------------------------------------------
 
     ! Arguments
     integer :: nst, net, nsp, nep 
