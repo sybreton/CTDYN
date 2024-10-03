@@ -21,5 +21,8 @@ docs/build/
 docs/make.bat
 
 notebooks/ctdyn_output/
+notebooks/**/
+notebooks/*.sh
+
 tests/test_ref
 tests/test_default/
