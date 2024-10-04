@@ -249,8 +249,8 @@ contains
         vc(np+2,k2,2) = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)
       endif
       if (mm .ne. 0) stop
-        rosym = k2*(k2+1.0)/(2.0*k2+1.0)
-        etor= etor+(vc(np+2,k2,1)**2+vc(np+2,k2,2)**2)*rosym
+      rosym = k2*(k2+1.0)/(2.0*k2+1.0)
+      etor = etor+(vc(np+2,k2,1)**2+vc(np+2,k2,2)**2)*rosym
     enddo
   
     ! surface energy
