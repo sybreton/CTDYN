@@ -86,18 +86,18 @@ program main
   ! for different set of rotation/circulation
   ! regimes
   open(newunit=fu, status='unknown', file=fileout)
-  write(fu, '(a,i4,a,i4,a)') '#  n, C_alpha, C_omega, r, beta, Etor, Epol, z = (', np, ',', na+1, ')'  
+  write(fu, '(a)') "#  n, C_alpha, C_omega, C_meridional, omega_cycle, beta, Etor, Epol"  
   do iome=0, nso
     co = cm_i + iome*(cm_f-cm_i)/(nso+1) 
     c_u = rm_i+rm_f*co**xm
     ii = ii+1    
     call zbr(al_i, al_f, accu, critical) 
-    write (fu,'(i4,16e12.4)') ii, critical, co, c_u, beta, etep, etet, zeta_r, (reg(i), abs(ieg(i)),i=1,1), eep
     if (write_vectors) then
       jobvr='v'
       call dynamo (critical, rate)
       jobvr='n'
     endif
+    write (fu,'(i4,16e12.4)') ii, critical, co, c_u, imag, beta, etep, etet
   enddo
   close(fu)
 
