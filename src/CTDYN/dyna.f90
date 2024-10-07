@@ -25,7 +25,7 @@ module dyna
 
 contains   
 
-  subroutine dynamo(turb,rate)
+  subroutine dynamo(turb, rate, imag, eta, period)
     !-------------------------------------------------------------
     !
     !   Radler73 Zur DynamoTheorie / Notes 
@@ -55,10 +55,21 @@ contains
     !
     !  where h2 = hh/2
     !
+    !  >> Additional definitions:
+    !  turb= c_alpha*c_omega
+    !  c_alpha = alpha_zero*sr/eta
+    !  c_omega = omega_zero*sr**2/eta
     !
     !-------------------------------------------------------------
+
+    ! Arguments
+    real(dp) :: turb    ! alpha effect coefficient
+    real(dp) :: eta     ! turbulent diffusivity
+    real(dp) :: period  ! cycle period in year
+    real(dp) :: rate, imag ! real and imaginary part of the selected eigenvalue
     
-    real(dp) :: turb, rate, a2, alp, alp_p, &
+    ! Local variables
+    real(dp) :: a2, alp, alp_p, &
             & am, apu, apup, ar, arp, bapu, bapup, &
             & btp, ca, ct, &
             & deltami, deltapi, e1, e2, e3, &
@@ -66,11 +77,6 @@ contains
             & om0, om0p, om2, om2p, om4, om4p, psi, psip, &
             & psipp, rho, sigmami, sigmapi, &
             & um, x, x1, x2, bt, nabp1, nabp3 
-    
-    !      definitions:
-    !      turb= c_alpha*c_omega
-    !      c_alpha = alpha_zero*sr/eta
-    !      c_omega = omega_zero*sr**2/eta
     
     integer :: i, j, k, nabm1, &
                & k1, ki, kk, nabm3, napb3, &
@@ -80,19 +86,12 @@ contains
                & nbi, nc                
     integer :: info
     
-    !------------- temporary variables
-    
     real(dp) :: omegaeq
-    real(dp) :: nueq, eta, sr0
-    parameter(sr0=6.955e10,nueq=460.7e-9)
-    
     real(dp) :: egr(np,nb), egi(np,nb)
     real(dp) :: agr(np,nb/2), agi(np,nb/2)
     real(dp) :: bgr(np,nb/2), bgi(np,nb/2)
     
     character(len=1) :: jobvl, jobpr    
-    character(len=1) :: balanc    
-    character(len=1) :: sense    
     real(dp) :: rwork(2*nt)
     complex(dp) :: work(lwork)  
     integer :: qa, qb
@@ -110,26 +109,21 @@ contains
     
     x1 = x_in           !inner boundary
     x2 = 1.0            !outer boundary
-    hh =(x2-x1)/(np+1)  !stepsize: radial accuracy parm.
+    hh =(x2-x1)/(np+1)  !stepsize: radial accuracy parameter.
     h2 = hh/2.e0
     a2 = c3       ! cos^3 term in alpha  
     
-    ! rotp = periodo di rotazione in unita' di quello solare
-    
+    ! rotp: rotation period in solar rotation period unit
     omegaeq = nueq*2.e0*pi/rotp
-    
     if(co.ne.0)then            
       eta = (sr*sr0)**2*omegaeq/co
     else
-      eta=1
+      eta = 1
     endif
     
     !-------------------------------------------------------------
     
     um = c_u*eta/(sr*sr0)
-    
-    !-------------------------------------------------------------
-    
     ca = turb             
     
     !-------------------------------------------------------------
@@ -1172,6 +1166,8 @@ contains
     
     indeg=int(inde)
     
+    ! Assigning real and imaginary part of 
+    ! eigenvalues
     rate = wr(nt) 
     imag = wi(int(indeg(nt)))
     
@@ -1205,25 +1201,22 @@ contains
     
     eep=(maxval(abs(bgr)) + maxval(abs(bgi)))/(maxval(abs(agr)) + maxval(abs(agi)))
     
-    !------------------------------------------------------------------
-    rt = rate  
-    !------------------------------------------------------------------
-    
-    !------------ write the period in years ---------------------------
-    facp= 2.e0*pi*(sr*sr0)**2.e0/eta/3.1536e7
-    do kk = 0,5
+    !------------ Compute the period in years ---------------------------
+    facp = 2.d0*pi*(sr*sr0)**2.d0/eta/3.1536e7
+    period = - facp/imag ! period of the selected solution
+    do kk=0, 5
       write(*,'(i4, 1p,3e13.5)') kk, wr(nt-kk), wi(int(indeg(nt-kk))), facp/wi(int(indeg(nt-kk)))
     enddo
     
     write(*,*)
     
     do kk = 0,9
-      reg(kk+1) =  wr(nt-kk)
-      ieg(kk+1) =  wi(int(indeg(nt-kk)))
+      reg(kk+1) = wr(nt-kk)
+      ieg(kk+1) = wi(int(indeg(nt-kk)))
     enddo
     
     if (jobvr.eq.'v') then
-      call writefield
+      call writefield (imag)
     endif
     
     return

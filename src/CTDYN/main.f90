@@ -36,7 +36,11 @@ program main
 
   implicit none   
 
-  real(dp) :: astep, critical, rate 
+  real(dp) :: critical ! critical coefficient for alpha effect
+  real(dp) :: eta      ! turbulent diffusivity coefficient
+  real(dp) :: period   ! cycle period in year
+  real(dp) :: rate, imag ! real and imaginary part of the selected eigenvalue
+
   real(dp) :: ca(10,10,4)
 
   character(len=128) :: inlist, inlist_full
@@ -77,16 +81,16 @@ program main
   beta = beta_i
   eep = -99
 
-  ! Setting global variables
+  ! Setting global variables for the loop
   ii = 0
   jobvr = 'n'
   fileout = trim(trim(dir)//'/critical'//qq)
 
   ! Entering the main loop calling the bisection
-  ! for different set of rotation/circulation
-  ! regimes
+  ! for different set of rotation/circulation regimes
   open(newunit=fu, status='unknown', file=fileout)
-  write(fu, '(a)') "#  n, C_alpha, C_omega, C_meridional, omega_cycle, beta, Etor, Epol"  
+  write(fu, '(a)') "#  n, C_alpha, C_omega, C_meridional, omega_cycle, period, eta, beta, Etor, Epol"  
+  write(fu, '(a)') "#  --, (adim), (adim), (adim), (adim), (yr), (TODO), (TODO), (TODO), (TODO)"  
   do iome=0, nso
     co = cm_i + iome*(cm_f-cm_i)/(nso+1) 
     c_u = rm_i+rm_f*co**xm
@@ -94,10 +98,10 @@ program main
     call zbr(al_i, al_f, accu, critical) 
     if (write_vectors) then
       jobvr='v'
-      call dynamo (critical, rate)
+      call dynamo (critical, rate, imag, eta, period)
       jobvr='n'
     endif
-    write (fu,'(i4,16e12.4)') ii, critical, co, c_u, imag, beta, etep, etet
+    write (fu,'(i4, 9es12.4)') ii, critical, co, c_u, imag, period, eta, beta, etep, etet
   enddo
   close(fu)
 

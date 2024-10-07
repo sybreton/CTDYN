@@ -17,7 +17,7 @@ contains
             & om0, om2, om0p, om2p, om4, om4p, a1, a2, xmax, &
             & omc, omeq, hzn, c2, c4, omegac, oms, omegaeq, &
             & a4, b0, b4, d1, delta, dw, facn, ome0, &
-            & omec, omes, omet, r, r1, rc, rs, xi, xw, &
+            & omec, omes, omet, r, r1, rc, rs, rt, xi, xw, &
             & xx1, xx2, xxd1, xxd2 
          
     

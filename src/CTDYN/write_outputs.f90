@@ -273,7 +273,7 @@ contains
   
   end subroutine
 
-  subroutine write_toroidal (bfeld3, nf, nj, jj, q, &
+  subroutine write_toroidal (bfeld3, imag, nf, nj, jj, q, &
                              theta, x1, xf, tc, bphi, iphi)
 
     ! -----------------------------------------------------------------
@@ -283,7 +283,7 @@ contains
     character(len=512) :: bfeld3
     character(len=2) :: q
     integer :: nf, nj, jj
-    real(dp) :: theta, x1, xf, tc
+    real(dp) :: imag, theta, x1, xf, tc
     real(dp) :: bphi(np+2+nft, n_theta)        ! toroidal real
     real(dp) :: iphi(np+2+nft, n_theta)        ! toroidal im
   
@@ -304,7 +304,7 @@ contains
     close(60)
   end subroutine
   
-  subroutine write_poloidal (bfeld4, nf, nj, jj, q, &
+  subroutine write_poloidal (bfeld4, imag, nf, nj, jj, q, &
                              theta, hh, x1, xf, tc, apr, api) 
  
     ! -----------------------------------------------------------------
@@ -315,7 +315,7 @@ contains
     character(len=512) :: bfeld4
     character(len=2) :: q
     integer :: nf, nj, jj
-    real(dp) :: theta, hh, x1, xf, tc
+    real(dp) :: imag, theta, hh, x1, xf, tc
     real(dp) :: apr(np+2+nft, n_theta)         ! b poloidal (potential)
     real(dp) :: api(np+2+nft, n_theta)         ! b poloidal (potential)
   
@@ -404,7 +404,7 @@ contains
 
 
   subroutine time_butterfly (bfeld1, bfeld6, bfeld7, bfeld8, &
-                             nf, nft, x1, x2, hh, bphi, iphi, &
+                             imag, nf, nft, x1, x2, hh, bphi, iphi, &
                              brr, bri, apr, api, q) 
     !-------------------------------------------------------------
     !  > Butterfly diagram block      
@@ -414,7 +414,7 @@ contains
     character(len=512) :: bfeld1, bfeld6, bfeld7, bfeld8
     character(len=2) :: q
     integer :: nf, nft
-    real(dp) :: x1, x2, hh
+    real(dp) :: imag, x1, x2, hh
     real(dp) :: bphi(np+2+nft,n_theta)        ! toroidal real
     real(dp) :: iphi(np+2+nft,n_theta)        ! toroidal im
     real(dp) :: brr(np+2+nft,n_theta)         ! radial real
@@ -559,7 +559,7 @@ contains
 
   end subroutine 
 
-  subroutine radial_butterfly (bfeld9, bfeld10, nf, nft, x1, x2, &
+  subroutine radial_butterfly (bfeld9, bfeld10, imag, nf, nft, x1, x2, &
                                hh, bphi, iphi, brr, bri, apr, api, q) 
 
     !----------------------------------------------------------
@@ -569,7 +569,7 @@ contains
     character(len=512) :: bfeld9, bfeld10
     character(len=2) :: q
     integer :: nf, nft
-    real(dp) :: x1, x2, hh
+    real(dp) :: imag, x1, x2, hh
     real(dp) :: bphi(np+2+nft,n_theta)        ! toroidal real
     real(dp) :: iphi(np+2+nft,n_theta)        ! toroidal im
     real(dp) :: brr(np+2+nft,n_theta)         ! radial real
@@ -814,14 +814,17 @@ contains
 
   end subroutine compute_interior_solution
   
-  subroutine writefield
+  subroutine writefield (imag)
 
     !------------------------------------------------------
     ! > Write the fields computed when solving the eigenvalue
     ! problem. 
     !------------------------------------------------------
 
-    ! local variables
+    ! Arguments
+    real(dp) :: imag ! imaginary part of the cycle eigenvalue
+
+    ! Local variables
     real(dp) :: aai, aar, ax, axp, bbi, bbr, bpt, bx, bxp, &
             & dbx, ffc, fx, h2, hh, &
             & om0, om0p, om2, om2p, om4, om4p, &
@@ -937,16 +940,16 @@ contains
   
     ! nj is the number of time slices
     do jj=1, nj
-      call write_toroidal (bfeld3, nf, nj, jj, q, &
+      call write_toroidal (bfeld3, imag, nf, nj, jj, q, &
                            theta, x1, xf, tc, bphi, iphi)
-      call write_poloidal (bfeld4, nf, nj, jj, q, &
+      call write_poloidal (bfeld4, imag, nf, nj, jj, q, &
                            theta, hh, x1, xf, tc, apr, api) 
     enddo
 
     call time_butterfly (bfeld2, bfeld6, bfeld7, bfeld8, &
-                         nf, nft, x1, x2, hh, bphi, iphi, &
+                         imag, nf, nft, x1, x2, hh, bphi, iphi, &
                          brr, bri, apr, api, q) 
-    call radial_butterfly (bfeld9, bfeld10, nf, nft, x1, x2, &
+    call radial_butterfly (bfeld9, bfeld10, imag, nf, nft, x1, x2, &
                            hh, bphi, iphi, brr, bri, apr, api, q) 
   
   end subroutine writefield

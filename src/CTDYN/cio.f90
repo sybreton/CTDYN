@@ -11,16 +11,19 @@ module cio
   implicit none
   public
 
-  integer, parameter :: np=50 ! mesh points
-  integer, parameter :: na=49 !     na = 1,3,5,... radial order in an and an
-  integer, parameter :: nb=na+1 !     nb = 2,4,6,... radial order in bn and bn
-  integer, parameter :: nt=nb*np ! matrix dimension 
+  integer, parameter :: np = 50    ! mesh points
+  integer, parameter :: na = 49    ! na = 1,3,5,... radial order in an and an
+  integer, parameter :: nb = na+1  ! nb = 2,4,6,... radial order in bn and bn
+  integer, parameter :: nt = nb*np ! matrix dimension 
   
-  integer, parameter :: lwork=540000
-  integer, parameter :: nueg=8
-  integer, parameter :: n_theta=301
-  integer, parameter :: n_time=300
-  real(dp), parameter :: pi=3.14159265359_dp
+  integer, parameter :: lwork   = 540000
+  integer, parameter :: nueg    = 8
+  integer, parameter :: n_theta = 301
+  integer, parameter :: n_time  = 300
+
+  real(dp), parameter :: pi   = 3.14159265359d0 
+  real(dp), parameter :: sr0  = 6.955e10  ! solar radius (cm)
+  real(dp), parameter :: nueq = 460.7e-9 ! solar rotation frequency (s^-1)
 
   !-------------------------------------------
   !-------------------------------------------
@@ -83,9 +86,9 @@ module cio
   ! Additional variables that are used by several 
   ! subroutines. These were included in "common" 
   ! blocks in the old version of the code. 
-  integer :: ii, it
+  integer  :: ii, it
   real(dp) :: etep, etet, eep
-  real(dp) :: rt, imag, co, c_u, beta, betb
+  real(dp) :: co, c_u, beta, betb
   real(dp) :: reg(10),ieg(10)
   real(dp) :: gam
   character(len=1) :: jobvr

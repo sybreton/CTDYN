@@ -16,9 +16,12 @@ contains
 
   subroutine zbr(x1, x2, tol, root)
     
+    ! Arguments
     real(dp) :: root, tol, x1, x2
 
-    real(dp) :: func, x3
+    ! Local variables
+    real(dp) :: eta, period, imag
+    real(dp) :: x3
     integer :: iter
     real(dp) :: a, b, c, d, e, fa, fb, fc 
     real(dp) :: p, q, r, s, tol1
@@ -28,9 +31,9 @@ contains
     a=x1
     b=x2
     it=1
-    call dynamo(a,fa) 
+    call dynamo(a, fa, imag, eta, period) 
     it=2
-    call dynamo(b,fb)
+    call dynamo(b, fb, imag, eta, period)
     ! --------------------------------------------------------
     if ((fa.gt.0. .and. fb.gt.0.) .or. (fa.lt.0. .and. fb.lt.0.)) then
       write (*,*) 'Root must be bracketed for zbrent'
@@ -93,7 +96,7 @@ contains
       else
         b=b+sign(tol1,xm)
       endif
-      call dynamo(b,fb)
+      call dynamo(b, fb, imag, eta, period)
       if (abs(fb) .le. 1.0e-4) then
         root=b
         write(*,*) 'fb below 1e-4 at iteration number', iter
