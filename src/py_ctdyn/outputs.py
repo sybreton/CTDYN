@@ -5,6 +5,41 @@ import matplotlib
 import matplotlib.pyplot as plt
 import re
 
+def read_summary_file (filename, output_format="txt") :
+    """
+    Read CTDYN summary output.
+
+    Parameters
+    ----------
+    filename : str or Path object
+      Name of the CTDYN output file to read.
+
+    output_format : str
+      Format of the output files created by CTDYN.
+      Optional, default ``"txt"``.
+
+    Returns
+    -------
+    panfas.DataFrame 
+      A data frame with the elements of the summary file.
+    """
+    if output_format=="txt" :
+      # Extracting the header
+      with open (Path (filename), "r") as f :
+        first_line = f.readline().strip('\n')
+        names = re.split (r"\W+", first_line)
+        # First element is an empty string
+        names = names[1:]  
+      df = pd.read_csv (filename, sep="\s+",  comment="#", 
+                        header=None, names=names)
+      if "n" in names :
+        df = df.set_index ("n")
+    elif output_format=="hdf5" :
+      raise Exception ("hdf5 format is not implemented yet.")
+    else :
+      raise Exception ("Unknown output format. Supported format are 'txt' and 'hdf5'")
+    return df
+
 def read_field_map (filename, return_meshgrid=True,
                     output_format="txt") :
     """
