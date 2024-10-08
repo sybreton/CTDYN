@@ -84,7 +84,7 @@ program main
   ! Setting global variables for the loop
   ii = 0
   jobvr = 'n'
-  fileout = trim(trim(dir)//'/critical'//qq)
+  fileout = trim(trim(dir)//"/critical"//qq)//".dat"
 
   ! Entering the main loop calling the bisection
   ! for different set of rotation/circulation regimes
@@ -101,7 +101,7 @@ program main
       call dynamo (critical, rate, imag, eta, period)
       jobvr='n'
     endif
-    write (fu,'(i4, 9es12.4)') ii, critical, co, c_u, imag, period, eta, beta, etep, etet
+    write (fu,'(i4, 9es12.4)') ii, critical, co, c_u, abs(imag), abs(period), eta, beta, etep, etet
   enddo
   close(fu)
 

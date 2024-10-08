@@ -1203,7 +1203,7 @@ contains
     
     !------------ Compute the period in years ---------------------------
     facp = 2.d0*pi*(sr*sr0)**2.d0/eta/3.1536e7
-    period = - facp/imag ! period of the selected solution
+    period = facp/imag ! period of the selected solution
     do kk=0, 5
       write(*,'(i4, 1p,3e13.5)') kk, wr(nt-kk), wi(int(indeg(nt-kk))), facp/wi(int(indeg(nt-kk)))
     enddo
