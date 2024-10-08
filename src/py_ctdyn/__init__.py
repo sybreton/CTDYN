@@ -10,7 +10,8 @@ from .ctdyn import (get_ctdyn_dir,
                     make_inlist,
                     load_inlist_template)
 
-from .outputs import (read_field_map, 
+from .outputs import (read_summary_file,
+                      read_field_map, 
                       read_field_map_text_file,
                       read_butterfly_diagram,
                       read_butterfly_diagram_text_file,

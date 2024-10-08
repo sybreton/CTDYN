@@ -1,11 +1,13 @@
 import numpy as np
 import pandas as pd
+from astropy.table import Table
 from pathlib import Path
 import matplotlib
 import matplotlib.pyplot as plt
 import re
 
-def read_summary_file (filename, output_format="txt") :
+def read_summary_file (filename, output_format="txt",
+                       backend="astropy") :
     """
     Read CTDYN summary output.
 
@@ -18,10 +20,17 @@ def read_summary_file (filename, output_format="txt") :
       Format of the output files created by CTDYN.
       Optional, default ``"txt"``.
 
+    backend : str
+      Backend to consider for the type of output
+      to return. If ``"pandas"`` is chosen, the output
+      will be a ``pandas.Dataframe``, if ``"astropy"``
+      is chosen, the output will be an ``astropy.table.Table``. 
+    
     Returns
     -------
-    panfas.DataFrame 
-      A data frame with the elements of the summary file.
+    pandas.DataFrame or astropy.table.Table
+      A Dataframe or a Table (depending on the chosen
+      backend)  with the elements of the summary file.
     """
     if output_format=="txt" :
       # Extracting the header
@@ -30,10 +39,16 @@ def read_summary_file (filename, output_format="txt") :
         names = re.split (r"\W+", first_line)
         # First element is an empty string
         names = names[1:]  
-      df = pd.read_csv (filename, sep="\s+",  comment="#", 
-                        header=None, names=names)
-      if "n" in names :
-        df = df.set_index ("n")
+      if backend=="pandas" :
+        df = pd.read_csv (filename, sep="\s+",  comment="#", 
+                          header=None, names=names)
+        if "n" in names :
+          df = df.set_index ("n")
+      elif backend=="astropy" :
+        data = np.loadtxt (filename)
+        df = Table (data=data, names=names)
+      else :
+        raise Exception ("Unkown requested backend. Use 'astropy' or 'pandas'")
     elif output_format=="hdf5" :
       raise Exception ("hdf5 format is not implemented yet.")
     else :
@@ -354,7 +369,7 @@ def plot_butterfly_diagram (t, theta, mesh,
     
     return fig
 
-def read_radial_profiles (filename) :
+def read_radial_profiles (filename, backend="astropy") :
     """
     Read radial profiles such as alpha 
     and eta turbulent coefficients.
@@ -363,21 +378,45 @@ def read_radial_profiles (filename) :
     ----------
     filename : str or Path object
       Filename 
+
+    backend : str
+      Backend to consider for the type of output
+      to return. If ``"pandas"`` is chosen, the output
+      will be a ``pandas.Dataframe``, if ``"astropy"``
+      is chosen, the output will be an ``astropy.table.Table``. 
     
     Returns
     -------
-    pandas.DataFrame
-      A dataframe with the radial profiles.
+    pandas.DataFrame or astropy.table.Table
+      A Dataframe or a Table (depending on the chosen
+      backend) with the radial profiles.
     """
     data = np.loadtxt (filename)
     columns = ["alpha", "alpha_p", 
                "eta_1", "eta_2", "eta_3", "psi", 
                "ar", "arp", "bt", "btp", 
                "om0", "om0p", "om2", "om2p"]
-    df = pd.DataFrame (data=data[:,1:], 
-                       index=data[:,0],
-                       columns=columns)
+    if backend=="pandas" :
+      df = pd.DataFrame (data=data[:,1:], 
+                         index=data[:,0],
+                         columns=columns)
+    elif backend=="astropy" :
+      columns.insert (0, "x")
+      df = Table (data=data, names=columns)
+    else :
+      raise Exception ("Unkown requested backend. Use 'astropy' or 'pandas'")
     return df
+
+def get_xvector (df) :
+    """
+    Get x-vector from ``df`` depending
+    on type (pandas Dataframe or astropy Table).
+    """
+    if "x" in df.columns :
+      x = df["x"]
+    else :
+      x = df.index
+    return x
 
 def plot_alpha (df, figsize=(5,8), 
                 xlabel=None, ylabels=None,
@@ -415,9 +454,10 @@ def plot_alpha (df, figsize=(5,8),
     ax2.set_xlabel (xlabel)
     ax1.set_ylabel (ylabels[0])
     ax2.set_ylabel (ylabels[1])
-    ax1.plot (df.index, df["alpha"], color="blue", lw=lw, 
+    x = get_xvector (df)
+    ax1.plot (x, df["alpha"], color="blue", lw=lw, 
               label=r"$\alpha$")
-    ax2.plot (df.index, df["alpha_p"], color="darkorange", lw=lw,
+    ax2.plot (x, df["alpha_p"], color="darkorange", lw=lw,
               label=r"$\alpha_p$")
     return fig
 
@@ -460,7 +500,8 @@ def plot_eta (df, figsize=(5,10),
     ax1.set_ylabel (ylabels[0])
     ax2.set_ylabel (ylabels[1])
     ax3.set_ylabel (ylabels[2])
-    ax1.plot (df.index, df["eta_1"], color="blue", lw=lw) 
-    ax2.plot (df.index, df["eta_2"], color="darkorange", lw=lw)
-    ax3.plot (df.index, df["eta_3"], color="gold", lw=lw)
+    x = get_xvector (df)
+    ax1.plot (x, df["eta_1"], color="blue", lw=lw) 
+    ax2.plot (x, df["eta_2"], color="darkorange", lw=lw)
+    ax3.plot (x, df["eta_3"], color="gold", lw=lw)
     return fig

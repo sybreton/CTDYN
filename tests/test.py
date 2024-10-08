@@ -68,15 +68,25 @@ class TestExecutionVisualisation :
     dyn.run_ctdyn (ctdyn_param=ctdyn_param, verbose=False,
                    rerun=False)
 
-  def testRadialProfiles (self, tmp_dir) :
+  def testSummaryFile (self, tmp_dir) :
+    filename = os.path.join (tmp_dir, "critical_a0.dat")
+    df = dyn.read_summary_file (filename)
+
+  def testRadialProfilesPandas (self, tmp_dir) :
     filename = os.path.join (tmp_dir, "alpha.dat")
-    df = dyn.read_radial_profiles (filename) 
+    df = dyn.read_radial_profiles (filename, backend="pandas") 
+    fig = dyn.plot_alpha (df)
+    fig = dyn.plot_eta (df)
+
+  def testRadialProfilesAstropy (self, tmp_dir) :
+    filename = os.path.join (tmp_dir, "alpha.dat")
+    df = dyn.read_radial_profiles (filename, backend="astropy") 
     fig = dyn.plot_alpha (df)
     fig = dyn.plot_eta (df)
 
   def testPlotMeridionalMap (self, tmp_dir) : 
     ii, time = 1, 1
-    filename = "{}/pfld.{}.t{}.A00".format (tmp_dir, str (ii).zfill (6), 
+    filename = "{}/pfld.{}.t{}.a00".format (tmp_dir, str (ii).zfill (6), 
                                             str (time).zfill (2))
     r, theta, mesh = dyn.read_field_map (filename)
     fig = dyn.plot_meridional_map (r, theta, mesh, label=r"$B_r$")

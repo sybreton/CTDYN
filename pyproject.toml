@@ -12,7 +12,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
-dependencies = ['numpy', 'matplotlib', 'pandas']
+dependencies = ['numpy', 'matplotlib', 'pandas', 'astropy']
 keywords = ["stellar physics", "solar-type stars", "stellar dynamo"]
 license = {file = "LICENSE"}
 
