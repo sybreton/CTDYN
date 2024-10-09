@@ -89,8 +89,8 @@ program main
   ! Entering the main loop calling the bisection
   ! for different set of rotation/circulation regimes
   open(newunit=fu, status='unknown', file=fileout)
-  write(fu, '(a)') "#  n, C_alpha, C_omega, C_meridional, omega_cycle, period, eta, beta, Etor, Epol"  
-  write(fu, '(a)') "#  --, (adim), (adim), (adim), (adim), (yr), (TODO), (TODO), (TODO), (TODO)"  
+  write(fu, '(a)') "#  n, C_alpha, C_omega, C_meridional, omega_cycle, period_cycle, eta, beta, Etor, Epol"  
+  write(fu, '(a)') "#  --, (adim), (adim), (adim), (adim), (yr), (cm^2/s), (-), (-), (-)"  
   do iome=0, nso
     co = cm_i + iome*(cm_f-cm_i)/(nso+1) 
     c_u = rm_i+rm_f*co**xm

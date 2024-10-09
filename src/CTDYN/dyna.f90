@@ -56,9 +56,8 @@ contains
     !  where h2 = hh/2
     !
     !  >> Additional definitions:
-    !  turb= c_alpha*c_omega
-    !  c_alpha = alpha_zero*sr/eta
-    !  c_omega = omega_zero*sr**2/eta
+    !  c_alpha = alpha_zero*sr/eta (= turb)
+    !  c_omega = omega_zero*sr**2/eta (= co)
     !
     !-------------------------------------------------------------
 
