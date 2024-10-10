@@ -13,6 +13,7 @@ CTDYN: the Catania dynamo code
    usage/installation/installation
    usage/quickstart/quickstart
    usage/namelist/namelist_description
+   usage/parallel_run/parallel_run
 
 .. toctree::
    :maxdepth: 1
