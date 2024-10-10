@@ -134,10 +134,11 @@ def read_field_map_text_file (filename, return_meshgrid=True) :
     return r, theta, mesh
 
 def plot_meridional_map (r, theta, mesh,
-                         figsize=(4,6), cmap="Blues_r",
+                         figsize=(4,6), cmap="seismic",
                          mode="contourf", contour=True,
                          contour_ls="-", colorbar=True, label=None,
-                         fill_outside=False, show_up_bounds=False) :
+                         fill_outside=False, show_up_bounds=False,
+                         vmin=None, vmax=None) :
     """
     Plot a meridional map computed by CTDYN.
 
@@ -156,7 +157,7 @@ def plot_meridional_map (r, theta, mesh,
       Figure size. Optional, default ``(4,6)``.
 
     cmap : str or Colormap
-      Color map. Optional, default ``Blues_r``.
+      Color map. Optional, default ``seismic``.
 
     mode : str
       Map representation mode, either ``contourf``
@@ -184,6 +185,12 @@ def plot_meridional_map (r, theta, mesh,
     show_up_bounds : bool
       If ``True``, show the upper limit of the plotted mesh.
       Optional, default ``False``.
+
+    vmin : float
+      Colormap minimal value. Optional, default ``None``.
+
+    vmax : float
+      Colormap maximal value. Optional, default ``None``.
 
     Returns
     -------
@@ -213,11 +220,24 @@ def plot_meridional_map (r, theta, mesh,
       mask = x**2+y**2 > 1
       mesh_m = mesh.copy()
       mesh_m[mask] = np.nan
+
+    if vmin is None or vmax is None :
+      # Getting min and max values
+      # If there are negative values in the mesh, we choose 
+      # it to be symetric to make it work fine with
+      # the colormap default choice that is ``seismic``.
+      if np.any (mesh < 0) :
+        vmax = np.amax (np.abs (mesh))
+        vmin = - vmax
+      else :
+        vmax = np.amax (mesh)
+        vmin = np.amin (mesh)
+    norm = matplotlib.colors.Normalize (vmin=vmin, vmax=vmax)
     
     if mode=="pcolormesh" :
-        im = ax.pcolormesh (x, y, mesh_m, cmap=cmap)
+        im = ax.pcolormesh (x, y, mesh_m, cmap=cmap, norm=norm)
     elif mode=="contourf" :
-        im = ax.contourf (x, y, mesh_m, cmap=cmap)
+        im = ax.contourf (x, y, mesh_m, cmap=cmap, norm=norm)
     else :
         raise Exception ("Accepted arguments for mode are 'pcolormesh' or 'contourf'")
     if contour :
@@ -303,9 +323,10 @@ def read_butterfly_diagram_text_file (filename, return_meshgrid=True) :
     return t, theta, mesh
 
 def plot_butterfly_diagram (t, theta, mesh,
-                            figsize=(7,4), cmap="Blues_r",
+                            figsize=(7,4), cmap="seismic",
                             mode="contourf", contour=True,
-                            colorbar=True, label=None) :
+                            colorbar=True, label=None,
+                            vmin=None, vmax=None) :
     """
     Plot a butterfly diagram.
 
@@ -324,7 +345,7 @@ def plot_butterfly_diagram (t, theta, mesh,
       Figure size. Optional, default ``(7,4)``.
 
     cmap : str or Colormap
-      Color map. Optional, default ``Blues_r``.
+      Color map. Optional, default ``seismic``.
 
     mode : str
       Map representation mode, either ``contourf``
@@ -341,7 +362,14 @@ def plot_butterfly_diagram (t, theta, mesh,
     label : str
       Colorbar label. Optional, default ``None``.
 
-    Returns :
+    vmin : float
+      Colormap minimal value. Optional, default ``None``.
+
+    vmax : float
+      Colormap maximal value. Optional, default ``None``.
+
+    Returns 
+    -------
     matplotlib.Figure
       The created figure.
     """
@@ -350,10 +378,23 @@ def plot_butterfly_diagram (t, theta, mesh,
     fig, ax = plt.subplots (1, 1, figsize=figsize)
     ax.set_yticks ([-60, -30, 0, 30, 60])
 
+    if vmin is None or vmax is None :
+      # Getting min and max values
+      # If there are negative values in the mesh, we choose 
+      # it to be symetric to make it work fine with
+      # the colormap default choice that is ``seismic``.
+      if np.any (mesh < 0) :
+        vmax = np.amax (np.abs (mesh))
+        vmin = - vmax
+      else :
+        vmax = np.amax (mesh)
+        vmin = np.amin (mesh)
+    norm = matplotlib.colors.Normalize (vmin=vmin, vmax=vmax)
+
     if mode=="pcolormesh" :
-        im = ax.pcolormesh (t, lat, mesh, cmap=cmap)
+        im = ax.pcolormesh (t, lat, mesh, cmap=cmap, norm=norm)
     elif mode=="contourf" :
-        im = ax.contourf (t, lat, mesh, cmap=cmap)
+        im = ax.contourf (t, lat, mesh, cmap=cmap, norm=norm)
     else :
         raise Exception ("Accepted arguments for mode are 'pcolormesh' or 'contourf'")
     if contour :
