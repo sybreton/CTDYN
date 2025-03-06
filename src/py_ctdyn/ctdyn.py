@@ -216,6 +216,7 @@ def set_default_inlist (parameters=None) :
     parameters = {}
   # Initialising subdictionaries if not provided
   parameters.setdefault ("global", {})
+  parameters.setdefault ("grid", {})
   parameters.setdefault ("profiles", {})
   parameters.setdefault ("brent", {})
   parameters.setdefault ("boundaries", {})
@@ -225,6 +226,7 @@ def set_default_inlist (parameters=None) :
   parameters.setdefault ("controls", {})
   # Creating variable for dictionaries
   global_dict = parameters["global"]
+  grid_dict = parameters["grid"]
   profiles = parameters["profiles"]
   brent = parameters["brent"]
   boundaries = parameters["boundaries"]

@@ -2,8 +2,6 @@ module dyna
 
     use kind_parameters
     use cio
-    use cvect
-    use ccov
     use b2func
     use b3func
     use b4func

@@ -11,19 +11,89 @@ module cio
   implicit none
   public
 
-  integer, parameter :: np = 50    ! mesh points
-  integer, parameter :: na = 49    ! na = 1,3,5,... radial order in an and an
-  integer, parameter :: nb = na+1  ! nb = 2,4,6,... radial order in bn and bn
-  integer, parameter :: nt = nb*np ! matrix dimension 
-  
   integer, parameter :: lwork   = 540000
   integer, parameter :: nueg    = 8
-  integer, parameter :: n_theta = 301
   integer, parameter :: n_time  = 300
 
+  ! Some constants
   real(dp), parameter :: pi   = 3.14159265359d0 
   real(dp), parameter :: sr0  = 6.955e10  ! solar radius (cm)
   real(dp), parameter :: nueq = 460.7e-9 ! solar rotation frequency (s^-1)
+
+  ! Angular parameter for outputs
+  real, parameter :: theta1 = 0.
+  real, parameter :: theta2 = 3.1415926
+  real :: dt
+
+  ! Arrays that will need to be allocated
+  integer, allocatable :: indeg(:)     ! index the eigenvalues      
+  real(dp), allocatable :: inde(:)     ! index the eigenvalues      
+  real(dp), allocatable :: vr(:,:)
+  complex(dp), allocatable :: cvr(:,:)
+  complex(dp), allocatable :: ww(:)
+  real(dp), allocatable :: wr(:), wi(:)  ! eigenvalues
+
+  complex(dp), allocatable :: ala(:,:)              ! alpha and gamma
+  complex(dp), allocatable :: gaa(:,:)
+  complex(dp), allocatable :: bea(:,:)              ! array n-dep beta 
+  complex(dp), allocatable :: alb(:,:)              ! alpha and gamma
+  complex(dp), allocatable :: gab(:,:)
+  complex(dp), allocatable :: beb(:,:)               ! array n-dep beta 
+
+  complex(dp), allocatable :: fanp2(:,:)
+  complex(dp), allocatable :: fanm2(:,:)
+  complex(dp), allocatable :: fanp2p(:,:)
+  complex(dp), allocatable :: fanm2p(:,:)
+  complex(dp), allocatable :: fbnp2(:,:)
+  complex(dp), allocatable :: fbnm2(:,:)
+  complex(dp), allocatable :: fbnp2p(:,:)
+  complex(dp), allocatable :: fbnm2p(:,:)
+
+  complex(dp), allocatable :: fanp4(:,:)
+  complex(dp), allocatable :: fanm4(:,:)
+  complex(dp), allocatable :: fanp4p(:,:)
+  complex(dp), allocatable :: fanm4p(:,:)
+  complex(dp), allocatable :: fbnp4(:,:)
+  complex(dp), allocatable :: fbnm4(:,:)
+  complex(dp), allocatable :: fbnp4p(:,:)
+  complex(dp), allocatable :: fbnm4p(:,:)
+
+  complex(dp), allocatable :: fanp6(:,:)
+  complex(dp), allocatable :: fanm6(:,:)
+  complex(dp), allocatable :: fanp6p(:,:)
+  complex(dp), allocatable :: fanm6p(:,:)
+  complex(dp), allocatable :: fbnp6(:,:)
+  complex(dp), allocatable :: fbnm6(:,:)
+  complex(dp), allocatable :: fbnp6p(:,:)
+  complex(dp), allocatable :: fbnm6p(:,:)
+
+  complex(dp), allocatable :: omep1(:,:)
+  complex(dp), allocatable :: omem1(:,:)
+  complex(dp), allocatable :: omep1p(:,:)
+  complex(dp), allocatable :: omem1p(:,:)
+  complex(dp), allocatable :: omep3(:,:)
+  complex(dp), allocatable :: omem3(:,:)
+  complex(dp), allocatable :: omep3p(:,:)
+  complex(dp), allocatable :: omem3p(:,:)
+  complex(dp), allocatable :: omep5(:,:)
+  complex(dp), allocatable :: omem5(:,:)
+  complex(dp), allocatable :: omep5p(:,:)
+  complex(dp), allocatable :: omem5p(:,:)
+
+  complex(dp), allocatable :: alqm1(:,:)
+  complex(dp), allocatable :: alqp1(:,:)
+  complex(dp), allocatable :: gaqm1(:,:)
+  complex(dp), allocatable :: gaqp1(:,:)
+  complex(dp), allocatable :: beqm1(:,:)
+  complex(dp), allocatable :: beqp1(:,:)
+
+  complex(dp), allocatable :: alqm3(:,:)
+  complex(dp), allocatable :: alqp3(:,:)
+  complex(dp), allocatable :: gaqm3(:,:)
+  complex(dp), allocatable :: gaqp3(:,:)
+  complex(dp), allocatable :: beqm3(:,:)
+  complex(dp), allocatable :: beqp3(:,:)
+  
 
   !-------------------------------------------
   !-------------------------------------------
@@ -33,6 +103,17 @@ module cio
   !> global
   !-------------------------------------------
   real(dp) :: sr, rotp
+
+  !-------------------------------------------
+  !> grid
+  !-------------------------------------------
+  integer :: np    ! mesh points
+  integer :: na    ! na = 1,3,5,... radial order in an
+  integer :: n_theta
+  ! nb and nt are not actually in the namelist but depend on 
+  ! np and na
+  integer :: nb ! nb = 2,4,6,... radial order in bn
+  integer :: nt ! matrix dimension 
  
   !-------------------------------------------
   !> profiles
@@ -95,6 +176,8 @@ module cio
 
   namelist /global/ sr, rotp
 
+  namelist /grid/ np, n_theta, na 
+
   namelist /profiles/ regime, s0, s2, s4, s6, &
                       a2p, a4p, xa1, xa2, xda1, &
                       xda2, xb, gd, edr, xe1, xde1, &
@@ -126,6 +209,13 @@ contains
     !-------------------------------------------
     sr = 1. 
     rotp = 1.
+
+    !-------------------------------------------
+    !> grid
+    !-------------------------------------------
+    np = 50 
+    na = 49
+    n_theta = 301
    
     !-------------------------------------------
     !> profiles
@@ -206,7 +296,8 @@ contains
     !> Read namelists variables provided in input file.
     !> Namelist variables are declared in cio.f90 and
     !> are therefore accessible to any module that import
-    !> it.
+    !> it. Array depending on grid parameters are also
+    !> allocated at this step.
     character(len=128) :: inlist
 
     integer :: fu
@@ -216,6 +307,9 @@ contains
     ! Open and close to read in any order
     open(newunit=fu, file=inlist, status="old", action="read")
     read(unit=fu, nml=global)
+    close(fu)
+    open(newunit=fu, file=inlist, status="old", action="read")
+    read(unit=fu, nml=grid)
     close(fu)
     open(newunit=fu, file=inlist, status="old", action="read")
     read(unit=fu, nml=profiles)
@@ -239,6 +333,80 @@ contains
     read(unit=fu, nml=controls)
     close(fu)
 
+    ! We need to initialise the final grid parameters
+    nb = na+1  ! nb = 2,4,6,... radial order in bn and bn
+    nt = nb*np ! matrix dimension 
+    dt = (theta2 -  theta1) / n_theta
+    ! Arrays are then allocated
+    allocate (indeg(nt))
+    allocate (inde(nt))
+    allocate (vr(nt, nt))
+    allocate (cvr(nt, nt))
+    allocate (ww(nt))
+    allocate (wr(nt))
+    allocate (wi(nt))
+
+    allocate(ala(np,nb)) ! alpha and gamma
+    allocate(gaa(np,nb))
+    allocate(bea(np,nb)) ! array n-dep beta 
+    allocate(alb(np,nb)) ! alpha and gamma
+    allocate(gab(np,nb))
+    allocate(beb(np,nb)) ! array n-dep beta 
+
+    allocate(fanp2(np, nb))
+    allocate(fanm2(np, nb))
+    allocate(fanp2p(np,nb))
+    allocate(fanm2p(np,nb))
+    allocate(fbnp2(np, nb))
+    allocate(fbnm2(np, nb))
+    allocate(fbnp2p(np,nb))
+    allocate(fbnm2p(np,nb))
+
+    allocate(fanp4(np, nb))
+    allocate(fanm4(np, nb))
+    allocate(fanp4p(np,nb))
+    allocate(fanm4p(np,nb))
+    allocate(fbnp4(np, nb))
+    allocate(fbnm4(np, nb))
+    allocate(fbnp4p(np,nb))
+    allocate(fbnm4p(np,nb))
+
+    allocate(fanp6(np, nb))
+    allocate(fanm6(np, nb))
+    allocate(fanp6p(np,nb))
+    allocate(fanm6p(np,nb))
+    allocate(fbnp6(np, nb))
+    allocate(fbnm6(np, nb))
+    allocate(fbnp6p(np,nb))
+    allocate(fbnm6p(np,nb))
+
+    allocate(omep1(np, nb))
+    allocate(omem1(np, nb))
+    allocate(omep1p(np,nb))
+    allocate(omem1p(np,nb))
+    allocate(omep3(np, nb))
+    allocate(omem3(np, nb))
+    allocate(omep3p(np,nb))
+    allocate(omem3p(np,nb))
+    allocate(omep5(np, nb))
+    allocate(omem5(np, nb))
+    allocate(omep5p(np,nb))
+    allocate(omem5p(np,nb))
+
+    allocate(alqm1(np,nb))
+    allocate(alqp1(np,nb))
+    allocate(gaqm1(np,nb))
+    allocate(gaqp1(np,nb))
+    allocate(beqm1(np,nb))
+    allocate(beqp1(np,nb))
+
+    allocate(alqm3(np,nb))
+    allocate(alqp3(np,nb))
+    allocate(gaqm3(np,nb))
+    allocate(gaqp3(np,nb))
+    allocate(beqm3(np,nb))
+    allocate(beqp3(np,nb))
+
   end subroutine
   
   subroutine write_namelist (inlist)
@@ -254,6 +422,7 @@ contains
     open(newunit=fu, file=inlist, status="replace", & 
          action="write")
     write(unit=fu, nml=global, delim="quote")
+    write(unit=fu, nml=grid, delim="quote")
     write(unit=fu, nml=profiles, delim="quote")
     write(unit=fu, nml=brent, delim="quote")
     write(unit=fu, nml=boundaries, delim="quote")

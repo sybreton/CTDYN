@@ -30,7 +30,6 @@ module write_outputs
 
   use kind_parameters
   use cio
-  use ccov
   use cdfunc
   use bessel
   use util
@@ -46,11 +45,6 @@ module write_outputs
   character(*), parameter :: fmt_2010 = "(a220,i6.6,a2,i2.2)" 
   character(*), parameter :: fmt_2011 = "(a220,i6.6,a2,i2.2,a2,i2.2)" 
   integer, parameter :: nft=200   
-
-  real, parameter :: theta1 = 0.
-  real, parameter :: theta2 = 3.1415926
-  real, parameter :: dt = (theta2 -  theta1) / n_theta
-
   integer :: mm 
 
 contains 
