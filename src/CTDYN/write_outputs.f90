@@ -188,10 +188,11 @@ contains
       vc(np+2,k2,1) = (4*vc(np+1,k2,1)-vc(np,k2,1))/(2*hh*(k2+1+ffc)+3)
       vc(np+2,k2,2) = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)
       do j=2, np+2+nf
-        x = x1+(j-1)*hh
-        aar = vc(j, k2, 1)
-        aai = vc(j, k2, 2)
-        if (j.ge.(np+2)) then
+        if (j.lt.(np+2)) then
+          aar = vc(j, k2, 1)
+          aai = vc(j, k2, 2)
+        else if (j.ge.(np+2)) then
+          x = x1+(j-1)*hh
           if (beta .ne. 0) then
             xnu=1.0*k2+1/2.
             call bessjy(x*beta,xnu,rj,ry,rjp,ryp)
@@ -215,10 +216,11 @@ contains
          vc(np+2,k2,2) = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)
       endif
       do j=2, np+2+nf
-        x = x1+(j-1)*hh
-        bbr = vc(j, k2, 1)
-        bbi = vc(j, k2, 2)
-        if (j.ge.(np+2)) then
+        if (j.lt.(np+2)) then
+          bbr = vc(j, k2, 1)
+          bbi = vc(j, k2, 2)
+        else if (j.ge.(np+2)) then
+          x = x1+(j-1)*hh
           if (beta .ne. 0) then
             xnu=1.0*k2+1/2.
             call bessjy(x*betb, xnu,rj, ry, rjp, ryp)

@@ -140,9 +140,12 @@ contains
     if (degree.eq.'q' .and. mmm.eq.0) write(*,*) '********** s0-mode *********'
     if (degree.eq.'q' .and. mmm.ne.0) write(*,*) '********** a1-mode *********'
     
-    write(*,'(a,i4.1,3x,a,i4.1,3x,a,i4.1)') 'it =', it,'na =', nb, 'np =', np
-    write(*,'(a,e12.5,a,e12.5)' ) ' C_alpha =', turb, ' C_omega =', co 
-    write(*,'(a,e12.5,a,e12.5)' ) ' r_flow  =', c_u,  ' f-f =    ', beta 
+    write(*,'(a,i4.1,3x, a,i4.1,3x, a,i4.1)') 'it =', it,'na =', na, 'np =', np
+    write (*,*) nt, np, na, nb
+    write (*,*) ' C_alpha =', turb, ' C_omega =', co
+    write(*,*) ' r_flow  =', c_u,  ' f-f =    ', beta 
+    !write(*,'(a,e12.5,a,e12.5)' ) ' C_alpha =', turb, ' C_omega =', co 
+    !write(*,'(a,e12.5,a,e12.5)' ) ' r_flow  =', c_u,  ' f-f =    ', beta 
     
     
     !
@@ -1169,12 +1172,11 @@ contains
     imag = wi(int(indeg(nt)))
     
     do i=1, nb
-      k = 0          
+      k = -1          
       do j=i,nt,nb
         k = k+1   
         egr(k+1, i) = vr(j, indeg(nt))
         egi(k+1, i) = vr(j, indeg(nt-1)) 
-        k = k+ 1
       enddo
     enddo
     
