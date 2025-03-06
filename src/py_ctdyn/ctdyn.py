@@ -1,6 +1,7 @@
 import py_ctdyn
 import os, re, subprocess
 import importlib.resources
+from pathlib import Path
 
 def get_ctdyn_dir () :
   """
@@ -240,4 +241,32 @@ def set_default_inlist (parameters=None) :
 
   return parameters
 
+def parse_input_file (filename) :
+    """
+    Parse a CTDYN input file and return a 
+    ``parameters`` dictionary as used as input
+    by the ``py_ctdyn`` interface.
+
+    Returns
+    -------
+    A dictionary of dictionaries that can be passed
+    as the ``parameters`` input to ``py_ctdyn``
+    functions.
+    """
+    with open (Path (filename), "r") as f :
+        lines = [line.rstrip () for line in f]
+    parameters = dict ()
+    for line in lines :
+        # Splitting to isolate the commented sections
+        split = re.split (r"!", line)
+        # Checking that it is not an empty line
+        elt = re.findall (r"\S+", split[0])
+        if len (elt)>0 and elt[0]!="/" :
+            if "&" in elt[0] :
+                key = re.findall(r"[^&]+", elt[0])[0]
+                # Initialising the empty sub-dictionary
+                parameters[key] = dict ()
+            else :
+                parameters[key][elt[0]] = elt[2]   
+    return parameters
 

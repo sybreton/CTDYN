@@ -8,7 +8,8 @@ from .ctdyn import (get_ctdyn_dir,
                     run_ctdyn,
                     set_default_inlist,
                     make_inlist,
-                    load_inlist_template)
+                    load_inlist_template,
+                    parse_input_file)
 
 from .outputs import (read_summary_file,
                       read_field_map, 
