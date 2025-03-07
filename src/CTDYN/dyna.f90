@@ -141,11 +141,8 @@ contains
     if (degree.eq.'q' .and. mmm.ne.0) write(*,*) '********** a1-mode *********'
     
     write(*,'(a,i4.1,3x, a,i4.1,3x, a,i4.1)') 'it =', it,'na =', na, 'np =', np
-    write (*,*) nt, np, na, nb
-    write (*,*) ' C_alpha =', turb, ' C_omega =', co
-    write(*,*) ' r_flow  =', c_u,  ' f-f =    ', beta 
-    !write(*,'(a,e12.5,a,e12.5)' ) ' C_alpha =', turb, ' C_omega =', co 
-    !write(*,'(a,e12.5,a,e12.5)' ) ' r_flow  =', c_u,  ' f-f =    ', beta 
+    write(*,'(a,e12.5,a,e12.5)' ) ' C_alpha =', turb, ' C_omega =', co 
+    write(*,'(a,e12.5,a,e12.5)' ) ' r_flow  =', c_u,  ' f-f =    ', beta 
     
     
     !
