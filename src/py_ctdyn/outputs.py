@@ -133,12 +133,12 @@ def read_field_map_text_file (filename, return_meshgrid=True) :
     mesh = mesh.reshape (n_theta, n_r)
     return r, theta, mesh
 
-def plot_meridional_map (r, theta, mesh,
+def plot_meridional_map (r, theta, mesh, ax=None,
                          figsize=(4,6), cmap="seismic",
                          mode="contourf", contour=True,
-                         contour_ls="-", colorbar=True, label=None,
+                         colorbar=True, label=None,
                          fill_outside=False, show_up_bounds=False,
-                         vmin=None, vmax=None) :
+                         vmin=None, vmax=None, **kwargs) :
     """
     Plot a meridional map computed by CTDYN.
 
@@ -149,6 +149,10 @@ def plot_meridional_map (r, theta, mesh,
 
     theta : ndarray
       2d meshgrid with colatitude. 
+
+    ax : matplotlib.axes
+      Axes on which to draw the figure. If not provided,
+      a new figure will be created. Optional, default ``None``.
 
     mesh : ndarray
       2d meshgrid of the quantity to plot on the map.
@@ -166,9 +170,6 @@ def plot_meridional_map (r, theta, mesh,
     contour : bool
       Set to ``True`` to represent additional contours
       on the map. Optional, default ``True``.
-
-    contour_ls : str
-      Contour linestyle. Optional, default ``"-"``.
 
     colorbar : bool
       Set to ``True`` to include the colorbar in the figure.
@@ -200,7 +201,10 @@ def plot_meridional_map (r, theta, mesh,
     x = r * np.sin (theta)
     y = r * np.cos (theta)
     
-    fig, ax = plt.subplots (1, 1, figsize=figsize)
+    if ax is None :
+      fig, ax = plt.subplots (1, 1, figsize=figsize)
+    else : 
+      fig = ax.get_figure ()
     
     # Drawing boundaries of the slice
     ax.plot (x[:,0], y[:,0], color="black", lw=1, 
@@ -235,14 +239,20 @@ def plot_meridional_map (r, theta, mesh,
     norm = matplotlib.colors.Normalize (vmin=vmin, vmax=vmax)
     
     if mode=="pcolormesh" :
-        im = ax.pcolormesh (x, y, mesh_m, cmap=cmap, norm=norm)
+        im = ax.pcolormesh (x, y, mesh_m, cmap=cmap, norm=norm,
+                            **kwargs)
     elif mode=="contourf" :
-        im = ax.contourf (x, y, mesh_m, cmap=cmap, norm=norm)
+        # Avoid a conflict with cmap
+        kwargs_contourf = kwargs.copy ()
+        kwargs_contourf.pop ("colors", None)  
+        im = ax.contourf (x, y, mesh_m, cmap=cmap, norm=norm,
+                          **kwargs_contourf)
     else :
         raise Exception ("Accepted arguments for mode are 'pcolormesh' or 'contourf'")
     if contour :
-        ax.contour (x, y, mesh, colors="darkgrey", 
-                    linestyles=contour_ls)
+        kwargs.setdefault ("colors", "darkgrey")
+        kwargs.setdefault ("linestyles", "-")
+        ax.contour (x, y, mesh, **kwargs)
     if colorbar :
         cbar = plt.colorbar (im, shrink=0.5)
         if label is not None :
@@ -322,11 +332,11 @@ def read_butterfly_diagram_text_file (filename, return_meshgrid=True) :
         t, theta = np.meshgrid (t, theta)
     return t, theta, mesh
 
-def plot_butterfly_diagram (t, theta, mesh,
+def plot_butterfly_diagram (t, theta, mesh, ax=None,
                             figsize=(7,4), cmap="seismic",
                             mode="contourf", contour=True,
                             colorbar=True, label=None,
-                            vmin=None, vmax=None) :
+                            vmin=None, vmax=None, **kwargs) :
     """
     Plot a butterfly diagram.
 
@@ -340,6 +350,10 @@ def plot_butterfly_diagram (t, theta, mesh,
 
     mesh : ndarray
       2d meshgrid of the quantity to plot on the map.
+
+    ax : matplotlib.axes
+      Axes on which to draw the figure. If not provided,
+      a new figure will be created. Optional, default ``None``.
 
     figsize : tuple
       Figure size. Optional, default ``(7,4)``.
@@ -375,7 +389,10 @@ def plot_butterfly_diagram (t, theta, mesh,
     """
     lat = 90 - theta/np.pi*180 
     
-    fig, ax = plt.subplots (1, 1, figsize=figsize)
+    if ax is None :
+      fig, ax = plt.subplots (1, 1, figsize=figsize)
+    else : 
+      fig = ax.get_figure ()
     ax.set_yticks ([-60, -30, 0, 30, 60])
 
     if vmin is None or vmax is None :
@@ -392,14 +409,20 @@ def plot_butterfly_diagram (t, theta, mesh,
     norm = matplotlib.colors.Normalize (vmin=vmin, vmax=vmax)
 
     if mode=="pcolormesh" :
-        im = ax.pcolormesh (t, lat, mesh, cmap=cmap, norm=norm)
+        im = ax.pcolormesh (t, lat, mesh, cmap=cmap, norm=norm,
+                            **kwargs)
     elif mode=="contourf" :
-        im = ax.contourf (t, lat, mesh, cmap=cmap, norm=norm)
+        # Avoid a conflict with cmap
+        kwargs_contourf = kwargs.copy ()
+        kwargs_contourf.pop ("colors", None)  
+        im = ax.contourf (t, lat, mesh, cmap=cmap, norm=norm,
+                          **kwargs_contourf)
     else :
         raise Exception ("Accepted arguments for mode are 'pcolormesh' or 'contourf'")
     if contour :
-        ax.contour (t, lat, mesh, colors="darkgrey",
-                    linestyles="--")
+        kwargs.setdefault ("colors", "darkgrey")
+        kwargs.setdefault ("linestyles", "--")
+        ax.contour (t, lat, mesh, **kwargs)
     if colorbar :
         cbar = plt.colorbar (im, shrink=0.8)
         if label is not None :
