@@ -21,9 +21,9 @@ module cio
   real(dp), parameter :: nueq = 460.7e-9 ! solar rotation frequency (s^-1)
 
   ! Angular parameter for outputs
-  real, parameter :: theta1 = 0.
-  real, parameter :: theta2 = 3.1415926
-  real :: dt
+  real(dp), parameter :: theta1 = 0.d0
+  real(dp), parameter :: theta2 = 3.1415926d0
+  real(dp) :: dt
 
   ! Arrays that will need to be allocated
   integer, allocatable :: indeg(:)     ! index the eigenvalues      
@@ -207,8 +207,8 @@ contains
     !-------------------------------------------
     !> global
     !-------------------------------------------
-    sr = 1. 
-    rotp = 1.
+    sr = 1.d0 
+    rotp = 1.d0
 
     !-------------------------------------------
     !> grid

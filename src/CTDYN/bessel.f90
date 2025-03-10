@@ -269,8 +269,8 @@ contains
          &-1.702d-13,-1.49d-15/
   
     xx=8.d0*x*x-1.d0
-    gam1=chebev(-1.,1.,c1,nuse1,xx)
-    gam2=chebev(-1.,1.,c2,nuse2,xx)
+    gam1=chebev(-1.d0,1.d0,c1,nuse1,xx)
+    gam2=chebev(-1.d0,1.d0,c2,nuse2,xx)
     gampl=gam2-x*gam1
     gammi=gam2+x*gam1
     return

@@ -420,7 +420,6 @@ contains
 
 
     ! local arguments
-    real(dp), parameter :: t_in = 0.
     real(dp), parameter :: t_fin = 12.
     real(dp) :: time, ratio, theta
     real(dp) :: x
@@ -575,8 +574,7 @@ contains
 
 
     ! local arguments
-    real, parameter :: t_in = 0.
-    real, parameter :: t_fin = 12.
+    real(dp), parameter :: t_fin = 12.
     real(dp) :: ang(n_theta)
     real(dp) :: time, theta, zq1, zq2
     real(dp) :: x, rnor, cja
@@ -588,8 +586,8 @@ contains
             aptjp, dbtheta, datheta, dbtheta2, &
             datheta2, dax, dbx, dax2, chels, cheln
     integer, parameter :: nag=2
-    real, parameter :: abt=1.047
-    real, parameter :: abm=2.094
+    real(dp), parameter :: abt=1.047d0
+    real(dp), parameter :: abm=2.094d0
     
     bax=maxloc(abs(apr))
     bin=minloc(abs(apr))
@@ -618,8 +616,8 @@ contains
       ang(k2) = theta
     enddo
   
-    kb = hunt (ang,n_theta, abt)
-    km = hunt (ang,n_theta, abm)
+    kb = hunt (ang, n_theta, abt)
+    km = hunt (ang, n_theta, abm)
   
     time = -t_fin/n_time
     do k1=1, n_time
