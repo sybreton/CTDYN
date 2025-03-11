@@ -22,7 +22,7 @@ such as [MESA](https://docs.mesastar.org/) or [GYRE](https://gyre.readthedocs.io
 Before installing CTDYN, you will need to set the `CTDYN_DIR` environment variable
 in your local profile
 
-`$ export CTDYN_DIR="\[CTDYN_repository\]"`  
+`$ export CTDYN_DIR="[CTDYN_repository]"`  
 
 The next step is to run the installation script to compile the Fortran source code
 
