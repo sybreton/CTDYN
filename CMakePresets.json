@@ -1,0 +1,41 @@
+{
+    "version": 5,
+    "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 24,
+    "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "base",
+            "displayName": "Base config",
+            "generator": "Unix Makefiles",
+            "environment": {
+                "FFLAGS": "-fdefault-double-8 -fdefault-real-8" 
+            },
+            "cacheVariables": {
+                "CMAKE_Fortran_FLAGS": "$env{FFLAGS}"
+            }
+        },
+        {
+            "name": "debug",
+            "displayName": "Debug",
+            "inherits": "base",
+            "generator": "Unix Makefiles",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_Fortran_FLAGS": "-O2 -fcheck=all -fbacktrace $env{FFLAGS}"
+            }
+        },
+        {
+            "name": "release",
+            "displayName": "Release",
+            "inherits": "base",
+            "generator": "Unix Makefiles",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+	        "CMAKE_Fortran_FLAGS": "-O3 $env{FFLAGS}"
+            }
+        }
+    ]
+}
