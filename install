@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+echo "Installing CTDYN..."
+
+if [ -z "$CTDYN_DIR" ]
+then
+	echo
+	echo "****************************************************************"
+	echo "*                                                              *"
+	echo "*                      CTDYN_DIR is not set                    *"
+	echo "*            Please set CTDYN_DIR and run ./install            *"
+	echo "*                                                              *"
+	echo "****************************************************************"
+	echo
+	exit 1
+fi
+
+# Creating the binary directory
+BINARY_DIR="bin"
+if [ ! -d $BINARY_DIR ]
+then
+	mkdir $BINARY_DIR
+fi
+
+cd $BINARY_DIR
+EXECUTABLE="ctdyn"
+
+# Cleaning any existing executable
+if [ -f $EXECUTABLE ]
+then
+	rm $EXECUTABLE
+        echo "Found and deleted existing executable."
+fi
+
+# Setting and checking build options
+if [ "$1" = "" ]
+then
+	BUILD_OPTION="release"
+else 
+	BUILD_OPTION=$1
+fi
+
+if [ $BUILD_OPTION = "release" ]
+then
+	echo "Building release executable."
+elif [ $BUILD_OPTION = "debug" ]
+then
+	echo "Building debug executable."
+else 
+	echo "*****************************************************************************"
+	echo ""
+	echo "     Unknown build option, available options are \"release\" and \"debug\""
+	echo ""
+	echo "*****************************************************************************"
+        exit 1
+fi
+
+# Running cmake
+cmake --preset $BUILD_OPTION ..
+# Compiling 
+make
+
+if [ -f $EXECUTABLE ]
+then
+	echo "Executable ctdyn built and created in ${CTDYN_DIR}/${BINARY_DIR}."
+else 
+	echo "*****************************************************************************"
+	echo ""
+	echo "  Something went wrong, executable not found in ${CTDYN_DIR}/${BINARY_DIR}."
+	echo ""
+	echo "*****************************************************************************"
+        exit 1
+fi
+
+cd $CTDYN_DIR 
+
+echo "************************************************"
+echo
+echo 'CTDYN installation was successful'
+echo
+echo "************************************************"
