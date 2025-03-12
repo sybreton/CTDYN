@@ -10,7 +10,7 @@ class TestUnitary :
 
   @pytest.fixture(scope="class")
   def namelists (self) :
-    return ["&global", "&profiles", "&brent",
+    return ["&global", "&grid", "&profiles", "&brent",
             "&boundaries", "&fields", "&physics",
             "&outputs", "&controls"]
 
