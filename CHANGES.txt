@@ -1,0 +1,7 @@
+Version 0.2
+- Old Makefile was removed and a cmake configuration combined 
+  with an installation script was provided. 
+
+Version 0.1
+2025-11-03
+- Initial version.
