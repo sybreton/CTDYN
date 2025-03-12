@@ -1,6 +1,6 @@
 [project]
 name = "py_ctdyn"
-version = "0.1"
+version = "0.2"
 authors = [
   { name="Sylvain N. Breton", email="sylvain.breton@inaf.it" },
   { name="Alfio Bonanno", email="alfio.bonanno@inaf.it" },
