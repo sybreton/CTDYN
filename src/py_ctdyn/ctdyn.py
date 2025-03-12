@@ -249,9 +249,10 @@ def parse_input_file (filename) :
 
     Returns
     -------
-    A dictionary of dictionaries that can be passed
-    as the ``parameters`` input to ``py_ctdyn``
-    functions.
+    dict 
+      A dictionary of dictionaries that can be passed
+      as the ``parameters`` input to ``py_ctdyn``
+      functions.
     """
     with open (Path (filename), "r") as f :
         lines = [line.rstrip () for line in f]
