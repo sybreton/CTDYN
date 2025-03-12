@@ -37,10 +37,10 @@ jobs:
           python ./.github/workflows/create_json.py 
           --filename "switcher.json"
           --url "https://ctdyn.netlify.app" 
-          --branches main dev 
+          --branches main dev v0.1 
 
       - name: Sphinx build latest 
-        uses: sybreton/version_sphinx_build@v0.2.0
+        uses: sybreton/version_sphinx_build@v0.3.0
         with:
           ref: dev
           outdir: latest
@@ -53,10 +53,18 @@ jobs:
           cat _build/latest/_static/switcher.json
 
       - name: Sphinx build main 
-        uses: sybreton/version_sphinx_build@v0.2.0
+        uses: sybreton/version_sphinx_build@v0.3.0
         with:
           ref: main
           outdir: main
+          json_url: ${{ env.JSON_URL }}
+          github_repo: ${{ env.GITHUB_REPO }}
+
+      - name: Sphinx build v0.1 
+        uses: sybreton/version_sphinx_build@v0.3.0
+        with:
+          ref: v0.1
+          outdir: v0.1
           json_url: ${{ env.JSON_URL }}
           github_repo: ${{ env.GITHUB_REPO }}
 
