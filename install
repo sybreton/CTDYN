@@ -57,7 +57,8 @@ fi
 
 # Running cmake
 cmake --preset $BUILD_OPTION ..
-# Compiling 
+# Cleaning possible previous attempts and compiling 
+make clean
 make
 
 if [ -f $EXECUTABLE ]
