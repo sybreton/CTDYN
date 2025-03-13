@@ -15,19 +15,15 @@ a dedicated interface for running CTDYN and analysing its output.
 For now the source code is hosted on a private `GitHub repository <https://github.com/sybreton/CTDYN>`_. 
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: User guide:
 
-   usage/installation/installation
-   usage/quickstart/quickstart
-   usage/namelist/namelist_description
-   usage/parallel_run/parallel_run
+   usage/user_guide/index
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Detailed API:
 
-   usage/api/interface.rst
-   usage/api/visualisation.rst
+   usage/api/index
 
 

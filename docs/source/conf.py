@@ -50,22 +50,12 @@ html_theme = "pydata_sphinx_theme"
 html_title = "CTDYN"
 html_logo = "logo.png"
 
-json_url = "https://ctdyn.netlify.app/latest/_static/switcher.json"
-
 html_context = {"github_repo":"https://github.com/sybreton/CTDYN"}
 html_theme_options = dict ()
 html_theme_options["navbar_start"] = ["navbar-logo", 
                                       "version-switcher"]
 html_theme_options["navbar_end"] = ["navbar-icon-links"] 
-
-current_version = __version__
-# Dev branch set to be the latest 
-if current_version=="dev" :
-  current_version = "latest"
-html_theme_options["switcher"] = {"json_url":json_url, 
-                                  "version_match":current_version}
-
-html_theme_options["check_switcher"] = False
+html_theme_options["show_nav_level"] = 3 
 
 html_sidebars = {
     "**": ["sidebar-nav-bs", "sidebar-ethical-ads"]
