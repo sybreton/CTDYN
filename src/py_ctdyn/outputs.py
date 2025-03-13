@@ -428,7 +428,7 @@ def plot_butterfly_diagram (t, theta, mesh, ax=None,
         if label is not None :
             cbar.set_label (label)
 
-    ax.set_xlabel ("Time (year)")
+    ax.set_xlabel ("r$\omega t$")
     ax.set_ylabel (r"Latitude ($\rm ^o$)")
     
     return fig
@@ -513,7 +513,8 @@ def plot_alpha (df, figsize=(5,8),
     if xlabel is None :
         xlabel = r"$r$ ($R_\star$)"
     if ylabels is None :
-        ylabels = (r"$\alpha$", r"$\alpha_p$")
+        ylabels = (r"$\alpha$", 
+                   r"$\mathrm{d} \alpha / \mathrm{d}x$") 
     fig, (ax1, ax2) = plt.subplots (2, 1, figsize=figsize)
     ax2.set_xlabel (xlabel)
     ax1.set_ylabel (ylabels[0])
