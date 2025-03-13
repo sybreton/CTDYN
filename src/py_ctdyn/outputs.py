@@ -428,7 +428,7 @@ def plot_butterfly_diagram (t, theta, mesh, ax=None,
         if label is not None :
             cbar.set_label (label)
 
-    ax.set_xlabel ("r$\omega t$")
+    ax.set_xlabel (r"$\omega t$")
     ax.set_ylabel (r"Latitude ($\rm ^o$)")
     
     return fig

@@ -119,7 +119,7 @@ Finally the adimensioned frequency of the cycle (``omega_cycle``),
 .. raw:: html
 
     <div><i>Table length=1</i>
-    <table id="table5082049616" class="table-striped table-bordered table-condensed">
+    <table id="table5250116496" class="table-striped table-bordered table-condensed">
     <thead><tr><th>n</th><th>C_alpha</th><th>C_omega</th><th>C_meridional</th><th>omega_cycle</th><th>period_cycle</th><th>eta</th><th>beta</th><th>Etor</th><th>Epol</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
     <tr><td>1.0</td><td>8.4583</td><td>1000.0</td><td>17.867</td><td>21.569</td><td>3.1912</td><td>14002000000000.0</td><td>0.0</td><td>0.0</td><td>0.0</td></tr>
