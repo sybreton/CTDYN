@@ -9,10 +9,10 @@ global
 -------
 
 sr : real      
-  Stellar radius in solar units. Default ``1.``.
+  Stellar radius in solar units. Default ``1.d0``.
 
 rotp : real    
-  Rotation period, in solar units. Default ``1.``.
+  Rotation period, in solar units. Default ``1.d0``.
 
 grid
 ----
@@ -37,24 +37,6 @@ regime : character
   ``br`` (Roberts 1972, Braginski), ``sk69`` (Steenbeck & Krause 1969), ``st74``
   (Stix 1974), ``h2``, ``h4``, ``h5``, ``k2`` (K-type giant model), ``r2``. 
 
-s0 : real    
-  --
-
-s2 : real  
-  --
-
-s4 : real  
-  --
-
-s6 : real   
-  --
-
-a2p : real     
-  --
-
-a4p : real   
-  --
-
 xa1 : real
   Lower boundary parameter of the turbulent layer. Default ``0.64d0``.
 
@@ -66,6 +48,12 @@ xda1 : real
 
 xda2 : real
   Second thickness parameter of the turbulent layer. Default ``0.025d0``.
+
+s0 : real    
+  --
+
+s2 : real  
+  --
 
 xb : real
   Stream function location parameter. Default ``0.65d0``.
@@ -137,10 +125,11 @@ write_vectors : logical
   eigenvectors.
 
 xbt : real   
-  --
-  
+  Location (in stellar radius) to consider to generate the butterfly
+  diagram. Default ``0.75d0``. 
+
 xbo : real     
-  --
+  Default ``1.5d0``.
 
 zeta_r : real  
   External radius at which the base of the corona is located and

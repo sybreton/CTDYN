@@ -1,10 +1,6 @@
 !     Linear dynamo code CTDYN 
 !                     double precision/change intrinsic es: erf -> derf 
 !
-!     one cell   s0 = -1/2    s2 =  3/2     s4=0    s6=0  
-!     two cells  s0 =  3/8    s2 = -15/4    s4=35/8 
-!
-!
 !   The induction equation is written dt B = rot ( v x B "+" alpha B) -rot eta rot B
 !
 !   Therefore the turbulent elf is e = + alpha B
@@ -13,7 +9,7 @@
 !   
 !   The B field is written as  
 !
-!   B \propto exp (  \nu \tau)
+!   B \propto exp ( \nu \tau)
 !   
 !   and in the R86 paper instead we have 
 !   
@@ -21,11 +17,6 @@
 !
 !   therefore im(nu) =  - \omega
 !
-!  as a test example you have for  n = 14 m = 30
-!
-!    a0 comega = 20      -> calpha = 4.51   \nu = 0
-!    a1 comega = 20      -> calpha = 5.01   \nu = 7.43 = - \omega r86
-!    
 
 program main
  

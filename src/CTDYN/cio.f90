@@ -119,7 +119,7 @@ module cio
   !> profiles
   !-------------------------------------------
   character(len=8) :: regime
-  real(dp) :: s0, s2, s4, s6, a2p, a4p
+  real(dp) :: s0, s2
   real(dp) :: edr, xe1, xde1
   real(dp) :: xa1, xa2, xda1, xda2
   real(dp) :: xb, gd
@@ -178,8 +178,7 @@ module cio
 
   namelist /grid/ np, n_theta, na 
 
-  namelist /profiles/ regime, s0, s2, s4, s6, &
-                      a2p, a4p, xa1, xa2, xda1, &
+  namelist /profiles/ regime, s0, s2, xa1, xa2, xda1, &
                       xda2, xb, gd, edr, xe1, xde1, &
                       dd1, xc1, c2_h2, oco
 
@@ -221,16 +220,12 @@ contains
     !> profiles
     !-------------------------------------------
     regime  = 'h2'
-    s0      =  0.85d0
-    s2      =  0.08d0
-    s4      =  0.d0
-    s6      =  0.d0
-    a2p     =  1.d0
-    a4p     =  0.d0
     xa1     =  0.64d0   
     xa2     =  0.72d0   
     xda1    =  0.025d0
     xda2    =  0.025d0
+    s0      =  0.85d0
+    s2      =  0.08d0
     xb      =  0.65d0
     gd      =  1.2d0 
     edr     =  0.1d0     

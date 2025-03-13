@@ -80,7 +80,7 @@ contains
                & naf, nafm2, nafp2, nai, nas, &
                & nas_count, nbam1, nbam3, nbap1, &
                & nbap3, nbf, nbfm2, nbfp2, &
-               & nbi, nc                
+               & nbi               
     integer :: info
     
     real(dp) :: omegaeq
@@ -166,19 +166,6 @@ contains
     
     !----------------- Load arrays in m and n
     
-    nc                =  2 ! number of latitudinal cells /2 set to 2 by def.
-    if (a4p.ne.0) nc  =  4 ! if a4p not zero there are two cells-> nc=4
-    if (s6.ne.0)  nc  =  6       
-    !
-    ! These are the conversion factors for p1n for utheta
-    !
-    !      s4 = (35.e0/8.e0) * a4p
-    !      s2 = (3.e0/2.e0) * a2p -(15.e0/4.e0)*a4p
-    !
-    !      ss2 = (9.e0/(nc*(nc+1.e0)))*a2p-(75.e0/(nc*(nc+1.e0)))*a4p
-    !      s0= 15.e0/(2*(nc*(nc+1.e0)))*a4p-(3.e0/(nc*(nc+1.e0)))*a2p
-    !
-     
     am = abs(mmm)
     
     do j=1, nb

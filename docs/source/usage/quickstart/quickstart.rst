@@ -41,7 +41,7 @@ redirected to ``ctdyn.out`` and error log to ``ctdyn.err``.
 
 .. parsed-literal::
 
-    Inlist file already exists and rerun=False, CTDYN was not executed.
+    Running CTDYN with input file 'ctdyn_output/inlist_ctdyn'.
 
 
 
@@ -50,6 +50,7 @@ redirected to ``ctdyn.out`` and error log to ``ctdyn.err``.
 
     {'outputs': {'dir': "'ctdyn_output'"},
      'global': {},
+     'grid': {},
      'profiles': {},
      'brent': {},
      'boundaries': {},
@@ -100,6 +101,12 @@ namelist. At the ``ii``\ th iteration on the range ``(0, nso)``, the
 configurations, varying :math:`C_\Omega`, :math:`C_{\rm meridional}`,
 and :math:`\eta` in the process.
 
+Finally the adimensioned frequency of the cycle (``omega_cycle``),
+:math:`\overline{\omega}`, is connected to its dimensioned counterpart,
+:math:`\omega`, through
+
+:math:`\overline{\omega} = \omega R_\star^2 / \eta_t` .
+
 .. code:: ipython3
 
     filename = "{}/critical_a0.dat".format (dir_out)
@@ -112,8 +119,8 @@ and :math:`\eta` in the process.
 .. raw:: html
 
     <div><i>Table length=1</i>
-    <table id="table4488251136" class="table-striped table-bordered table-condensed">
-    <thead><tr><th>n</th><th>C_alpha</th><th>C_omega</th><th>C_meridional</th><th>omega_cycle</th><th>period</th><th>eta</th><th>beta</th><th>Etor</th><th>Epol</th></tr></thead>
+    <table id="table5082049616" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>n</th><th>C_alpha</th><th>C_omega</th><th>C_meridional</th><th>omega_cycle</th><th>period_cycle</th><th>eta</th><th>beta</th><th>Etor</th><th>Epol</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
     <tr><td>1.0</td><td>8.4583</td><td>1000.0</td><td>17.867</td><td>21.569</td><td>3.1912</td><td>14002000000000.0</td><td>0.0</td><td>0.0</td><td>0.0</td></tr>
     </table></div>
@@ -165,14 +172,8 @@ and :math:`\eta` in the process.
                                    mode="pcolormesh", contour=False)
 
 
-.. parsed-literal::
 
-    /Users/sbreton/miniconda3/envs/main-3.9/lib/python3.9/site-packages/py_ctdyn/outputs.py:237: UserWarning: The input coordinates to pcolormesh are interpreted as cell centers, but are not monotonically increasing or decreasing. This may lead to incorrectly calculated cell edges, in which case, please supply explicit cell edges to pcolormesh.
-      im = ax.pcolormesh (x, y, mesh_m, cmap=cmap, norm=norm)
-
-
-
-.. image:: quickstart_files/quickstart_15_1.png
+.. image:: quickstart_files/quickstart_15_0.png
 
 
 .. code:: ipython3
