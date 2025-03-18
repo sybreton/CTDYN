@@ -29,7 +29,7 @@ contains
     integer :: n
     real(dp) :: cgret
   
-    cgret = n*(1.0+n)*(1-abs(mmm)+n)*(2-abs(mmm)+n)/(6.0+19.0*n+16.0*n**2+4*n**3)
+    cgret = n*(1.0d0+n)*(1-abs(mmm)+n)*(2-abs(mmm)+n)/(6.0d0+19.0d0*n+16.0*n**2+4.d0*n**3)
     b1p2 = cgret
     return
   end

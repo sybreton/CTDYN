@@ -80,7 +80,7 @@ contains
           if (j.ge.(np+2)) then
             if (beta.ne.0) then
               ! check the x infront of the definition as for the beta=0 case
-              xnu=k2*1.d0+1.0/2.0
+              xnu=k2*1.d0+1.0d0/2.0d0
               call bessjy(x*beta,xnu,rj,ry,rjp,ryp)
               call bessjy(beta,xnu,rj1,ry1,rjp1,ryp1)
               sz1 = vc(np+2,k2,1)*(-plgndr(k2,1, cos(theta)))*sin(theta)*(gam*ry+rj)/sqrt(x)/(gam*ry1+rj1)
@@ -132,23 +132,23 @@ contains
         do k2=nst, net, 2
           if(beta.ne.0)then
             call bess(betb, k2, ffc)
-            if (betb.gt.10) ffc=betb
-            vc(np+2,k2,1) = (4*vc(np+1,k2,1)-vc(np,k2,1))/(2*hh*(k2+1+ffc)+3)
-            vc(np+2,k2,2) = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)
+            if (betb.gt.10d0) ffc=betb
+            vc(np+2,k2,1) = (4d0*vc(np+1,k2,1)-vc(np,k2,1))/(2d0*hh*(k2+1d0+ffc)+3d0)
+            vc(np+2,k2,2) = (4d0*vc(np+1,k2,2)-vc(np,k2,2))/(2d0*hh*(k2+1d0+ffc)+3d0)
           endif
   
           if (j.ge.(np+2)) then
             if (beta.ne.0) then
-              xnu=k2*1.d0+1.0/2.0
+              xnu=k2*1.d0+1.0d0/2.0d0
               call bessjy(x*betb,xnu,rj,ry,rjp,ryp)
               call bessjy(betb,xnu,rj1,ry1,rjp1,ryp1)
-              if(betb.gt.10) ffc=betb
+              if(betb.gt.10d0) ffc=betb
               sz1 = vc(np+2,k2,1)*(-plgndr(k2,1, cos(theta)))*(gam*ry+rj)/sqrt(x)/(gam*ry1+rj1)
               sz2 = vc(np+2,k2,2)*(-plgndr(k2,1, cos(theta)))*(gam*ry+rj)/sqrt(x)/(gam*ry1+rj1)
             endif
           else
-            sz1=0
-            sz2=0
+            sz1=0d0
+            sz2=0d0
           endif
           bphi(j,k1) = bphi(j,k1)+sz1
           iphi(j,k1) = iphi(j,k1)+sz2
@@ -185,8 +185,8 @@ contains
     ! load a-vectors
     do k2=nsp, nep, 2
       call bess(beta, k2, ffc)
-      vc(np+2,k2,1) = (4*vc(np+1,k2,1)-vc(np,k2,1))/(2*hh*(k2+1+ffc)+3)
-      vc(np+2,k2,2) = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)
+      vc(np+2,k2,1) = (4d0*vc(np+1,k2,1)-vc(np,k2,1))/(2d0*hh*(k2+1d0+ffc)+3d0)
+      vc(np+2,k2,2) = (4d0*vc(np+1,k2,2)-vc(np,k2,2))/(2d0*hh*(k2+1d0+ffc)+3d0)
       do j=2, np+2+nf
         if (j.lt.(np+2)) then
           aar = vc(j, k2, 1)
@@ -194,7 +194,7 @@ contains
         else if (j.ge.(np+2)) then
           x = x1+(j-1)*hh
           if (beta .ne. 0) then
-            xnu=1.0*k2+1/2.
+            xnu=1.0d0*k2+1d0/2.d0
             call bessjy(x*beta,xnu,rj,ry,rjp,ryp)
             call bessjy(beta,xnu,rj1,ry1,rjp1,ryp1)
             aar = vc(np+2,k2,1)*(gam*ry+rj)/sqrt(x)/(gam*ry1+rj1)
@@ -212,8 +212,8 @@ contains
     do k2 = nst,net,2
       if (beta .ne. 0) then
          call bess(betb, k2, ffc)
-         vc(np+2,k2,1) = (4*vc(np+1,k2,1)-vc(np,k2,1))/(2*hh*(k2+1+ffc)+3)
-         vc(np+2,k2,2) = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)
+         vc(np+2,k2,1) = (4d0*vc(np+1,k2,1)-vc(np,k2,1))/(2d0*hh*(k2+1d0+ffc)+3d0)
+         vc(np+2,k2,2) = (4d0*vc(np+1,k2,2)-vc(np,k2,2))/(2d0*hh*(k2+1d0+ffc)+3d0)
       endif
       do j=2, np+2+nf
         if (j.lt.(np+2)) then
@@ -222,7 +222,7 @@ contains
         else if (j.ge.(np+2)) then
           x = x1+(j-1)*hh
           if (beta .ne. 0) then
-            xnu=1.0*k2+1/2.
+            xnu=1.0d0*k2+0.5d0
             call bessjy(x*betb, xnu,rj, ry, rjp, ryp)
             call bessjy(betb, xnu, rj1, ry1, rjp1, ryp1)
   
@@ -241,11 +241,11 @@ contains
     do k2 = nst,net,2
       if (beta .ne. 0) then
         call bess(betb, k2, ffc)
-        vc(np+2,k2,1) = (4*vc(np+1,k2,1)-vc(np,k2,1))/(2*hh*(k2+1+ffc)+3)
-        vc(np+2,k2,2) = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)
+        vc(np+2,k2,1) = (4d0*vc(np+1,k2,1)-vc(np,k2,1))/(2d0*hh*(k2+1d0+ffc)+3d0)
+        vc(np+2,k2,2) = (4d0*vc(np+1,k2,2)-vc(np,k2,2))/(2d0*hh*(k2+1d0+ffc)+3d0)
       endif
       if (mm .ne. 0) stop
-      rosym = k2*(k2+1.0)/(2.0*k2+1.0)
+      rosym = k2*(k2+1.0d0)/(2.0d0*k2+1.0d0)
       etor = etor+(vc(np+2,k2,1)**2+vc(np+2,k2,2)**2)*rosym
     enddo
   
@@ -253,11 +253,11 @@ contains
     epol = 0
     do k2=nsp, nep, 2
       call bess(beta, k2, ffc)
-      vc(np+2,k2,1) = (4*vc(np+1,k2,1)-vc(np,k2,1))/(2*hh*(k2+1+ffc)+3)
-      vc(np+2,k2,2) = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)
-      rosym = k2*(k2+1.0)/(2.0*k2+1.0)
+      vc(np+2,k2,1) = (4d0*vc(np+1,k2,1)-vc(np,k2,1))/(2d0*hh*(k2+1d0+ffc)+3d0)
+      vc(np+2,k2,2) = (4d0*vc(np+1,k2,2)-vc(np,k2,2))/(2d0*hh*(k2+1d0+ffc)+3d0)
+      rosym = k2*(k2+1.0d0)/(2.0d0*k2+1.0d0)
       dd1 = (vc(np+2,k2,1)-vc(np+1,k2,1))/hh
-      epol = epol+(vc(np+2,k2,1)**2+vc(np+2,k2,2)**2 +dd1**2+2*vc(np+2,k2,1)*dd1 )*rosym &
+      epol = epol+(vc(np+2,k2,1)**2+vc(np+2,k2,2)**2 +dd1**2+2d0*vc(np+2,k2,1)*dd1 )*rosym &
             & +(vc(np+2,k2,1)**2+vc(np+2,k2,2)**2)*k2*(k2+1)*rosym
     enddo
   
@@ -330,7 +330,7 @@ contains
       theta = theta1 + j*dt
       do i=1, np+2+nf
         tc = jj*pi/nj
-        x = x1+(i-1)*hh
+        x = x1+(i-1d0)*hh
         write(61,'(e15.6)') (apr(i,j)*cos(abg(imag)*tc)+api(i,j)*sin(abg(imag)*tc))*x*sin(theta)
       enddo
     enddo
@@ -420,7 +420,7 @@ contains
 
 
     ! local arguments
-    real(dp), parameter :: t_fin = 12.
+    real(dp), parameter :: t_fin = 12.d0
     real(dp) :: time, ratio, theta
     real(dp) :: x
     real(dp) :: xr(np+2+nft)                
@@ -574,7 +574,7 @@ contains
 
 
     ! local arguments
-    real(dp), parameter :: t_fin = 12.
+    real(dp), parameter :: t_fin = 12.d0
     real(dp) :: ang(n_theta)
     real(dp) :: time, theta, zq1, zq2
     real(dp) :: x, rnor, cja
@@ -585,9 +585,9 @@ contains
             bptkp, aptkp, bptjm, aptjm, aptjm2, bptjp, &
             aptjp, dbtheta, datheta, dbtheta2, &
             datheta2, dax, dbx, dax2, chels, cheln
-    integer, parameter :: nag=2
-    real(dp), parameter :: abt=1.047d0
-    real(dp), parameter :: abm=2.094d0
+    integer, parameter  :: nag = 2
+    real(dp), parameter :: abt = 1.047d0
+    real(dp), parameter :: abm = 2.094d0
     
     bax=maxloc(abs(apr))
     bin=minloc(abs(apr))
@@ -595,7 +595,7 @@ contains
     bax=maxloc(abs(api))
     bin=minloc(abs(api))
     zq2=iphi(bax(1), bax(2))
-    rnor=((zq1+zq2)/2.)**2
+    rnor=((zq1+zq2)/2.d0)**2
   
     write(bfeld9, fmt_2010) trim(dir)//'/brtn.',ii,q,mm 
     open(33,status='unknown',file=adjustl(bfeld9))      
@@ -606,7 +606,7 @@ contains
     write(34,'(6x,i4)') np+2+nf-2
   
     do j=2, np+2+nf-1       ! radial loop
-      x = x1+(j-1)*hh
+      x = x1+(j-1d0)*hh
       write(33,'(e12.5)') x
       write(34,'(e12.5)') x
     enddo
@@ -624,8 +624,8 @@ contains
       time = time + t_fin/n_time
       write(33,'(e12.5)') time
       write(34,'(e12.5)') time
-      do j =3,np+2+nf-1       ! radial loop
-         cja=0
+      do j=3, np+2+nf-1       ! radial loop
+         cja = 0d0
          do k2=kb-nag, kb+nag  ! average over angle 
            ko = k2
            apt    = apr(j,ko)*cos(abg(imag)*time)+api(j,ko)*sin(abg(imag)*time)
@@ -650,22 +650,22 @@ contains
            dbx = (bptjp-bptjm)/hh/2
            ! second derivative wrt x 
            if (j.ne.np+2) then
-             dax2=(aptjp-2*apt+aptjm)/hh/hh
+             dax2=(aptjp-2d0*apt+aptjm)/hh/hh
            else
-             dax2=(apt-2*aptjm+aptjm2)/hh/hh
+             dax2=(apt-2d0*aptjm+aptjm2)/hh/hh
            endif
   
-           cheln=(2*apt*bpt/sin(ang(ko))**2 + apt*dbtheta*cos(ang(ko))/sin(ang(ko)) &
+           cheln=(2d0*apt*bpt/sin(ang(ko))**2 + apt*dbtheta*cos(ang(ko))/sin(ang(ko)) &
              & +datheta*dbtheta -bpt*datheta2)/xr(j)/xr(j) &
              & +(-bpt*dax+apt*dbx)/xr(j)+dax*dbx -bpt*dax2
   
            cja=cja+cheln   
          enddo
-         write(33,'(e12.5)')  cja/rnor/2./nag
+         write(33,'(e12.5)')  cja/rnor/2.d0/nag
        enddo
   
        do j=3, np+2+nf-1       ! radial loop
-         cja=0
+         cja = 0d0
          do k2=km-nag,km+nag  ! average over angle 
            ko = k2
            apt    = apr(j,ko)*cos(abg(imag)*time)+api(j,ko)*sin(abg(imag)*time)
@@ -681,29 +681,29 @@ contains
            aptjp  = apr(j+1,ko)*cos(abg(imag)*time)+api(j+1,ko)*sin(abg(imag)*time)
   
            ! first derivative wrt theta
-           dbtheta =(bptkp-bptkm)/dt/2 
-           datheta =(aptkp-aptkm)/dt/2
+           dbtheta =(bptkp-bptkm)/dt/2d0 
+           datheta =(aptkp-aptkm)/dt/2d0
            ! second derivative wrt theta
-           datheta2 = (aptkp-2*apt+aptkm)/dt/dt
-           dbtheta2 = (bptkp-2*bpt+bptkm)/dt/dt
+           datheta2 = (aptkp-2d0*apt+aptkm)/dt/dt
+           dbtheta2 = (bptkp-2d0*bpt+bptkm)/dt/dt
            ! first derivative wrt x
-           dax= (aptjp-aptjm)/hh/2
-           dbx= (bptjp-bptjm)/hh/2
+           dax= (aptjp-aptjm)/hh/2d0
+           dbx= (bptjp-bptjm)/hh/2d0
            ! second derivative wrt x
   
            if (j.ne.np+2) then
-             dax2=(aptjp-2*apt+aptjm)/hh/hh
+             dax2=(aptjp-2d0*apt+aptjm)/hh/hh
            else
-             dax2=(apt-2*aptjm+aptjm2)/hh/hh
+             dax2=(apt-2d0*aptjm+aptjm2)/hh/hh
            endif
   
-           chels=(2*apt*bpt/sin(ang(ko))**2 + apt*dbtheta*cos(ang(ko))/sin(ang(ko)) &
+           chels=(2d0*apt*bpt/sin(ang(ko))**2 + apt*dbtheta*cos(ang(ko))/sin(ang(ko)) &
              & +datheta*dbtheta -bpt*datheta2)/xr(j)/xr(j) &
              & +(-bpt*dax+apt*dbx)/xr(j)+dax*dbx -bpt*dax2
   
            cja=cja+chels
          enddo
-         write(34,'(e12.5)')  cja/rnor/2./nag
+         write(34,'(e12.5)')  cja/rnor/2.d0/nag
        enddo
     enddo
   
@@ -743,18 +743,18 @@ contains
     real(dp) :: theta, x
     integer :: j, k1, k2 
 
-    bphi=0
-    iphi=0
-    brr=0
-    bri=0
-    apr=0
-    api=0
+    bphi=0d0
+    iphi=0d0
+    brr=0d0
+    bri=0d0
+    apr=0d0
+    api=0d0
     ! imp: interior solution
     ! imp: initialize to zero all the other quantities
     do k1=1, n_theta    ! theta loop
       theta = theta1 + k1*dt
       do j=1, np+2         ! radial loop
-        x = x1+(j-1)*hh
+        x = x1+(j-1d0)*hh
         !  load the bphi_n  vectors in b_n p1(cos(theta))_n
         do k2=nst, net, 2    ! legendre polynomial  l-loop
           if (mm.eq.0) then
@@ -786,10 +786,10 @@ contains
           !  so that  (note a minus sign in the definition of Br and Bphi) 
           !   
           !  B_r = (sum over n) + n(n+1) P^0_n / x
-          vc(np+2,k2,1) = (4*vc(np+1,k2,1)-vc(np,k2,1))/(2*hh*(k2+1+ffc)+3)  
-          vc(np+2,k2,2) = (4*vc(np+1,k2,2)-vc(np,k2,2))/(2*hh*(k2+1+ffc)+3)    
-          brr(j,k1) = brr(j,k1)+(k2*(k2+1)/x)*vc(j,k2,1)*(+plgndr(k2,0, cos(theta)))
-          bri(j,k1) = bri(j,k1)+(k2*(k2+1)/x)*vc(j,k2,2)*(+plgndr(k2,0, cos(theta)))
+          vc(np+2,k2,1) = (4d0*vc(np+1,k2,1)-vc(np,k2,1))/(2d0*hh*(k2+1+ffc)+3d0)  
+          vc(np+2,k2,2) = (4d0*vc(np+1,k2,2)-vc(np,k2,2))/(2d0*hh*(k2+1+ffc)+3d0)    
+          brr(j,k1) = brr(j,k1)+(k2*(k2+1)/x)*vc(j,k2,1)*(+plgndr(k2,0,cos(theta)))
+          bri(j,k1) = bri(j,k1)+(k2*(k2+1)/x)*vc(j,k2,2)*(+plgndr(k2,0,cos(theta)))
   
         enddo ! legendre polynomial even l-loop  k2
   
@@ -798,7 +798,7 @@ contains
         if (regime.eq.'h4' .or. regime.eq.'h6' .or. regime.eq.'h5') then 
           ome(j,k1) = om0 + om2*cos(theta)**2 + om4*cos(theta)**4
         else
-          ome(j,k1) = om0 + om2 *( -(1-3*cos(theta)**2)/2.0 )
+          ome(j,k1) = om0 + om2 *( -(1d0-3d0*cos(theta)**2)/2.0d0 )
         endif
         sfu(j,k1) = fx*sin(theta)*cos(theta)
         ute(j,k1) = bx*sin(theta)*cos(theta) 
@@ -846,11 +846,11 @@ contains
     
     ! initialize
     mm = int (mmm)
-    vc = 0
+    vc = 0d0
     !  important mmm can only be le 1 in this subroutine !!!! 
     if (mm.ge.2) write (*, *) 'Be careful that m is larger than 1 !' 
     x1 = x_in           !inner boundary
-    x2 = 1.0            !outer bound
+    x2 = 1.0d0          !outer bound
     hh =(x2-x1)/(np+1)  !stepsize: radial accuracy parm.
     h2 = hh/2.e0
   
@@ -916,7 +916,7 @@ contains
     ! determine the outer mesh point equal to zeta_r+1
     if (zeta_r .lt. 1.1d0) zeta_r = 1.1d0 
     xf = zeta_r
-    nf = int((xf-1.0)/hh)
+    nf = int((xf-1.0d0)/hh)
     if(nf .ge. nft) then
       write (*, *) 'too small nft'
       stop

@@ -15,16 +15,16 @@ contains
     real(dp) :: d,dd,sv,y,y2
   
     if ((x-a)*(x-b) .gt. 0.) write (*,*) 'x not in range in chebev'
-    d=0.
-    dd=0.
+    d=0.d0
+    dd=0.d0
     y=(2.*x-a-b)/(b-a)
-    y2=2.*y
+    y2=2.d0*y
     do j=m,2,-1
       sv=d
       d=y2*d-dd+c(j)
       dd=sv
     enddo
-    chebev=y*d-dd+0.5*c(1)
+    chebev=y*d-dd+0.5d0*c(1)
     return
   end
 
@@ -49,9 +49,9 @@ contains
   
     else 
       if (x.gt.0) then
-        xnu=1.0*j+1/2.
-        xnu1=1.0*j+3./2.
-        xmu = 1.0*j-1./2.
+        xnu=1.0d0*j+1.d0/2.d0
+        xnu1=1.0d0*j+3.d0/2.d0
+        xmu = 1.0d0*j-1.d0/2.d0
         ! bessel function at r=R, argument is beta!
         call bessjy(x,xnu,rj,ry,rjp,ryp)
         call bessjy(x,xnu1,rj1,ry1,rjp1,ryp1)
@@ -63,13 +63,13 @@ contains
         gam = (-z*x*rjm1+rjz+z*x*rjz1)/(z*x*rym1-ryz-z*x*ryz1) 
         corn = (ry1*(-z*x*rjm1+rjz+z*x*rjz1)+ rj1*(z*x*rym1-ryz-z*x*ryz1))
         cord = (ry*(-z*x*rjm1+rjz+z*x*rjz1)+ rj*(z*x*rym1-ryz-z*x*ryz1))
-        corr = x*corn/cord-(j*2.d0 +1)
+        corr = x*corn/cord-(j*2.d0 + 1.d0)
         
       else 
         x=-x
-        xnu=1.0*j+1/2.
-        xnu1=1.0*j+3./2.
-        xmu = 1.0*j-1./2.
+        xnu=1.0d0*j+0.5d0
+        xnu1=1.0d0*j+3.d0/2.d0
+        xmu = 1.0d0*j-0.5d0
         ! bessel function at r=r, argument is beta!
         call bessjy(x,xnu,rj,ry,rjp,ryp)
         call bessjy(x,xnu1,rj1,ry1,rjp1,ryp1)
@@ -81,7 +81,7 @@ contains
         gam = -(-z*x*rjm1+rjz+z*x*rjz1)/(z*x*rym1-ryz-z*x*ryz1) 
         corn = -(ry1*(-z*x*rjm1+rjz+z*x*rjz1)+ rj1*(z*x*rym1-ryz-z*x*ryz1))
         cord = -(ry*(-z*x*rjm1+rjz+z*x*rjz1)+ rj*(z*x*rym1-ryz-z*x*ryz1))
-        corr = x*corn/cord-(j*2.d0 +1)
+        corr = x*corn/cord-(j*2.d0 + 1.d0)
       endif
     endif
     return

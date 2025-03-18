@@ -53,51 +53,51 @@ contains
       sigma=s2
       x0=s0
   
-      fx=(1 - dexp(-(x - xb)**2/sigma**2))*(-1 + x)*x**2
+      fx=(1 - dexp(-(x - xb)**2/sigma**2))*(-1d0 + x)*x**2
   
-      ax=-(((-1 + dexp((x - xb)**2/sigma**2))*(-1 + x)*(1 - x0)**gd)/ &
-        &    (dexp(((-1 + x)*(1 + x - 2*xb))/sigma**2)*  &
-        &      (-1 + dexp((-1 + xb)**2/sigma**2))*(1/x - x0)**gd)) 
+      ax=-(((-1 + dexp((x - xb)**2/sigma**2))*(-1d0 + x)*(1d0 - x0)**gd)/ &
+        &    (dexp(((-1d0 + x)*(1d0 + x - 2d0*xb))/sigma**2)*  &
+        &      (-1d0 + dexp((-1d0 + xb)**2/sigma**2))*(1d0/x - x0)**gd)) 
   
-      axp=((1 - x0)**gd*(-((-1 + dexp((x - xb)**2/sigma**2))*gd*sigma**2) + & 
-        &      x*((-1 + dexp((x - xb)**2/sigma**2))*(1 + gd)*sigma**2 + 2*xb - &
-        &         x*(2 + (-1 + dexp((x - xb)**2/sigma**2))*sigma**2*x0 + 2*x**2*x0 + & 
-        &            2*(1 + x0)*xb - 2*x*(1 + x0 + x0*xb)))))/ &
-        &  (dexp(((-1 + x)*(1 + x - 2*xb))/sigma**2)* &
-        &    (-1 + dexp((-1 + xb)**2/sigma**2))*sigma**2*x*(1/x - x0)**gd*(-1 + x*x0))
+      axp=((1 - x0)**gd*(-((-1d0 + dexp((x - xb)**2/sigma**2))*gd*sigma**2) + & 
+        &      x*((-1d0 + dexp((x - xb)**2d0/sigma**2))*(1d0 + gd)*sigma**2 + 2d0*xb - &
+        &         x*(2d0 + (-1d0 + dexp((x - xb)**2d0/sigma**2))*sigma**2*x0 + 2d0*x**2*x0 + & 
+        &            2d0*(1d0 + x0)*xb - 2d0*x*(1 + x0 + x0*xb)))))/ &
+        &  (dexp(((-1d0 + x)*(1d0 + x - 2d0*xb))/sigma**2)* &
+        &    (-1d0 + dexp((-1d0 + xb)**2/sigma**2))*sigma**2*x*(1d0/x - x0)**gd*(-1d0 + x*x0))
   
   
-      bx=-((dexp((1 - xb)**2/sigma**2 - (x - xb)**2/sigma**2)*(1 - x0)**gd*  &
-        &      (2*sigma**2 - 3*sigma**2*x - 2*x**2 + 2*x**3 + &
-        &        dexp((x - xb)**2/sigma**2)*sigma**2*(-2 + 3*x) + 2*x*xb - 2*x**2*xb)) &
-        &     /((-sigma**2 + dexp((1 - xb)**2/sigma**2)*sigma**2)*(1/x - x0)**gd))
+      bx=-((dexp((1d0 - xb)**2/sigma**2 - (x - xb)**2/sigma**2)*(1d0 - x0)**gd*  &
+        &      (2d0*sigma**2 - 3d0*sigma**2*x - 2d0*x**2 + 2d0*x**3 + &
+        &        dexp((x - xb)**2d0/sigma**2)*sigma**2*(-2d0 + 3d0*x) + 2d0*x*xb - 2d0*x**2*xb)) &
+        &     /((-sigma**2 + dexp((1d0 - xb)**2/sigma**2)*sigma**2)*(1d0/x - x0)**gd))
   
-      bxp= ((1 - x0)**gd*(-2*(-1 + dexp((x - xb)**2/sigma**2))*gd*sigma**4 + &
-        &      4*x**6*x0 + sigma**2*x* &
-        &       (3*(-1 + dexp((x - xb)**2/sigma**2))*(1 + gd)*sigma**2 + &
-        &         2*(3 + gd)*xb) - 4*x**5*(1 + x0 + 2*x0*xb) + &
-        &      x**2*(-2*(4 + gd)*sigma**2 - &
-        &         3*(-1 + dexp((x - xb)**2/sigma**2))*sigma**4*x0 - &
-        &         2*sigma**2*(5 + gd + 3*x0)*xb + 4*xb**2) + &
-        &      2*x**3*(-2*xb*(2 + xb + x0*xb) + &
-        &         sigma**2*(6 + gd + 4*x0 + 5*x0*xb)) + & 
-        &      4*x**4*(1 - 3*sigma**2*x0 + xb*(2 + x0*(2 + xb)))))/ &
-        &  (dexp(((-1 + x)*(1 + x - 2*xb))/sigma**2)* &
-        &    (-1 + dexp((-1 + xb)**2/sigma**2))*sigma**4*x*(1/x - x0)**gd*(-1 + x*x0))
+      bxp= ((1d0 - x0)**gd*(-2d0*(-1d0 + dexp((x - xb)**2/sigma**2))*gd*sigma**4 + &
+        &      4d0*x**6*x0 + sigma**2*x* &
+        &       (3d0*(-1d0 + dexp((x - xb)**2/sigma**2))*(1d0 + gd)*sigma**2 + &
+        &         2d0*(3d0 + gd)*xb) - 4d0*x**5*(1d0 + x0 + 2d0*x0*xb) + &
+        &      x**2*(-2d0*(4d0 + gd)*sigma**2 - &
+        &         3d0*(-1d0 + dexp((x - xb)**2/sigma**2))*sigma**4*x0 - &
+        &         2d0*sigma**2*(5d0 + gd + 3d0*x0)*xb + 4d0*xb**2) + &
+        &      2d0*x**3*(-2d0*xb*(2d0 + xb + x0*xb) + &
+        &         sigma**2*(6d0 + gd + 4d0*x0 + 5d0*x0*xb)) + & 
+        &      4d0*x**4*(1d0 - 3d0*sigma**2*x0 + xb*(2d0 + x0*(2d0 + xb)))))/ &
+        &  (dexp(((-1d0 + x)*(1d0 + x - 2d0*xb))/sigma**2)* &
+        &    (-1d0 + dexp((-1d0 + xb)**2d0/sigma**2))*sigma**4*x*(1d0/x - x0)**gd*(-1d0 + x*x0))
   
       ! important you multiply by 2 because you then divide by sin_theta cos_theta 
-      fx=fx*2
-      ax=ax*2
-      axp=axp*2
-      bx = bx*2
-      bxp=bxp*2
+      fx=fx*2d0
+      ax=ax*2d0
+      axp=axp*2d0
+      bx = bx*2d0
+      bxp=bxp*2d0
   
     else 
-      fx=0
-      ax=0
-      axp=0
-      bx=0
-      bxp=0
+      fx=0d0
+      ax=0d0
+      axp=0d0
+      bx=0d0
+      bxp=0d0
     endif
     return
   end subroutine

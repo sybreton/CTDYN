@@ -10,7 +10,7 @@ contains
   real(dp) function d1p2 (n)
     integer :: n
     real(dp) :: cgret
-    cgret = (n-1.0)*n*(n-abs(mmm)+1)*(n-abs(mmm)+2)/(6+19.0*n+16.0*n**2+4.0*n**3) 
+    cgret = (n-1.0d0)*n*(n-abs(mmm)+1)*(n-abs(mmm)+2.d0)/(6.d0+19.0d0*n+16.0d0*n**2+4.0d0*n**3) 
     d1p2 = cgret
     return
   end
@@ -18,7 +18,7 @@ contains
   real(dp) function d1m2 (n)
     integer :: n
     real(dp) :: cgret
-    cgret = -(n+1.0)*(n+2.0)*(n+abs(mmm)-1)*(n+abs(mmm))/(1.0-n-4.0*n**2+4.0*n**3)
+    cgret = -(n+1.0d0)*(n+2.0d0)*(n+abs(mmm)-1)*(n+abs(mmm))/(1.0d0-n-4.0d0*n**2+4.0d0*n**3)
     d1m2 = cgret
     return
   end
@@ -27,7 +27,7 @@ contains
     integer :: n
     real(dp) :: cgret
     cgret = -0.3e1 * (n + 0.2e1) * (n - 0.1e1) * (n*(n+1)-3*mmm**2)/ (0.2e1 * n - 0.1e1) &
-       &/ (0.2e1 * n + 0.3e1)/n/(n+1.0)
+       &/ (0.2e1 * n + 0.3e1)/n/(n+1.0d0)
     d10 = cgret
     return
   end
@@ -165,7 +165,7 @@ contains
   real(dp) function c2m2 (n)
     integer :: n
     real(dp) :: cgret
-    cgret  = (1.0+n)*(-1.0+abs(mmm)+n)*(abs(mmm)+n)/(1.0-n-4.0*n**2+4.0*n**3)
+    cgret  = (1.0d0+n)*(-1.0d0+abs(mmm)+n)*(abs(mmm)+n)/(1.0d0-n-4.0d0*n**2+4.0d0*n**3)
     c2m2 = cgret
     return
   end
@@ -173,7 +173,7 @@ contains
   real(dp) function c20 (n)
     integer :: n
     real(dp) :: cgret
-    cgret = ((n*(n+1)-3*mmm**2)*2*(n*(n+1.)-3)/n/(n+1.)/(2*n-1.)/(2*n+3.) +1)/3.
+    cgret = ((n*(n+1.d0)-3.d0*mmm**2)*2.d0*(n*(n+1.d0)-3.d0)/n/(n+1.d0)/(2.d0*n-1.d0)/(2.d0*n+3.) +1.d0)/3.d0
     cgret = (0.2e1 * n ** 2 + 0.2e1 * n - 0.3e1) / (0.2e1 * n - 0.1e1 &
        &) / (0.2e1 * n + 0.3e1)
     c20 = cgret
@@ -346,7 +346,7 @@ contains
     if(x.ne.0)then
       get = abs(x)/x
     else
-      get = 0
+      get = 0.d0
     endif
     abg = get
     return
