@@ -11,9 +11,9 @@ module cio
   implicit none
   public
 
-  integer, parameter :: lwork   = 540000
-  integer, parameter :: nueg    = 8
-  integer, parameter :: n_time  = 300
+  integer(i4), parameter :: lwork   = 540000
+  integer(i4), parameter :: nueg    = 8
+  integer(i4), parameter :: n_time  = 300
 
   ! Some constants
   real(dp), parameter :: pi   = 3.14159265359d0 
@@ -26,8 +26,8 @@ module cio
   real(dp) :: dt
 
   ! Arrays that will need to be allocated
-  integer, allocatable :: indeg(:)     ! index the eigenvalues      
-  real(dp), allocatable :: inde(:)     ! index the eigenvalues      
+  integer(i4), allocatable :: indeg(:)     ! index the eigenvalues      
+  real(dp), allocatable :: inde(:)         ! index the eigenvalues      
   real(dp), allocatable :: vr(:,:)
   complex(dp), allocatable :: cvr(:,:)
   complex(dp), allocatable :: ww(:)
@@ -107,13 +107,13 @@ module cio
   !-------------------------------------------
   !> grid
   !-------------------------------------------
-  integer :: np    ! mesh points
-  integer :: na    ! na = 1,3,5,... radial order in an
-  integer :: n_theta
+  integer(i4) :: np    ! mesh points
+  integer(i4) :: na    ! na = 1,3,5,... radial order in an
+  integer(i4) :: n_theta
   ! nb and nt are not actually in the namelist but depend on 
   ! np and na
-  integer :: nb ! nb = 2,4,6,... radial order in bn
-  integer :: nt ! matrix dimension 
+  integer(i4) :: nb ! nb = 2,4,6,... radial order in bn
+  integer(i4) :: nt ! matrix dimension 
  
   !-------------------------------------------
   !> profiles
@@ -134,7 +134,7 @@ module cio
   !> outputs
   !-------------------------------------------
   character(len=128) :: dir
-  integer :: nj
+  integer(i4) :: nj
   logical :: write_vectors
   real(dp) :: zeta_r
   real(dp) :: xbt, xbo
@@ -160,14 +160,14 @@ module cio
   !-------------------------------------------
   !> controls 
   !-------------------------------------------
-  integer :: nso
+  integer(i4) :: nso
   real(dp) :: flg
   real(dp) :: cm_f, cm_i, rm_f, rm_i
 
   ! Additional variables that are used by several 
   ! subroutines. These were included in "common" 
   ! blocks in the old version of the code. 
-  integer  :: ii, it
+  integer(i4)  :: ii, it
   real(dp) :: etep, etet, eep
   real(dp) :: co, c_u, beta, betb
   real(dp) :: reg(10),ieg(10)
@@ -295,7 +295,7 @@ contains
     !> allocated at this step.
     character(len=128) :: inlist
 
-    integer :: fu
+    integer(i4) :: fu
 
     call initialise_namelist_values
     call getarg(1, inlist)
@@ -411,7 +411,7 @@ contains
     !> it.
     character(len=128) :: inlist
 
-    integer :: fu
+    integer(i4) :: fu
 
     ! Open and close to read in any order
     open(newunit=fu, file=inlist, status="replace", & 

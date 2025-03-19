@@ -39,8 +39,8 @@ program main
   character(len=128) :: fileout        ! file crtal_am
   character(len=5)   :: qq             ! _am
 
-  integer :: mm, i, iome
-  integer :: fu 
+  integer(i4) :: mm, i, iome
+  integer(i4) :: fu 
 
 
   

@@ -30,12 +30,9 @@ module write_outputs
 
   use kind_parameters
   use cio
-  use cdfunc
-  use bessel
+  use mathfunc
   use util
-  use func_flow
   use stellar_profiles
-  use plg
 
   implicit none 
   private 
@@ -44,8 +41,8 @@ module write_outputs
 
   character(*), parameter :: fmt_2010 = "(a220,i6.6,a2,i2.2)" 
   character(*), parameter :: fmt_2011 = "(a220,i6.6,a2,i2.2,a2,i2.2)" 
-  integer, parameter :: nft=200   
-  integer :: mm 
+  integer(i4), parameter :: nft=200   
+  integer(i4) :: mm 
 
 contains 
 
@@ -56,7 +53,7 @@ contains
     ! -----------------------------------------------------------------------    
 
     ! arguments
-    integer :: nsp, nep, nf, nft
+    integer(i4) :: nsp, nep, nf, nft
     real(dp) :: vc(np+2,nb,2)                 ! eigenvector
     real(dp) :: apr(np+2+nft, n_theta)         ! b poloidal (potential)
     real(dp) :: api(np+2+nft, n_theta)         ! b poloidal (potential)
@@ -64,7 +61,7 @@ contains
 
     ! local variables
     real(dp) :: x, xnu, theta, sz1, sz2
-    integer :: k1, k2, j
+    integer(i4) :: k1, k2, j
     real(dp) :: rj, ry, rjp, ryp
     real(dp) :: rj1, ry1, rjp1, ryp1
 
@@ -112,7 +109,7 @@ contains
     ! -----------------------------------------------------------------
   
     ! arguments
-    integer :: nst, net, nf, nft
+    integer(i4) :: nst, net, nf, nft
     real(dp) :: vc(np+2,nb,2)                 ! eigenvector
     real(dp) :: bphi(np+2+nft, n_theta)         ! b poloidal (potential)
     real(dp) :: iphi(np+2+nft, n_theta)         ! b poloidal (potential)
@@ -120,7 +117,7 @@ contains
   
     ! local variables
     real(dp) :: x, xnu, theta, sz1, sz2
-    integer :: k1, k2, j
+    integer(i4) :: k1, k2, j
     real(dp) :: rj, ry, rjp, ryp
     real(dp) :: rj1, ry1, rjp1, ryp1
   
@@ -173,12 +170,12 @@ contains
     real(dp) :: vc(np+2,nb,2)                 ! eigenvector
     real(dp) :: aai, aar, bbi, bbr
     real(dp) :: ffc, x1, hh
-    integer :: nsp, nep, nst, net, nf, mm
+    integer(i4) :: nsp, nep, nst, net, nf, mm
   
     ! local variables
     real(dp) :: etor, epol
     real(dp) :: x, xnu, theta, rosym, dd1
-    integer :: k2, j
+    integer(i4) :: k2, j
     real(dp) :: rj, ry, rjp, ryp
     real(dp) :: rj1, ry1, rjp1, ryp1
   
@@ -278,12 +275,12 @@ contains
   
     character(len=512) :: bfeld3
     character(len=2) :: q
-    integer :: nf, nj, jj
+    integer(i4) :: nf, nj, jj
     real(dp) :: imag, theta, x1, xf, tc
     real(dp) :: bphi(np+2+nft, n_theta)        ! toroidal real
     real(dp) :: iphi(np+2+nft, n_theta)        ! toroidal im
   
-    integer :: i, j
+    integer(i4) :: i, j
   
     write(bfeld3, '(a220,i6.6,a2,i2.2,a2,i2.2)') trim(dir)//'/tfld.',ii,'.t', jj, q, mm
     open(60, status='unknown', file=adjustl(bfeld3))
@@ -310,13 +307,13 @@ contains
     ! Arguments
     character(len=512) :: bfeld4
     character(len=2) :: q
-    integer :: nf, nj, jj
+    integer(i4) :: nf, nj, jj
     real(dp) :: imag, theta, hh, x1, xf, tc
     real(dp) :: apr(np+2+nft, n_theta)         ! b poloidal (potential)
     real(dp) :: api(np+2+nft, n_theta)         ! b poloidal (potential)
   
     ! Local variables
-    integer :: i, j
+    integer(i4) :: i, j
     real(dp) :: x
   
     write(bfeld4, fmt_2011) trim(dir)//'/pfld.', ii, '.t', jj, q, mm
@@ -346,13 +343,13 @@ contains
     !
     !-------------------------------------------------------------
   
-    integer :: np, n_theta
+    integer(i4) :: np, n_theta
     real(dp) :: x1, x2, theta1, theta2
     real(dp) :: ome(np+2,n_theta)             ! omega
     real(dp) :: sfu(np+2,n_theta)             ! stream function 
     real(dp) :: ute(np+2,n_theta)             ! utheta
   
-    integer :: i, j
+    integer(i4) :: i, j
 
     open(50,status='unknown',file=trim(dir)//'/omega.dat')
     open(51,status='unknown',file=trim(dir)//'/stream.dat')
@@ -409,7 +406,7 @@ contains
 
     character(len=512) :: bfeld1, bfeld6, bfeld7, bfeld8
     character(len=2) :: q
-    integer :: nf, nft
+    integer(i4) :: nf, nft
     real(dp) :: imag, x1, x2, hh
     real(dp) :: bphi(np+2+nft,n_theta)        ! toroidal real
     real(dp) :: iphi(np+2+nft,n_theta)        ! toroidal im
@@ -424,8 +421,8 @@ contains
     real(dp) :: time, ratio, theta
     real(dp) :: x
     real(dp) :: xr(np+2+nft)                
-    integer :: bin(2), bax(2), rin(2), rax(2)
-    integer :: k1, k2, j, jo, jbt, jbo
+    integer(i4) :: bin(2), bax(2), rin(2), rax(2)
+    integer(i4) :: k1, k2, j, jo, jbt, jbo
     real(dp) :: bphi7, brs, apt, bpt, bptkm, aptkm, &
             bptkp, aptkp, bptjm, aptjm, bptjp, &
             aptjp, dbtheta, datheta, dbtheta2, &
@@ -563,7 +560,7 @@ contains
 
     character(len=512) :: bfeld9, bfeld10
     character(len=2) :: q
-    integer :: nf, nft
+    integer(i4) :: nf, nft
     real(dp) :: imag, x1, x2, hh
     real(dp) :: bphi(np+2+nft,n_theta)        ! toroidal real
     real(dp) :: iphi(np+2+nft,n_theta)        ! toroidal im
@@ -579,13 +576,13 @@ contains
     real(dp) :: time, theta, zq1, zq2
     real(dp) :: x, rnor, cja
     real(dp) :: xr(np+2+nft)                
-    integer :: bin(2), bax(2), rin(2), rax(2)
-    integer :: k1, k2, kb, km, j, jo, ko, jbt, jbo
+    integer(i4) :: bin(2), bax(2), rin(2), rax(2)
+    integer(i4) :: k1, k2, kb, km, j, jo, ko, jbt, jbo
     real(dp) :: bphi7, brs, apt, bpt, bptkm, aptkm, &
             bptkp, aptkp, bptjm, aptjm, aptjm2, bptjp, &
             aptjp, dbtheta, datheta, dbtheta2, &
             datheta2, dax, dbx, dax2, chels, cheln
-    integer, parameter  :: nag = 2
+    integer(i4), parameter  :: nag = 2
     real(dp), parameter :: abt = 1.047d0
     real(dp), parameter :: abm = 2.094d0
     
@@ -723,7 +720,7 @@ contains
     !--------------------------------------------------------
 
     ! Arguments
-    integer :: nst, net, nsp, nep 
+    integer(i4) :: nst, net, nsp, nep 
     real(dp) :: hh, x1, ffc
     real(dp) :: om0, om0p, om2, om2p, om4, om4p
     real(dp) :: ax, axp, bx, bxp, fx
@@ -741,7 +738,7 @@ contains
 
     ! Local variables
     real(dp) :: theta, x
-    integer :: j, k1, k2 
+    integer(i4) :: j, k1, k2 
 
     bphi=0d0
     iphi=0d0
@@ -823,7 +820,7 @@ contains
             & dbx, ffc, fx, h2, hh, &
             & om0, om0p, om2, om2p, om4, om4p, &
             & tc, theta, x, x1, x2, xf
-    integer :: i, i2, i3, jj, k, &
+    integer(i4) :: i, i2, i3, jj, k, &
                & nep, net, nf, nsp, nst
   
     character(len=2) :: q
@@ -842,7 +839,7 @@ contains
     real(dp) :: vc(np+2,nb,2)                 ! eigenvector
     real(dp) :: xr(np+2+nft)                
   
-    integer :: bin(2), bax(2), rin(2), rax(2)
+    integer(i4) :: bin(2), bax(2), rin(2), rax(2)
     
     ! initialize
     mm = int (mmm)

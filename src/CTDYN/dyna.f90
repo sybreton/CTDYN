@@ -2,18 +2,12 @@ module dyna
 
     use kind_parameters
     use cio
-    use b2func
-    use b3func
-    use b4func
-    use b5func
-    use c1s2func
-    use c3s2func
-    use cdfunc
-    use bessel
+    use mathfunc
     use write_outputs
-    use func_flow
     use stellar_profiles
     use util
+    use stdlib_linalg_lapack_d, only: stdlib_dgeev
+    use stdlib_linalg_lapack_z, only: stdlib_zgeev
   
     implicit none
 
@@ -75,13 +69,13 @@ contains
             & psipp, rho, sigmami, sigmapi, &
             & um, x, x1, x2, bt, nabp1, nabp3 
     
-    integer :: i, j, k, nabm1, &
+    integer(i4) :: i, j, k, nabm1, &
                & k1, ki, kk, nabm3, napb3, &
                & naf, nafm2, nafp2, nai, nas, &
                & nas_count, nbam1, nbam3, nbap1, &
                & nbap3, nbf, nbfm2, nbfp2, &
                & nbi               
-    integer :: info
+    integer(i4) :: info
     
     real(dp) :: omegaeq
     real(dp) :: egr(np,nb), egi(np,nb)
@@ -90,8 +84,9 @@ contains
     
     character(len=1) :: jobvl, jobpr    
     real(dp) :: rwork(2*nt)
-    complex(dp) :: work(lwork)  
-    integer :: qa, qb
+    complex(dp) :: work_z(lwork)
+    real(dp) :: work_d(lwork)    
+    integer(i4) :: qa, qb
     complex(dp) :: axx(nt,nt)
     real(dp) :: axr(nt,nt)
     complex(dp) :: drb, dra, sigmeno, sigpiu
@@ -1125,12 +1120,12 @@ contains
       enddo
     enddo
     
-    !----- lapack solvers
+    !----- lapack solver
     
     if(mmm.ne.0) flg=1
     if(flg.eq.1) then
-       call zgeev(jobvl, jobvr, nt, axx, nt, ww, cvr, nt, cvr, nt, &
-                  &  work, lwork, rwork, info )
+       call stdlib_zgeev(jobvl, jobvr, nt, axx, nt, ww, cvr, nt, cvr, nt, &
+                  &  work_z, lwork, rwork, info )
        ! rescale the eigenvalues 
        do i=1, nt
          wr(i) = real(ww(i))/hh**2    
@@ -1141,8 +1136,8 @@ contains
       forall (i=1:nt,j=1:nt) axr(i,j) = real(axx(i,j))
       axr = real(axx)
     
-      call dgeev(jobvl, jobvr, nt, axr, nt, wr, wi, vr, nt, & 
-                 &  vr, nt, work, lwork, info )
+      call stdlib_dgeev(jobvl, jobvr, nt, axr, nt, wr, wi, vr, nt, & 
+                 &  vr, nt, work_d, lwork, info )
     
       do i=1, nt
         wr(i) = wr(i)/hh**2    

@@ -22,10 +22,10 @@ contains
     ! Local variables
     real(dp) :: eta, period, imag
     real(dp) :: x3
-    integer :: iter
+    integer(i4) :: iter
     real(dp) :: a, b, c, d, e, fa, fb, fc 
     real(dp) :: p, q, r, s, tol1
-    integer, parameter :: itmax=100
+    integer(i4), parameter :: itmax=100
     real(dp), parameter :: eps=3.e-8 
     
     a=x1
