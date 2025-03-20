@@ -15,6 +15,9 @@ module cio
   integer(i4), parameter :: nueg    = 8
   integer(i4), parameter :: n_time  = 300
 
+  ! Timer variables
+  integer (i8) :: count_rate, count_max
+
   ! Some constants
   real(dp), parameter :: pi   = 3.14159265359d0 
   real(dp), parameter :: sr0  = 6.955e10  ! solar radius (cm)
@@ -403,6 +406,11 @@ contains
     allocate(gaqp3(np,nb))
     allocate(beqm3(np,nb))
     allocate(beqp3(np,nb))
+
+    if (show_timer) then
+      call system_clock (count_rate=count_rate)
+      call system_clock (count_max=count_max)
+    endif
 
   end subroutine
   

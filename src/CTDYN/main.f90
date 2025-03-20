@@ -43,14 +43,14 @@ program main
   integer(i4) :: fu 
 
   ! Timer variables
-  real (dp) :: time_main_0, time_main_1
-
-  if (show_timer) then
-    call cpu_time (time_main_0)
-  endif
+  integer (i8) :: count_0, count_1
   
   ! Read input namelist
   call read_namelist (inlist) 
+
+  if (show_timer) then
+    call system_clock (count_0)
+  endif
 
   ! Write the full namelist for reference
   inlist_full = trim(trim(dir)//'/inlist_full')
@@ -102,8 +102,8 @@ program main
   close(fu)
 
   if (show_timer) then
-    call cpu_time (time_main_1)
-    write (*,'(a,1x,f0.3,1x,a)') "CTDYN execution total elapsed time::", time_main_1 - time_main_0, "seconds."
+    call system_clock (count_1)
+    write (*,'(a,1x,f0.3,1x,a)') "Total elapsed time::", real(count_1-count_0)/count_rate, "seconds."
   endif
 
 end program main

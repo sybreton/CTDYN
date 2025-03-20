@@ -6,7 +6,6 @@ module dyna
     use write_outputs
     use stellar_profiles
     use util
-    use stdlib_linalg_lapack, only: geev
 
     implicit none
 
@@ -94,14 +93,7 @@ contains
     real(dp) :: c2(np)
 
     ! Timer variables
-    real(dp) :: time_dyna_0, time_dyna_1
-    real(dp) :: time_geev_0, time_geev_1
-
-    !------------------------------------------------------
-
-    if (show_timer) then
-      call cpu_time (time_dyna_0)
-    endif
+    integer (i8) :: count_0, count_1
     
     !------------------------------------------------------
     jobpr = 'n'    ! y = write all pij matrix      
@@ -1131,13 +1123,13 @@ contains
     
     !----- lapack solver
     if (show_timer) then
-      call cpu_time (time_geev_0)
+      call system_clock (count_0)
     endif
     
     if(mmm.ne.0) flg=1
     if(flg.eq.1) then
        allocate (work_z(lwork))
-       call geev(jobvl, jobvr, nt, axx, nt, ww, cvr, nt, cvr, nt, &
+       call zgeev(jobvl, jobvr, nt, axx, nt, ww, cvr, nt, cvr, nt, &
                   &  work_z, lwork, rwork, info )
        ! rescale the eigenvalues 
        do i=1, nt
@@ -1149,7 +1141,7 @@ contains
       forall (i=1:nt,j=1:nt) axr(i,j) = real(axx(i,j))
       axr = real(axx)
       allocate (work_d(lwork))
-      call geev(jobvl, jobvr, nt, axr, nt, wr, wi, vr, nt, & 
+      call dgeev(jobvl, jobvr, nt, axr, nt, wr, wi, vr, nt, & 
                  &  vr, nt, work_d, lwork, info )
     
       do i=1, nt
@@ -1160,8 +1152,8 @@ contains
     endif
 
     if (show_timer) then
-      call cpu_time (time_geev_1)
-      write (*,'(a,1x,f0.3,1x,a)') "Elapsed time for GEEV call::", time_geev_1 - time_geev_0, "seconds."
+      call system_clock (count_1)
+      write (*,'(a,1x,f0.3,1x,a)') "Elapsed time for GEEV call::", real(count_1-count_0)/count_rate, "seconds."
     endif
     
     call sort2 (nt, wr, inde)     
@@ -1217,11 +1209,6 @@ contains
     
     if (jobvr.eq.'v') then
       call writefield (imag)
-    endif
-
-    if (show_timer) then
-      call cpu_time (time_dyna_1)
-      write (*,'(a,1x,f0.3,1x,a)') "Total elapsed time for dyna call::", time_dyna_1 - time_dyna_0, "seconds."
     endif
     
     return
