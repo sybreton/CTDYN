@@ -6,8 +6,7 @@ module dyna
     use write_outputs
     use stellar_profiles
     use util
-    use stdlib_linalg_lapack_d, only: stdlib_dgeev
-    use stdlib_linalg_lapack_z, only: stdlib_zgeev
+    use stdlib_linalg_lapack, only: geev
   
     implicit none
 
@@ -1124,7 +1123,7 @@ contains
     
     if(mmm.ne.0) flg=1
     if(flg.eq.1) then
-       call stdlib_zgeev(jobvl, jobvr, nt, axx, nt, ww, cvr, nt, cvr, nt, &
+       call geev(jobvl, jobvr, nt, axx, nt, ww, cvr, nt, cvr, nt, &
                   &  work_z, lwork, rwork, info )
        ! rescale the eigenvalues 
        do i=1, nt
@@ -1136,7 +1135,7 @@ contains
       forall (i=1:nt,j=1:nt) axr(i,j) = real(axx(i,j))
       axr = real(axx)
     
-      call stdlib_dgeev(jobvl, jobvr, nt, axr, nt, wr, wi, vr, nt, & 
+      call geev(jobvl, jobvr, nt, axr, nt, wr, wi, vr, nt, & 
                  &  vr, nt, work_d, lwork, info )
     
       do i=1, nt

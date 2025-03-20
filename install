@@ -15,6 +15,49 @@ then
 	exit 1
 fi
 
+export USE_MESASDK=0
+export USE_DEFAULT_EXTERNAL=0
+# Input option
+# -b : build choice, debug or release
+# -v, -V : verbosity levels
+# -e : set to use LAPACK library from MESASDK
+# -d : set to use default external LAPACK library
+while getopts "b:vedV" opt; do
+  case $opt in
+    b) BUILD_OPTION="$OPTARG"
+    ;;
+    v) VERB_OPTION=1
+    ;;
+    V) VERB_OPTION=2
+    ;;
+    e) export USE_MESASDK=1
+    ;;
+    d) export USE_DEFAULT_EXTERNAL=1
+    ;;
+    \?) echo "Invalid option -$OPTARG" >&2
+    exit 1
+    ;;
+  esac
+
+  case $OPTARG in
+    -*) echo "Option $opt needs a valid argument"
+    exit 1
+    ;;
+  esac
+done
+
+# Setting and checking build options
+if [ "$BUILD_OPTION" = "" ]
+then
+	BUILD_OPTION="release"
+fi
+
+# Default verbose options
+if [ "$VERB_OPTION" = "" ]
+then
+	VERB_OPTION=0
+fi
+
 # Creating the binary directory
 BINARY_DIR="bin"
 if [ ! -d $BINARY_DIR ]
@@ -32,13 +75,6 @@ then
         echo "Found and deleted existing executable."
 fi
 
-# Setting and checking build options
-if [ "$1" = "" ]
-then
-	BUILD_OPTION="release"
-else 
-	BUILD_OPTION=$1
-fi
 
 if [ $BUILD_OPTION = "release" ]
 then
@@ -56,10 +92,20 @@ else
 fi
 
 # Running cmake
-cmake --preset $BUILD_OPTION ..
+if [ $VERB_OPTION = 2 ]
+then
+  cmake --preset $BUILD_OPTION .. -DCMAKE_FIND_DEBUG_MODE=ON
+else
+  cmake --preset $BUILD_OPTION ..
+fi
 # Cleaning possible previous attempts and compiling 
 make clean
-make
+if [ $VERB_OPTION = 1 ] || [ $VERB_OPTION = 2 ]
+then
+  make VERBOSE=1
+else
+  make
+fi
 
 if [ -f $EXECUTABLE ]
 then
