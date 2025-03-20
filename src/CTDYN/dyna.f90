@@ -83,8 +83,8 @@ contains
     
     character(len=1) :: jobvl, jobpr    
     real(dp) :: rwork(2*nt)
-    complex(dp) :: work_z(lwork)
-    real(dp) :: work_d(lwork)    
+    complex(dp), allocatable :: work_z(:)
+    real(dp), allocatable :: work_d(:)    
     integer(i4) :: qa, qb
     complex(dp) :: axx(nt,nt)
     real(dp) :: axr(nt,nt)
@@ -92,6 +92,16 @@ contains
     
     real(dp) :: c1(np)                  ! coefficient dyn.  
     real(dp) :: c2(np)
+
+    ! Timer variables
+    real(dp) :: time_dyna_0, time_dyna_1
+    real(dp) :: time_geev_0, time_geev_1
+
+    !------------------------------------------------------
+
+    if (show_timer) then
+      call cpu_time (time_dyna_0)
+    endif
     
     !------------------------------------------------------
     jobpr = 'n'    ! y = write all pij matrix      
@@ -1120,9 +1130,13 @@ contains
     enddo
     
     !----- lapack solver
+    if (show_timer) then
+      call cpu_time (time_geev_0)
+    endif
     
     if(mmm.ne.0) flg=1
     if(flg.eq.1) then
+       allocate (work_z(lwork))
        call geev(jobvl, jobvr, nt, axx, nt, ww, cvr, nt, cvr, nt, &
                   &  work_z, lwork, rwork, info )
        ! rescale the eigenvalues 
@@ -1134,7 +1148,7 @@ contains
     else
       forall (i=1:nt,j=1:nt) axr(i,j) = real(axx(i,j))
       axr = real(axx)
-    
+      allocate (work_d(lwork))
       call geev(jobvl, jobvr, nt, axr, nt, wr, wi, vr, nt, & 
                  &  vr, nt, work_d, lwork, info )
     
@@ -1144,9 +1158,13 @@ contains
         inde(i) = i
       enddo
     endif
+
+    if (show_timer) then
+      call cpu_time (time_geev_1)
+      write (*,'(a,1x,f0.3,1x,a)') "Elapsed time for GEEV call::", time_geev_1 - time_geev_0, "seconds."
+    endif
     
     call sort2 (nt, wr, inde)     
-    
     indeg=int(inde)
     
     ! Assigning real and imaginary part of 
@@ -1187,7 +1205,7 @@ contains
     facp = 2.d0*pi*(sr*sr0)**2.d0/eta/3.1536e7
     period = facp/imag ! period of the selected solution
     do kk=0, 5
-      write(*,'(i4, 1p,3e13.5)') kk, wr(nt-kk), wi(int(indeg(nt-kk))), facp/wi(int(indeg(nt-kk)))
+      write(*,'(i4,1p,3e13.5)') kk, wr(nt-kk), wi(int(indeg(nt-kk))), facp/wi(int(indeg(nt-kk)))
     enddo
     
     write(*,*)
@@ -1199,6 +1217,11 @@ contains
     
     if (jobvr.eq.'v') then
       call writefield (imag)
+    endif
+
+    if (show_timer) then
+      call cpu_time (time_dyna_1)
+      write (*,'(a,1x,f0.3,1x,a)') "Total elapsed time for dyna call::", time_dyna_1 - time_dyna_0, "seconds."
     endif
     
     return

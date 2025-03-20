@@ -138,6 +138,7 @@ module cio
   logical :: write_vectors
   real(dp) :: zeta_r
   real(dp) :: xbt, xbo
+  logical :: show_timer
 
   !-------------------------------------------
   !> boundaries
@@ -185,7 +186,7 @@ module cio
   namelist /brent/ al_i, al_f, accu
 
   namelist /outputs/ dir, nj, write_vectors, zeta_r, &
-                     xbt, xbo
+                     xbt, xbo, show_timer
 
   namelist /fields/ degree, mmm
 
@@ -252,6 +253,7 @@ contains
     xbt     = 0.75d0
     xbo     = 1.5d0
     nj      = 8
+    show_timer = .false.
   
     !-------------------------------------------
     !> boundaries
