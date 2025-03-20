@@ -32,13 +32,21 @@ endif()
 
 add_executable(ctdyn "")
 
-if (DEFINED STDLIB_EXTERNAL_LAPACK)
+if ($ENV{USE_DEFAULT_EXTERNAL} OR $ENV{USE_MESASDK} EQUAL "1")
     target_link_libraries(
         ctdyn  
-        PUBLIC
+        PRIVATE
         fortran_stdlib::fortran_stdlib
-        LAPACK::LAPACK
-        BLAS::BLAS
+    )
+    target_link_libraries(
+        ctdyn  
+        PRIVATE
+        BLAS::BLAS -lblas
+    )
+    target_link_libraries(
+        ctdyn  
+        PRIVATE
+        LAPACK::LAPACK -llapack
     )
 else ()
     target_link_libraries(
