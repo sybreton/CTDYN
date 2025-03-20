@@ -42,7 +42,12 @@ program main
   integer(i4) :: mm, i, iome
   integer(i4) :: fu 
 
+  ! Timer variables
+  real (dp) :: time_main_0, time_main_1
 
+  if (show_timer) then
+    call cpu_time (time_main_0)
+  endif
   
   ! Read input namelist
   call read_namelist (inlist) 
@@ -95,6 +100,11 @@ program main
     write (fu,'(i4, 9es12.4)') ii, critical, co, c_u, abs(imag), abs(period), eta, beta, etep, etet
   enddo
   close(fu)
+
+  if (show_timer) then
+    call cpu_time (time_main_1)
+    write (*,'(a,1x,f0.3,1x,a)') "CTDYN execution total elapsed time::", time_main_1 - time_main_0, "seconds."
+  endif
 
 end program main
 

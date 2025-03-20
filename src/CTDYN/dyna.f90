@@ -7,7 +7,7 @@ module dyna
     use stellar_profiles
     use util
     use stdlib_linalg_lapack, only: geev
-  
+
     implicit none
 
     private
