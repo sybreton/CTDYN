@@ -6,6 +6,7 @@
 **/*.x
 *.swp
 **/*.swp
+**/*.vscode
 
 obj/
 bin/
