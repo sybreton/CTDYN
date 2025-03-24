@@ -12,7 +12,11 @@ sr : real
   Stellar radius in solar units. Default ``1.d0``.
 
 rotp : real    
-  Rotation period, in solar units. Default ``1.d0``.
+  Rotation period, in solar units. Default ``1.d0``. This parameter is used only 
+  to compute the amplitude of the magnetic diffusivity ``eta`` in the following
+  way:
+
+  :math:`C_\Omega = \Omega_\star R_\star^2 / \eta_t` .
 
 grid
 ----
