@@ -1,4 +1,13 @@
 Version 0.2
+- Important refactoring was done in the Fortran code, among 
+  which: number of utility modules was significantly reduced,
+  the precision of integer variables is now systematically explicited
+  when declared, unused namelist variables were removed. 
+- A timer option was added, allowing to monitor the total time of
+  a CTDYN run and the invidual time taken by calls to LAPACK routines.
+- The code installation requirements was updated and clarified.
+  In particular, CTDYN now requires an installation of the Fortran 
+  Standard Library.
 - Old Makefile was removed and a cmake configuration combined 
   with an installation script was provided. 
 
