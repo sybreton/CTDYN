@@ -54,10 +54,10 @@ xda2 : real
   Second thickness parameter of the turbulent layer. Default ``0.025d0``.
 
 s0 : real    
-  --
+  First stream function coefficient. Default ``0.85d0``.
 
 s2 : real  
-  --
+  Second stream function coefficient. Default ``0.08d0``. 
 
 xb : real
   Stream function location parameter. Default ``0.65d0``.
@@ -81,8 +81,7 @@ dd1 : real
 
 xc1 : real     
   Location parameter for rotation profiles for
-  following ``regime`` value: 
-  ``sk69``, ``stm``, ``h2``, ``h4``. 
+  following ``regime`` value: ``sk69``, ``stm``, ``h2``, ``h4``. 
   Default ``0.7d0``.
 
 c2_h2 : real     
@@ -91,7 +90,8 @@ c2_h2 : real
   Default ``0.2d0``.
 
 oco : real     
-  Additional rotation parameter in the ``h2`` regime. Default ``0.9d0``.
+  Core-to-surface equatorial rotation frequency ratio in the ``h2`` regime. 
+  Default ``0.9d0``.
 
 brent
 ------
@@ -201,13 +201,6 @@ flg : real
   If ``mmm`` is different from ``0``, ``flg`` is automatically set to
   ``1``.
 
-nso : real      
-  Number of step in the loop to explore the influence of rotation
-  over meridional circulation. The bisection procedure will be executed 
-  at each iteration. At a given iteration ``ii``, the rotation 
-  coefficient ``co`` is ``co = cm_i + ii / (nso+1) * (cm_f - cm_i)``
-  and the meridional circulation coefficient is ``c_u = rm_i + rm_f*co**xm``.
-
 rm_i : real
   Rotation independent component of the meridional circulation 
   Reynolds number. 
@@ -216,8 +209,5 @@ rm_f : real
   Rotation dependent component of the meridional circulation 
   Reynolds number. 
 
-cm_i : real 
-  Initial rotation coefficient in the exploration loop.
-
-cm_f : real 
-  Final rotation coefficient in the exploration loop.
+co : real 
+  Adimensioned rotation dynamo coefficient.

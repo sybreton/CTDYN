@@ -137,8 +137,8 @@ contains
          ! K giant model
          ! arcturus !!!!!
          ! mimic the leonid omega
-         om2=0.01d0/x-0.25d0
-         om2p=-0.01d0/x/x
+         om2  = 0.01d0/x-0.25d0
+         om2p = -0.01d0/x/x
          om0  = 0.22d0/x+1.d0
          om0p = -0.22d0/x/x
 
@@ -147,13 +147,13 @@ contains
          ! omega = omegac + delta*(omegaeq-omegac) - delta*c2*cos(theta)^2 -delta*c4*cos(theta)^4
          !       = omega0 + omega2 * cos(theta)^2 + omega4 *cos(theta)^4
          !       = om0    + om2*cos(theta)^2  + om4*cos(theta)^4
-         delta   = (1.e0 + derf( (x-xc1)/dd1  ) )/ 2.e0
-         om0  =  (omegac + delta * ( omegaeq - omegac))/omegaeq
-         om0p =  (exp(-((x-xc1)/dd1)**2)/sqrt(pi)/dd1)*(omegaeq - omegac)/omegaeq
-         om2  = -delta*c2/omegaeq
-         om2p = -(exp(-((x-xc1)/dd1)**2)/sqrt(pi)/dd1)*c2/omegaeq
-         om4  = -delta*c4/omegaeq
-         om4p =  -(exp(-((x-xc1)/dd1)**2)/sqrt(pi)/dd1)*c4/omegaeq
+         delta = (1.e0 + derf( (x-xc1)/dd1  ) )/ 2.e0
+         om0   =  (omegac + delta * ( omegaeq - omegac))/omegaeq
+         om0p  =  (exp(-((x-xc1)/dd1)**2)/sqrt(pi)/dd1)*(omegaeq - omegac)/omegaeq
+         om2   = -delta*c2/omegaeq
+         om2p  = -(exp(-((x-xc1)/dd1)**2)/sqrt(pi)/dd1)*c2/omegaeq
+         om4   = -delta*c4/omegaeq
+         om4p  =  -(exp(-((x-xc1)/dd1)**2)/sqrt(pi)/dd1)*c4/omegaeq
 
       else if(regime.eq.'h5')then !pure latitudinal dependence
          om0  =  2.78d0

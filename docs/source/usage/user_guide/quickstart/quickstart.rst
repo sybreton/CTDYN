@@ -17,6 +17,16 @@ Running CTDYN
 .. code:: ipython3
 
     import py_ctdyn as dyn
+    dyn.__version__
+
+
+
+
+.. parsed-literal::
+
+    '0.2'
+
+
 
 Once the module is imported, we can set some input parameters that will
 be used to run CTDYN. This is done through a dictionary of dictionaries,
@@ -88,18 +98,9 @@ parameter from the ``physics`` namelist). The Reynolds number related to
 meridional circulation :math:`Re` can be computed as
 :math:`v_{\rm meridional} R_\star / \eta_t`. :math:`Re_0` and
 :math:`Re_1` corresponds to the quantities ``rm_i`` and ``rm_f`` from
-the ``controls`` namelist.
-
-In practice, in CTDYN, :math:`C_\Omega` is directly computed from the
-inputs, and :math:`\eta_t` is computed from the relation between the two
-quantities. The :math:`C_\Omega` (``co``) value can be set using the
-``cm_i``, ``cm_f`` and ``nso`` parameters from the ``controls``
-namelist. At the ``ii``\ th iteration on the range ``(0, nso)``, the
-``co`` variable will take the value
-``co = = cm_i + ii / (nso+1) * (cm_f - cm_i)``, which means that if
-``nso > 0``, the code will explore and summarise different dynamo
-configurations, varying :math:`C_\Omega`, :math:`C_{\rm meridional}`,
-and :math:`\eta` in the process.
+the ``controls`` namelist. In practice, in CTDYN, :math:`C_\Omega` is
+directly passed as an input (``co`` from the ``controls`` namelist), and
+:math:`\eta_t` is computed from the relation between the two quantities.
 
 Finally the adimensioned frequency of the cycle (``omega_cycle``),
 :math:`\overline{\omega}`, is connected to its dimensioned counterpart,
@@ -119,10 +120,10 @@ Finally the adimensioned frequency of the cycle (``omega_cycle``),
 .. raw:: html
 
     <div><i>Table length=1</i>
-    <table id="table5250116496" class="table-striped table-bordered table-condensed">
-    <thead><tr><th>n</th><th>C_alpha</th><th>C_omega</th><th>C_meridional</th><th>omega_cycle</th><th>period_cycle</th><th>eta</th><th>beta</th><th>Etor</th><th>Epol</th></tr></thead>
-    <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
-    <tr><td>1.0</td><td>8.4583</td><td>1000.0</td><td>17.867</td><td>21.569</td><td>3.1912</td><td>14002000000000.0</td><td>0.0</td><td>0.0</td><td>0.0</td></tr>
+    <table id="table5089196688" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>C_alpha</th><th>C_omega</th><th>C_meridional</th><th>omega_cycle</th><th>period_cycle</th><th>eta</th><th>beta</th><th>Etor</th><th>Epol</th></tr></thead>
+    <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
+    <tr><td>8.4583</td><td>1000.0</td><td>17.867</td><td>21.569</td><td>3.1912</td><td>14002000000000.0</td><td>0.0</td><td>0.0</td><td>0.0</td></tr>
     </table></div>
 
 
@@ -191,12 +192,11 @@ Finally the adimensioned frequency of the cycle (``omega_cycle``),
 
 .. code:: ipython3
 
-    ii, time = 1, 6
+    time = 2
 
 .. code:: ipython3
 
-    filename = "{}/pfld.{}.t{}.A00".format (dir_out, str (ii).zfill (6), 
-                                            str (time).zfill (2))
+    filename = "{}/pfld.{}.A00".format (dir_out, str (time).zfill (2))
     r, theta, mesh = dyn.read_field_map (filename)
     fig = dyn.plot_meridional_map (r, theta, mesh, label=r"$B_p$",
                                    mode="contourf")
@@ -208,8 +208,7 @@ Finally the adimensioned frequency of the cycle (``omega_cycle``),
 
 .. code:: ipython3
 
-    filename = "{}/tfld.{}.t{}.A00".format (dir_out, str (ii).zfill (6), 
-                                            str (time).zfill (2))
+    filename = "{}/tfld.{}.A00".format (dir_out, str (time).zfill (2))
     r, theta, mesh = dyn.read_field_map (filename)
     fig = dyn.plot_meridional_map (r, theta, mesh, label=r"$B_\phi$")
 
@@ -220,7 +219,7 @@ Finally the adimensioned frequency of the cycle (``omega_cycle``),
 
 .. code:: ipython3
 
-    filename = "{}/butf.000001.a00".format (dir_out)
+    filename = "{}/butf.a00".format (dir_out)
     t, theta, mesh = dyn.read_butterfly_diagram (filename)
     fig = dyn.plot_butterfly_diagram (t, theta, mesh)
 
@@ -231,7 +230,7 @@ Finally the adimensioned frequency of the cycle (``omega_cycle``),
 
 .. code:: ipython3
 
-    filename = "{}/brbp.000001.a00".format (dir_out)
+    filename = "{}/brbp.a00".format (dir_out)
     t, theta, mesh = dyn.read_butterfly_diagram (filename)
     fig = dyn.plot_butterfly_diagram (t, theta, mesh)
 

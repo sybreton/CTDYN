@@ -39,9 +39,9 @@ module write_outputs
 
   public :: writefield 
 
-  character(*), parameter :: fmt_2010 = "(a220,i6.6,a2,i2.2)" 
-  character(*), parameter :: fmt_2011 = "(a220,i6.6,a2,i2.2,a2,i2.2)" 
-  integer(i4), parameter :: nft=200   
+  character(*), parameter :: fmt_2010 = "(a220,a2,i2.2)" 
+  character(*), parameter :: fmt_2011 = "(a220,i2.2,a2,i2.2)" 
+  integer(i4), parameter  :: nft=200   
   integer(i4) :: mm 
 
 contains 
@@ -282,7 +282,7 @@ contains
   
     integer(i4) :: i, j
   
-    write(bfeld3, '(a220,i6.6,a2,i2.2,a2,i2.2)') trim(dir)//'/tfld.',ii,'.t', jj, q, mm
+    write(bfeld3, fmt_2011) trim(dir)//'/tfld.', jj, q, mm
     open(60, status='unknown', file=adjustl(bfeld3))
     write(60, '(a)') 'Radius'
     write(60, '(a)') 'theta'
@@ -316,7 +316,7 @@ contains
     integer(i4) :: i, j
     real(dp) :: x
   
-    write(bfeld4, fmt_2011) trim(dir)//'/pfld.', ii, '.t', jj, q, mm
+    write(bfeld4, fmt_2011) trim(dir)//'/pfld.', jj, q, mm
     open(61,status='unknown', file=adjustl(bfeld4))
     write(61,'(a)') 'Radius'
     write(61,'(a)') 'theta'
@@ -339,7 +339,8 @@ contains
                           ome, sfu, ute)
     !-------------------------------------------------------------
     !
-    ! > Write omega(r,theta)/omega_equator and stream function
+    ! > Write omega(r,theta)/omega_equator latitudinal profile, 
+    ! > stream function, and meridional velocity profile.
     !
     !-------------------------------------------------------------
   
@@ -389,7 +390,7 @@ contains
     character(len=512) :: bfeld2
     character(len=2) :: q
 
-    write(bfeld2, fmt_2010) trim(dir)//'/vect.', ii, q, mm 
+    write(bfeld2, fmt_2010) trim(dir)//'/vect.', q, mm 
     open(13, status='unknown', file=adjustl(bfeld2))
     close(13)
 
@@ -429,14 +430,14 @@ contains
             datheta2, dax, dbx, dax2, chel, chel2
 
 
-    write(bfeld1, fmt_2010) trim(dir)//'/butf.',ii,q,mm 
-    open(18, status='unknown',file=adjustl(bfeld1))      
-    write(bfeld6, fmt_2010) trim(dir)//'/jcin.',ii,q,mm 
-    open(30, status='unknown',file=adjustl(bfeld6))      
-    write(bfeld7, fmt_2010) trim(dir)//'/jcou.',ii,q,mm 
-    open(31, status='unknown',file=adjustl(bfeld7))      
-    write(bfeld8, fmt_2010) trim(dir)//'/brbp.',ii,q,mm 
-    open(32, status='unknown',file=adjustl(bfeld8))      
+    write(bfeld1, fmt_2010) trim(dir)//'/butf', q, mm 
+    open(18, status='unknown', file=adjustl(bfeld1))      
+    write(bfeld6, fmt_2010) trim(dir)//'/jcin', q, mm 
+    open(30, status='unknown', file=adjustl(bfeld6))      
+    write(bfeld7, fmt_2010) trim(dir)//'/jcou', q, mm 
+    open(31, status='unknown', file=adjustl(bfeld7))      
+    write(bfeld8, fmt_2010) trim(dir)//'/brbp', q, mm 
+    open(32, status='unknown', file=adjustl(bfeld8))      
   
     write(18,'(6x,i4)') n_theta-2
     write(30,'(6x,i4)') n_theta-2
@@ -594,9 +595,9 @@ contains
     zq2=iphi(bax(1), bax(2))
     rnor=((zq1+zq2)/2.d0)**2
   
-    write(bfeld9, fmt_2010) trim(dir)//'/brtn.',ii,q,mm 
+    write(bfeld9, fmt_2010) trim(dir)//'/brtn', q,mm 
     open(33,status='unknown',file=adjustl(bfeld9))      
-    write(bfeld10, fmt_2010) trim(dir)//'/brts.',ii,q,mm 
+    write(bfeld10, fmt_2010) trim(dir)//'/brts', q,mm 
     open(34,status='unknown',file=adjustl(bfeld10))      
   
     write(33,'(6x,i4)') np+2+nf-2

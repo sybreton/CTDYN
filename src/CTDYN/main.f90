@@ -78,27 +78,21 @@ program main
   eep = -99
 
   ! Setting global variables for the loop
-  ii = 0
   jobvr = 'n'
   fileout = trim(trim(dir)//"/critical"//qq)//".dat"
 
   ! Entering the main loop calling the bisection
   ! for different set of rotation/circulation regimes
   open(newunit=fu, status='unknown', file=fileout)
-  write(fu, '(a)') "#  n, C_alpha, C_omega, C_meridional, omega_cycle, period_cycle, eta, beta, Etor, Epol"  
-  write(fu, '(a)') "#  --, (adim), (adim), (adim), (adim), (yr), (cm^2/s), (-), (-), (-)"  
-  do iome=0, nso
-    co = cm_i + iome*(cm_f-cm_i)/(nso+1) 
-    c_u = rm_i+rm_f*co**xm
-    ii = ii+1    
-    call zbr(al_i, al_f, accu, critical) 
-    if (write_vectors) then
-      jobvr='v'
-      call dynamo (critical, rate, imag, eta, period)
-      jobvr='n'
-    endif
-    write (fu,'(i4, 9es12.4)') ii, critical, co, c_u, abs(imag), abs(period), eta, beta, etep, etet
-  enddo
+  write(fu, '(a)') "# C_alpha, C_omega, C_meridional, omega_cycle, period_cycle, eta, beta, Etor, Epol"  
+  write(fu, '(a)') "# (adim), (adim), (adim), (adim), (yr), (cm^2/s), (-), (-), (-)"  
+  c_u = rm_i+rm_f*co**xm
+  call zbr(al_i, al_f, accu, critical) 
+  if (write_vectors) then
+    jobvr='v'
+    call dynamo (critical, rate, imag, eta, period)
+  endif
+  write (fu,'(9es12.4)') critical, co, c_u, abs(imag), abs(period), eta, beta, etep, etet
   close(fu)
 
   if (show_timer) then

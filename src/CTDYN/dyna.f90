@@ -140,14 +140,10 @@ contains
     write(*,'(a,e12.5,a,e12.5)' ) ' C_alpha =', turb, ' C_omega =', co 
     write(*,'(a,e12.5,a,e12.5)' ) ' r_flow  =', c_u,  ' f-f =    ', beta 
     
-    
-    !
     !-------------------------------------------------------------
     !     Write alpha and eta the first iteration/test run
     !-------------------------------------------------------------
-    !
-    
-    if(ii.eq.1)then     
+    if (it.eq.1) then     
       open(22, status='unknown', file=trim(trim(dir)//'/alpha.dat'))
       do i=1, np
         x = x1+i*hh

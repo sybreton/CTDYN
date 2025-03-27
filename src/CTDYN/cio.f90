@@ -164,16 +164,15 @@ module cio
   !-------------------------------------------
   !> controls 
   !-------------------------------------------
-  integer(i4) :: nso
   real(dp) :: flg
-  real(dp) :: cm_f, cm_i, rm_f, rm_i
+  real(dp) :: co, rm_f, rm_i
 
   ! Additional variables that are used by several 
   ! subroutines. These were included in "common" 
   ! blocks in the old version of the code. 
-  integer(i4)  :: ii, it
+  integer(i4)  :: it
   real(dp) :: etep, etet, eep
-  real(dp) :: co, c_u, beta, betb
+  real(dp) :: c_u, beta, betb
   real(dp) :: reg(10),ieg(10)
   real(dp) :: gam
   character(len=1) :: jobvr
@@ -198,7 +197,7 @@ module cio
 
   namelist /boundaries/ x_in
 
-  namelist /controls/ rm_i, rm_f, cm_i, cm_f, nso, flg
+  namelist /controls/ rm_i, rm_f, co, flg
 
 contains
 
@@ -285,9 +284,7 @@ contains
     !-------------------------------------------
     rm_i    =  0.d0      
     rm_f    =  400.d0     
-    cm_i    =  1000.d0      
-    cm_f    =  40000.d0        
-    nso     =  0    
+    co      =  1000.d0         
     flg     =  0.d0 
 
   end subroutine 

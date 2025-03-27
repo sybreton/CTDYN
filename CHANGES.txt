@@ -3,6 +3,9 @@ Version 0.2
   which: number of utility modules was significantly reduced,
   the precision of integer variables is now systematically explicited
   when declared, unused namelist variables were removed. 
+- As a consequence of this refactoring, output filename patterns 
+  were changed and simplified with respect to v0.1, the Pytho commands
+  outlined in the Get started tutorial was updated accordingly.
 - A timer option was added, allowing to monitor the total time of
   a CTDYN run and the invidual time taken by calls to LAPACK routines.
 - The code installation requirements was updated and clarified.
