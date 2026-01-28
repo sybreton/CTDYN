@@ -86,12 +86,12 @@ class TestExecutionVisualisation :
 
   def testPlotMeridionalMap (self, tmp_dir) : 
     ii, time = 1, 1
-    filename = "{}/pfld.{}.t{}.a00".format (tmp_dir, str (ii).zfill (6), 
+    filename = "{}/pfld.{}.a00".format (tmp_dir, str (ii).zfill (2), 
                                             str (time).zfill (2))
     r, theta, mesh = dyn.read_field_map (filename)
     fig = dyn.plot_meridional_map (r, theta, mesh, label=r"$B_r$")
 
   def testPlotButterflyDiagram (self, tmp_dir) :
-    filename = "{}/butf.000001.a00".format (tmp_dir)
+    filename = "{}/butf.a00".format (tmp_dir)
     t, theta, mesh = dyn.read_butterfly_diagram_text_file (filename)
     fig = dyn.plot_butterfly_diagram (t, theta, mesh)
